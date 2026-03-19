@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sarthak Bichhawa — Senior Data Scientist</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #21262d;
+      --accent: #58a6ff;
+      --accent2: #3fb950;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --tag-bg: #1f2d3d;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      background: rgba(13,17,23,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    nav .logo { font-weight: 700; font-size: 1rem; color: var(--accent); letter-spacing: -0.3px; }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav ul a { color: var(--muted); text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: color 0.2s; }
+    nav ul a:hover { color: var(--text); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(88,166,255,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-content { max-width: 720px; position: relative; }
+    .hero-badge {
+      display: inline-block;
+      background: var(--tag-bg); border: 1px solid rgba(88,166,255,0.3);
+      color: var(--accent); font-size: 0.8rem; font-weight: 500;
+      padding: 0.3rem 0.9rem; border-radius: 999px; margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700; letter-spacing: -1.5px;
+      line-height: 1.1; margin-bottom: 1rem;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero p {
+      font-size: 1.1rem; color: var(--muted); max-width: 580px;
+      margin: 0 auto 2.5rem;
+    }
+    .hero-links { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.65rem 1.4rem; border-radius: 8px;
+      font-size: 0.9rem; font-weight: 500; text-decoration: none;
+      transition: all 0.2s; cursor: pointer;
+    }
+    .btn-primary { background: var(--accent); color: #0d1117; }
+    .btn-primary:hover { background: #79b8ff; }
+    .btn-outline { border: 1px solid var(--border); color: var(--text); }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* SECTIONS */
+    section { padding: 6rem 2rem; max-width: 900px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700; letter-spacing: -0.5px; margin-bottom: 3rem;
+    }
+
+    /* STATS */
+    .stats {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem; margin-bottom: 4rem;
+    }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem; text-align: center;
+      transition: border-color 0.2s;
+    }
+    .stat-card:hover { border-color: var(--accent); }
+    .stat-card .number { font-size: 2rem; font-weight: 700; color: var(--accent); }
+    .stat-card .label { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+
+    /* EXPERIENCE */
+    .timeline { display: flex; flex-direction: column; gap: 1.5rem; }
+    .job-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.75rem 2rem;
+      transition: border-color 0.2s;
+    }
+    .job-card:hover { border-color: rgba(88,166,255,0.4); }
+    .job-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.25rem; }
+    .job-title { font-size: 1.05rem; font-weight: 600; }
+    .job-date { font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+    .job-company { font-size: 0.9rem; color: var(--accent); font-weight: 500; margin-bottom: 1rem; }
+    .job-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .job-card ul li {
+      font-size: 0.875rem; color: var(--muted); padding-left: 1.2rem; position: relative;
+    }
+    .job-card ul li::before {
+      content: '▸'; position: absolute; left: 0; color: var(--accent2); font-size: 0.75rem; top: 2px;
+    }
+    .job-card ul li strong { color: var(--text); }
+    .sub-project { font-size: 0.8rem; font-weight: 600; color: var(--text); margin-top: 0.75rem; margin-bottom: 0.25rem; }
+
+    /* SKILLS */
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+    .skill-group {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem;
+    }
+    .skill-group h3 { font-size: 0.85rem; font-weight: 600; color: var(--accent); margin-bottom: 1rem; }
+    .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .tag {
+      background: var(--tag-bg); border: 1px solid var(--border);
+      color: var(--text); font-size: 0.78rem; font-weight: 500;
+      padding: 0.3rem 0.75rem; border-radius: 6px;
+    }
+
+    /* EDUCATION */
+    .edu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+    .edu-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem;
+    }
+    .edu-card .degree { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .edu-card .school { font-size: 0.875rem; color: var(--accent); }
+    .edu-card .year { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+
+    /* CONTACT */
+    #contact { text-align: center; }
+    #contact p { color: var(--muted); margin-bottom: 2rem; }
+    .contact-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; }
+
+    /* FOOTER */
+    footer {
+      text-align: center; padding: 2rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem; color: var(--muted);
+    }
+
+    /* DIVIDER */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    @media (max-width: 600px) {
+      nav ul { gap: 1rem; }
+      .job-header { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <span class="logo">SB</span>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero" id="about">
+    <div class="hero-content">
+      <div class="hero-badge">Open to new opportunities</div>
+      <h1>Sarthak <span>Bichhawa</span></h1>
+      <p>Senior Data Scientist with 8+ years building production ML and data systems for reliability, attribution, and customer analytics — owning end-to-end pipelines, governance, and measurable business outcomes at scale.</p>
+      <div class="hero-links">
+        <a href="mailto:sarthaksgsits@gmail.com" class="btn btn-primary">Get in touch</a>
+        <a href="https://github.com/sarthak0501" class="btn btn-outline" target="_blank">GitHub</a>
+        <a href="https://linkedin.com/in/sarthakbichhawa" class="btn btn-outline" target="_blank">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- STATS -->
+  <section>
+    <div class="stats">
+      <div class="stat-card"><div class="number">8+</div><div class="label">Years of Experience</div></div>
+      <div class="stat-card"><div class="number">10+</div><div class="label">Sev1/Sev2 Incidents Prevented</div></div>
+      <div class="stat-card"><div class="number">>10%</div><div class="label">MoM Revenue Attribution Lift</div></div>
+      <div class="stat-card"><div class="number">~50%</div><div class="label">Reduction in Aging CRIs</div></div>
+      <div class="stat-card"><div class="number">15+</div><div class="label">Azure Advisor Recommendations</div></div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="section-label">Career</div>
+    <div class="section-title">Experience</div>
+    <div class="timeline">
+
+      <div class="job-card">
+        <div class="job-header">
+          <div class="job-title">Sr. Data & Applied Scientist</div>
+          <div class="job-date">Nov 2020 – Present</div>
+        </div>
+        <div class="job-company">Microsoft · Redmond, WA</div>
+        <div class="sub-project">Intelligent Stress Testing</div>
+        <ul>
+          <li>Built adaptive pre-release stress-testing for Azure Storage to inform per-build ship/hold decisions; helped prevent <strong>10+ Sev1/Sev2</strong> incidents before rollout.</li>
+          <li>Ran thousands of simulations across <strong>20 workload types</strong>; reduced ~500 failure signals into 15 recurring modes with quantified impact.</li>
+          <li>Used <strong>multi-armed bandits</strong> to prioritize high-yield scenarios, cutting false positives <strong>60%</strong>.</li>
+        </ul>
+        <div class="sub-project">Multi-Touch Partner Attribution</div>
+        <ul>
+          <li>Replaced "last-writer-wins" with multi-partner attribution, increasing partner-attributed influenced revenue by <strong>>10% MoM</strong> (tens of millions in impact).</li>
+        </ul>
+        <div class="sub-project">Mission-Critical Customers (MCC) AI Agent</div>
+        <ul>
+          <li>Built unified customer health view across 8+ teams, reducing insight latency from <strong>3–5 days to near real-time</strong>.</li>
+          <li>Shipped an <strong>LLM-powered MCC AI Agent</strong> enabling natural-language customer insights and automated alerts.</li>
+          <li>Achieved <strong>~50% reduction</strong> in >10-day aging CRIs and ~16% improvement in Time to Mitigate.</li>
+        </ul>
+      </div>
+
+      <div class="job-card">
+        <div class="job-header">
+          <div class="job-title">Senior Data Scientist</div>
+          <div class="job-date">Feb 2019 – Nov 2020</div>
+        </div>
+        <div class="job-company">Walmart Labs · Bentonville, AR</div>
+        <ul>
+          <li>Built end-to-end planogram optimization delivering <strong>~7% category revenue lift</strong> across 50 stores; cut planning cycles from weeks to hours.</li>
+          <li>Led 4 DS/analysts + 2 interns to productionize a repeatable item-level placement workflow. Earned a <strong>Spot Award</strong>.</li>
+          <li>Built product association + substitution analytics (behavior tree + demand transfer) for assortment and replenishment decisions.</li>
+        </ul>
+      </div>
+
+      <div class="job-card">
+        <div class="job-header">
+          <div class="job-title">Data Scientist Intern</div>
+          <div class="job-date">Jun 2018 – Aug 2018</div>
+        </div>
+        <div class="job-company">Integral Ad Science · New York, NY</div>
+        <ul>
+          <li>Built a PySpark contextual text-classification pipeline processing <strong>~1M URLs/day</strong> across 846 categories at 88% accuracy.</li>
+        </ul>
+      </div>
+
+      <div class="job-card">
+        <div class="job-header">
+          <div class="job-title">Data Scientist</div>
+          <div class="job-date">Oct 2015 – Jul 2017</div>
+        </div>
+        <div class="job-company">Mu Sigma Business Solutions · Bengaluru, India</div>
+        <ul>
+          <li>Estimated customer lifetime value (CLTV) using probabilistic/regression models.</li>
+          <li>Improved competitive reporting via fuzzy matching to unify product IDs across sources.</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-label">Toolkit</div>
+    <div class="section-title">Skills</div>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <h3>Languages & Tools</h3>
+        <div class="tags">
+          <span class="tag">Python</span><span class="tag">SQL</span><span class="tag">PySpark</span>
+          <span class="tag">R</span><span class="tag">Azure Data Explorer</span>
+          <span class="tag">Power BI</span><span class="tag">Tableau</span><span class="tag">Azure DevOps</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>ML & Analytics</h3>
+        <div class="tags">
+          <span class="tag">Multi-Armed Bandits</span><span class="tag">Statistical Modeling</span>
+          <span class="tag">NLP / Classification</span><span class="tag">Optimization</span>
+          <span class="tag">Clustering & Segmentation</span><span class="tag">Experiment Design</span>
+          <span class="tag">Anomaly Detection</span><span class="tag">LLMs / RAG</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>Domains</h3>
+        <div class="tags">
+          <span class="tag">Cloud Reliability</span><span class="tag">Revenue Attribution</span>
+          <span class="tag">Telemetry Pipelines</span><span class="tag">Retail Analytics</span>
+          <span class="tag">Customer Health</span><span class="tag">Data Governance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="section-label">Academic</div>
+    <div class="section-title">Education</div>
+    <div class="edu-grid">
+      <div class="edu-card">
+        <div class="degree">MS — Business Analytics</div>
+        <div class="school">University of Illinois at Chicago (UIC)</div>
+        <div class="year">Aug 2017 – Dec 2018 · Chicago, IL</div>
+      </div>
+      <div class="edu-card">
+        <div class="degree">B.E. — Computer Engineering</div>
+        <div class="school">SGSITS, Indore</div>
+        <div class="year">Aug 2011 – Jul 2015 · Indore, India</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-label">Let's Talk</div>
+    <div class="section-title">Get In Touch</div>
+    <p>Open to Staff / Senior Data Scientist roles in ML systems, reliability, applied science, or customer analytics.</p>
+    <div class="contact-links">
+      <a href="mailto:sarthaksgsits@gmail.com" class="btn btn-primary">sarthaksgsits@gmail.com</a>
+      <a href="https://github.com/sarthak0501" class="btn btn-outline" target="_blank">GitHub</a>
+      <a href="https://linkedin.com/in/sarthakbichhawa" class="btn btn-outline" target="_blank">LinkedIn</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Sarthak Bichhawa · Built with HTML & CSS · Hosted on GitHub Pages</p>
+  </footer>
+
+</body>
+</html>
