@@ -477,6 +477,278 @@
       .stat-card { border-right: none; border-bottom: 1px solid var(--border); }
       .back-to-top { bottom: 1rem; right: 1rem; width: 40px; height: 40px; }
     }
+
+    /* =========================================
+       MARKETING LAYER (promotional sections)
+       ========================================= */
+
+    /* HERO — bold value prop */
+    .hero-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem; font-weight: 700;
+      color: var(--cyan); letter-spacing: 4px;
+      text-transform: uppercase; margin-bottom: 1.5rem;
+      text-shadow: var(--glow-cyan);
+    }
+    .hero h1.hero-headline {
+      font-size: clamp(2.6rem, 6.5vw, 5rem);
+      font-weight: 700; letter-spacing: -2px;
+      line-height: 1.05; margin-bottom: 1.5rem;
+      color: var(--text);
+    }
+    .hero h1.hero-headline .accent {
+      color: var(--cyan);
+      text-shadow: 0 0 30px rgba(0,255,255,0.5);
+    }
+    .hero h1.hero-headline .accent-green {
+      color: var(--green);
+      text-shadow: 0 0 30px rgba(0,255,136,0.5);
+    }
+    .hero .hero-lead {
+      font-size: 1.1rem; color: var(--text); opacity: 0.75;
+      max-width: 640px; margin: 0 auto 2.5rem;
+      line-height: 1.75;
+    }
+    .hero .hero-signature {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem; color: var(--muted);
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-top: 2rem;
+    }
+    .hero .hero-signature b { color: var(--purple); }
+
+    .hero-impact-strip {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0; margin-top: 3rem;
+      border: 1px solid var(--border); border-radius: 4px;
+      max-width: 780px; margin-left: auto; margin-right: auto;
+      overflow: hidden;
+    }
+    .hero-impact-strip > div {
+      padding: 1.25rem 1rem; text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .hero-impact-strip > div:last-child { border-right: none; }
+    .hero-impact-strip .big {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.4rem; font-weight: 700;
+      color: var(--cyan); text-shadow: var(--glow-cyan);
+    }
+    .hero-impact-strip .small {
+      font-size: 0.68rem; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-top: 0.3rem; line-height: 1.4;
+    }
+    @media (max-width: 680px) {
+      .hero-impact-strip > div { border-right: none; border-bottom: 1px solid var(--border); }
+      .hero-impact-strip > div:last-child { border-bottom: none; }
+    }
+
+    /* TRUSTED BY */
+    .trusted-bar {
+      position: relative; z-index: 2;
+      padding: 2rem 2rem;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,15,24,0.4);
+      text-align: center;
+    }
+    .trusted-bar .label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem; color: var(--muted);
+      letter-spacing: 4px; text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .trusted-bar .logos {
+      display: flex; justify-content: center; align-items: center;
+      flex-wrap: wrap; gap: 2.5rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem; font-weight: 700;
+      color: var(--text); opacity: 0.7;
+      letter-spacing: 2px; text-transform: uppercase;
+    }
+    .trusted-bar .logos span {
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+    .trusted-bar .logos span:hover {
+      color: var(--cyan); text-shadow: var(--glow-cyan); opacity: 1;
+    }
+    .trusted-bar .logos .dot {
+      color: var(--border-hover); font-size: 0.6rem;
+    }
+
+    /* CASE STUDY — flagship */
+    .case-study {
+      position: relative; z-index: 2;
+      max-width: 1080px; margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+    .case-study-header { margin-bottom: 3rem; }
+    .case-study-tagline {
+      font-size: 1.1rem; color: var(--text); opacity: 0.7;
+      margin-top: 0.75rem; max-width: 720px;
+      line-height: 1.7;
+    }
+    .case-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border); border-radius: 4px;
+      overflow: hidden; margin-bottom: 2.5rem;
+    }
+    .case-cell {
+      background: var(--surface); padding: 2rem;
+      position: relative; display: flex; flex-direction: column;
+    }
+    .case-cell .cell-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .case-cell.problem .cell-label { color: var(--purple); text-shadow: var(--glow-purple); }
+    .case-cell.build .cell-label { color: var(--cyan); text-shadow: var(--glow-cyan); }
+    .case-cell.impact .cell-label { color: var(--green); text-shadow: 0 0 12px rgba(0,255,136,0.4); }
+    .case-cell h3 {
+      font-size: 1.05rem; font-weight: 600;
+      margin-bottom: 1rem; line-height: 1.4;
+    }
+    .case-cell p, .case-cell ul { font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
+    .case-cell ul { list-style: none; padding: 0; }
+    .case-cell ul li {
+      padding-left: 1.2rem; position: relative; margin-bottom: 0.5rem;
+    }
+    .case-cell ul li::before {
+      content: '▸'; position: absolute; left: 0;
+    }
+    .case-cell.problem ul li::before { color: var(--purple); }
+    .case-cell.build ul li::before { color: var(--cyan); }
+    .case-cell.impact ul li::before { color: var(--green); }
+    .impact-metric {
+      display: flex; align-items: baseline; gap: 0.5rem;
+      padding: 0.6rem 0; border-bottom: 1px dashed var(--border);
+    }
+    .impact-metric:last-child { border-bottom: none; }
+    .impact-metric .val {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.3rem; font-weight: 700;
+      color: var(--green); text-shadow: 0 0 10px rgba(0,255,136,0.3);
+    }
+    .impact-metric .desc { font-size: 0.8rem; color: var(--muted); flex: 1; }
+    @media (max-width: 860px) {
+      .case-grid { grid-template-columns: 1fr; }
+    }
+
+    .case-stack {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      padding: 1.5rem 0; margin-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .case-stack .stack-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem; color: var(--muted);
+      letter-spacing: 2px; text-transform: uppercase;
+      align-self: center; margin-right: 1rem;
+    }
+
+    /* SERVICES */
+    .services-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .service-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; padding: 2rem 1.75rem;
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.4s;
+    }
+    .service-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-3px);
+    }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-card .icon {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.6rem; color: var(--cyan);
+      text-shadow: var(--glow-cyan);
+      margin-bottom: 1rem; display: block;
+    }
+    .service-card h3 {
+      font-size: 1.05rem; font-weight: 600;
+      margin-bottom: 0.75rem; line-height: 1.4;
+    }
+    .service-card p {
+      font-size: 0.85rem; color: var(--muted); line-height: 1.7;
+    }
+    .service-card .service-meta {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem; color: var(--purple);
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-top: 1rem;
+      opacity: 0.8;
+    }
+
+    /* ABOUT NARRATIVE */
+    .about-grid {
+      display: grid; grid-template-columns: 1.3fr 1fr; gap: 3rem;
+      align-items: start;
+    }
+    .about-narrative p {
+      font-size: 1.02rem; line-height: 1.85;
+      color: var(--text); opacity: 0.85;
+      margin-bottom: 1.2rem;
+    }
+    .about-narrative p strong { color: var(--cyan); font-weight: 600; }
+    .about-side {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; padding: 1.75rem;
+    }
+    .about-side h4 {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem; font-weight: 700; color: var(--cyan);
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-bottom: 1rem; text-shadow: var(--glow-cyan);
+    }
+    .about-side ul {
+      list-style: none; font-size: 0.88rem;
+      color: var(--muted); line-height: 1.8;
+    }
+    .about-side ul li {
+      padding-left: 1.2rem; position: relative;
+      margin-bottom: 0.4rem;
+    }
+    .about-side ul li::before {
+      content: '▸'; position: absolute; left: 0;
+      color: var(--purple);
+    }
+    @media (max-width: 760px) {
+      .about-grid { grid-template-columns: 1fr; }
+    }
+
+    /* FINAL CTA */
+    .final-cta {
+      position: relative; z-index: 2;
+      text-align: center;
+      padding: 6rem 2rem;
+      background: radial-gradient(ellipse at center, rgba(0,255,255,0.04), transparent 70%);
+    }
+    .final-cta h2 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700; letter-spacing: -1.5px;
+      line-height: 1.1; margin-bottom: 1.25rem;
+    }
+    .final-cta h2 .accent { color: var(--cyan); text-shadow: 0 0 30px rgba(0,255,255,0.5); }
+    .final-cta p {
+      font-size: 1.05rem; color: var(--muted);
+      max-width: 560px; margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
   </style>
 </head>
 <body>
@@ -488,11 +760,11 @@
   <span class="logo">SB://</span>
   <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">☰</button>
   <ul>
-    <li><a href="#about">About</a></li>
-    <li><a href="#experience">Experience</a></li>
+    <li><a href="#featured-work">Work</a></li>
+    <li><a href="#services">What I Do</a></li>
+    <li><a href="#experience">Track Record</a></li>
     <li><a href="#skills">Skills</a></li>
-    <li><a href="#specializations">Focus Areas</a></li>
-    <li><a href="#education">Education</a></li>
+    <li><a href="#about-me">About</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
@@ -501,13 +773,15 @@
 <div class="hero" id="about">
   <div class="hero-content">
     <div class="hero-badge">Available for new opportunities</div>
-    <div class="hero-subtitle">Senior Data & Applied Scientist · AI / LLM Systems</div>
-    <h1>
-      <span class="first">Sarthak </span><span class="last glitch" data-text="Bichhawa">Bichhawa</span>
+    <div class="hero-eyebrow">// Senior Data & Applied Scientist · Microsoft Azure</div>
+    <h1 class="hero-headline">
+      I ship <span class="accent-green">production AI</span><br>
+      that <span class="accent">moves the number</span>.
     </h1>
-    <p>Shipping production <strong style="color:var(--cyan);text-shadow:var(--glow-cyan)">LLM-powered agents</strong> and ML systems at Microsoft — built a GenAI customer-health agent on Azure OpenAI with RAG, tool-calling, and evaluation; 9+ years turning messy telemetry into causal insight, reliability wins, and measurable business outcomes.</p>
+    <p class="hero-lead">From a <strong style="color:var(--green)">GenAI customer-health agent</strong> running on Azure OpenAI for Fortune-scale enterprise customers, to attribution pipelines driving tens of millions in monthly revenue — 9+ years turning messy enterprise data into decisions the C-suite trusts.</p>
     <div class="hero-links">
-      <a href="mailto:sarthaksgsits@gmail.com" class="btn btn-primary">Get in touch</a>
+      <a href="#featured-work" class="btn btn-primary">See the work →</a>
+      <a href="mailto:sarthaksgsits@gmail.com" class="btn btn-outline">Let's talk</a>
       <div class="resume-wrap" id="resume-wrap">
         <button class="btn btn-outline" id="resume-btn" type="button" aria-haspopup="true" aria-expanded="false">Resume ▾</button>
         <div class="resume-menu" role="menu">
@@ -519,30 +793,145 @@
           <a href="resumes/MLManager_TechnicalLead.pdf" target="_blank" role="menuitem">// ML Manager / Technical Lead</a>
         </div>
       </div>
-      <a href="https://github.com/sarthak0501" class="btn btn-outline" target="_blank">GitHub</a>
-      <a href="https://linkedin.com/in/sarthakbichhawa" class="btn btn-outline" target="_blank">LinkedIn</a>
     </div>
-    <div class="hero-meta">
-      <span>Redmond, WA</span>
-      <span>LLM Agents · RAG · Azure OpenAI</span>
-      <span>9+ Years DS / ML</span>
-      <span>Open to Staff / Senior Roles</span>
+    <div class="hero-signature">
+      ▸ Hi, I'm <b>Sarthak Bichhawa</b> — based in Redmond, WA
+    </div>
+    <div class="hero-impact-strip">
+      <div>
+        <div class="big">$10M+</div>
+        <div class="small">MoM revenue unlocked</div>
+      </div>
+      <div>
+        <div class="big">10+</div>
+        <div class="small">Sev1/Sev2 incidents prevented</div>
+      </div>
+      <div>
+        <div class="big">~50%</div>
+        <div class="small">Faster incident resolution</div>
+      </div>
+      <div>
+        <div class="big">1</div>
+        <div class="small">GenAI agent in production</div>
+      </div>
     </div>
   </div>
 </div>
 
+<!-- TRUSTED BY -->
+<section class="trusted-bar">
+  <div class="label">Trusted to ship production ML & AI at</div>
+  <div class="logos">
+    <span>Microsoft</span>
+    <span class="dot">◆</span>
+    <span>Walmart Labs</span>
+    <span class="dot">◆</span>
+    <span>Integral Ad Science</span>
+    <span class="dot">◆</span>
+    <span>Mu Sigma</span>
+  </div>
+</section>
+
+<!-- FEATURED CASE STUDY -->
+<section class="case-study" id="featured-work">
+  <div class="case-study-header">
+    <div class="section-label">// featured_case_study</div>
+    <div class="section-title" style="margin-bottom:0.5rem;">MCC AI Agent <span class="ai-chip" style="margin-left:0.75rem;">GENAI · FLAGSHIP</span></div>
+    <p class="case-study-tagline">How I built and shipped a <strong style="color:var(--green)">production LLM agent on Azure OpenAI</strong> that replaced multi-day customer-health readouts with natural-language answers — trusted by engineering leaders, CSAMs, and on-call responders across Azure Storage.</p>
+  </div>
+
+  <div class="case-grid">
+    <div class="case-cell problem">
+      <div class="cell-label">01 · The Problem</div>
+      <h3>Executive readiness took 3–5 days. Customers churned before signals surfaced.</h3>
+      <p>Customer health lived in 8+ disconnected tools — telemetry, tickets, CRIs, ownership graphs. Every exec readout was a manual hunt. Critical accounts hit Sev1 before the signal reached the right person.</p>
+    </div>
+    <div class="case-cell build">
+      <div class="cell-label">02 · The Build</div>
+      <h3>A grounded, tool-using agent with an eval harness you can actually trust in prod.</h3>
+      <ul>
+        <li>RAG over telemetry, tickets, CRIs &amp; ownership graphs</li>
+        <li>Azure OpenAI (GPT-4-class) with function/tool calling</li>
+        <li>Live KQL/SQL execution against Azure Data Explorer</li>
+        <li>Grounding, citations, schema-validated outputs</li>
+        <li>Golden-set LLM evals + groundedness scoring</li>
+        <li>PII-aware prompts, refusal paths for low confidence</li>
+      </ul>
+    </div>
+    <div class="case-cell impact">
+      <div class="cell-label">03 · The Impact</div>
+      <h3>Near-real-time customer insight. Millions in retained revenue.</h3>
+      <div class="impact-metric"><span class="val">~50%</span><span class="desc">reduction in >10-day aging CRIs</span></div>
+      <div class="impact-metric"><span class="val">~16%</span><span class="desc">improvement in Time to Mitigate</span></div>
+      <div class="impact-metric"><span class="val">8+</span><span class="desc">teams unified on one conversational surface</span></div>
+      <div class="impact-metric"><span class="val">10+</span><span class="desc">at-risk customers (multi-millions / month) de-risked</span></div>
+    </div>
+  </div>
+
+  <div class="case-stack">
+    <span class="stack-label">Tech Stack</span>
+    <span class="tag">Azure OpenAI</span>
+    <span class="tag">GPT-4</span>
+    <span class="tag">RAG</span>
+    <span class="tag">Function Calling</span>
+    <span class="tag">Azure Data Explorer / KQL</span>
+    <span class="tag">Vector Embeddings</span>
+    <span class="tag">Python</span>
+    <span class="tag">Evaluation Harness</span>
+    <span class="tag">Prompt Engineering</span>
+    <span class="tag">Guardrails</span>
+  </div>
+</section>
+
 <hr class="divider" />
 
-<!-- STATS -->
+<!-- HOW I HELP -->
+<section class="container" id="services">
+  <div class="section-label">// how_i_help.sh</div>
+  <div class="section-title">What I build for teams</div>
+  <p style="font-size:1rem;color:var(--muted);max-width:720px;line-height:1.75;margin-bottom:3rem;">Four areas where I move the needle — each backed by shipped, in-production work. If you're hiring, building, or advising on any of these, let's talk.</p>
+
+  <div class="services-grid">
+    <div class="service-card">
+      <span class="icon">◆</span>
+      <h3>AI Agents &amp; LLM Systems</h3>
+      <p>Prototype-to-production GenAI: RAG over enterprise data, tool-using agents, structured outputs, evaluation harnesses, and the guardrails that let you actually deploy it.</p>
+      <div class="service-meta">// MCC AI Agent · Azure OpenAI · RAG</div>
+    </div>
+    <div class="service-card">
+      <span class="icon">◇</span>
+      <h3>Applied ML &amp; Causal Inference</h3>
+      <p>Experimentation platforms, multi-armed bandits, attribution models, and simulation-based decision systems — built to ship, not sit in notebooks.</p>
+      <div class="service-meta">// Stress Testing · Multi-Touch Attribution</div>
+    </div>
+    <div class="service-card">
+      <span class="icon">▲</span>
+      <h3>Data Reliability &amp; Governance</h3>
+      <p>Telemetry pipelines, metric frameworks, observability, and anomaly detection for data teams who need signals they can trust in a war room.</p>
+      <div class="service-meta">// Azure Storage Telemetry · 15+ Advisor Recs</div>
+    </div>
+    <div class="service-card">
+      <span class="icon">●</span>
+      <h3>ML Leadership &amp; Strategy</h3>
+      <p>Technical roadmap, XFN alignment, design docs, white papers, and mentorship for ML/DS orgs that need to turn ideas into shipped, measurable outcomes.</p>
+      <div class="service-meta">// Led 4 DS + 2 interns · XFN across 8+ teams</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- STATS / BY THE NUMBERS -->
 <div class="container">
+  <div class="section-label" style="text-align:center;margin-bottom:2rem;">// by_the_numbers</div>
   <div class="stats-wrapper">
     <div class="stats">
-      <div class="stat-card"><div class="number">1</div><div class="label">LLM Agent in Production (MCC AI)</div></div>
-      <div class="stat-card"><div class="number">8+</div><div class="label">Teams Unified via RAG Pipeline</div></div>
-      <div class="stat-card"><div class="number">~50%</div><div class="label">Reduction in Aging CRIs</div></div>
-      <div class="stat-card"><div class="number">10+</div><div class="label">Sev1/Sev2 Incidents Prevented</div></div>
-      <div class="stat-card"><div class="number">>10%</div><div class="label">MoM Revenue Lift</div></div>
       <div class="stat-card"><div class="number">9+</div><div class="label">Years in DS / ML</div></div>
+      <div class="stat-card"><div class="number">1</div><div class="label">LLM Agent in Production</div></div>
+      <div class="stat-card"><div class="number">8+</div><div class="label">Teams Unified via RAG</div></div>
+      <div class="stat-card"><div class="number">~50%</div><div class="label">Reduction in Aging CRIs</div></div>
+      <div class="stat-card"><div class="number">10+</div><div class="label">Sev1/2 Incidents Prevented</div></div>
+      <div class="stat-card"><div class="number">>10%</div><div class="label">MoM Revenue Lift</div></div>
     </div>
   </div>
 </div>
@@ -551,8 +940,8 @@
 
 <!-- EXPERIENCE -->
 <div class="container" id="experience">
-  <div class="section-label">// career.log</div>
-  <div class="section-title">Experience</div>
+  <div class="section-label">// track_record.log</div>
+  <div class="section-title">Where I've shipped it</div>
   <div class="timeline">
 
     <div class="job-card">
@@ -722,6 +1111,32 @@
 
 <hr class="divider" />
 
+<!-- ABOUT ME -->
+<div class="container" id="about-me">
+  <div class="section-label">// about_me.md</div>
+  <div class="section-title">Hi, I'm Sarthak.</div>
+  <div class="about-grid">
+    <div class="about-narrative">
+      <p>I'm drawn to problems where <strong>the data is ambiguous and the stakes are real</strong> — where the signal is buried in noise, the decision has to ship, and the result shows up on someone's dashboard or someone's customer call.</p>
+      <p>Nine years in, I've moved from CLTV models at Mu Sigma to planogram optimization at Walmart to Azure Storage reliability and GenAI at Microsoft. The thread: I like <strong>turning ambiguity into a system</strong> — and I care a lot about whether the system actually moves the number it claimed it would.</p>
+      <p>Right now I'm most energized by production LLM agents — making them grounded, evaluable, and safe enough to put in front of real enterprise users — and by the quieter work of making causal measurement and attribution trustworthy at scale.</p>
+    </div>
+    <div class="about-side">
+      <h4>How I Work</h4>
+      <ul>
+        <li>Outcomes before elegance — ship, measure, iterate</li>
+        <li>Treat data systems as products, not reports</li>
+        <li>Earn cross-functional trust through clear design docs</li>
+        <li>Build evals before deploying GenAI to real users</li>
+        <li>Mentor ICs; let the model do the grunt work</li>
+        <li>Write things down — design docs, white papers, RFCs</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
 <!-- EDUCATION -->
 <div class="container" id="education">
   <div class="section-label">// education.md</div>
@@ -742,27 +1157,32 @@
 
 <hr class="divider" />
 
-<!-- CONTACT -->
-<div class="container" id="contact">
-  <div class="section-label">// contact.sh</div>
-  <div class="section-title">Get In Touch</div>
+<!-- FINAL CTA -->
+<section class="final-cta" id="contact">
+  <div class="section-label" style="justify-content:center;">// let's_build.sh</div>
+  <h2>Let's build something<br><span class="accent">worth shipping.</span></h2>
+  <p>Hiring for a Staff / Senior DS, Applied Scientist, ML Lead, or GenAI role? Building something with LLM agents, causal inference, reliability, or customer analytics? I'd love to hear about it.</p>
+
   <div class="contact-terminal">
     <div class="terminal-line"><span class="prompt">▸ </span><span class="cmd">whoami</span></div>
-    <div class="terminal-line"><span class="out">Sarthak Bichhawa · Senior Data Scientist</span></div>
+    <div class="terminal-line"><span class="out">Sarthak Bichhawa · Senior Data &amp; Applied Scientist</span></div>
     <div class="terminal-line" style="margin-top:0.75rem"><span class="prompt">▸ </span><span class="cmd">cat availability.txt</span></div>
-    <div class="terminal-line"><span class="out">Open to Staff / Senior DS roles in ML systems,</span></div>
-    <div class="terminal-line"><span class="out">causal inference, marketplace analytics, reliability,</span></div>
-    <div class="terminal-line"><span class="out">applied science, product analytics, or data governance.</span></div>
+    <div class="terminal-line"><span class="out">Open to Staff / Senior DS / Applied Scientist /</span></div>
+    <div class="terminal-line"><span class="out">ML Lead roles — AI agents, LLM systems,</span></div>
+    <div class="terminal-line"><span class="out">causal inference, reliability, customer analytics.</span></div>
     <div class="terminal-line" style="margin-top:0.75rem"><span class="prompt">▸ </span><span class="cmd">echo $EMAIL</span></div>
     <div class="terminal-line"><span class="out">sarthaksgsits@gmail.com</span></div>
+    <div class="terminal-line" style="margin-top:0.75rem"><span class="prompt">▸ </span><span class="cmd">location</span></div>
+    <div class="terminal-line"><span class="out">Redmond, WA · Open to remote / relocation</span></div>
     <div class="terminal-line" style="margin-top:0.75rem"><span class="prompt">▸ </span><span class="cmd"></span><span class="terminal-cursor"></span></div>
   </div>
   <div class="contact-links">
-    <a href="mailto:sarthaksgsits@gmail.com" class="btn btn-primary">Send Message</a>
-    <a href="https://github.com/sarthak0501" class="btn btn-outline" target="_blank">GitHub</a>
+    <a href="mailto:sarthaksgsits@gmail.com" class="btn btn-primary">Send a message →</a>
     <a href="https://linkedin.com/in/sarthakbichhawa" class="btn btn-outline" target="_blank">LinkedIn</a>
+    <a href="https://github.com/sarthak0501" class="btn btn-outline" target="_blank">GitHub</a>
+    <a href="resumes/SeniorDS_ML_AppliedScience.pdf" class="btn btn-outline" target="_blank">Download Resume</a>
   </div>
-</div>
+</section>
 
 <button class="back-to-top" id="back-to-top" aria-label="Back to top">↑</button>
 
