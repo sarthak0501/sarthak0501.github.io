@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#0891b2"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.035)" stroke-width="1"/>
+    </pattern>
+    <radialGradient id="glow" cx="0.25" cy="0.4" r="0.6">
+      <stop offset="0" stop-color="rgba(34,211,238,0.12)"/>
+      <stop offset="1" stop-color="rgba(34,211,238,0)"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="#0b0e14"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- accent bar -->
+  <rect x="80" y="120" width="4" height="72" fill="url(#accent)"/>
+
+  <!-- eyebrow -->
+  <text x="104" y="144" font-family="'SF Mono', 'Space Mono', ui-monospace, monospace"
+        font-size="16" font-weight="700" fill="#22d3ee" letter-spacing="4">
+    SENIOR DATA &amp; APPLIED SCIENTIST · MICROSOFT
+  </text>
+
+  <!-- location -->
+  <text x="104" y="180" font-family="'SF Mono', 'Space Mono', ui-monospace, monospace"
+        font-size="14" fill="#9ba5b4" letter-spacing="2">
+    REDMOND, WA · AZURE STORAGE
+  </text>
+
+  <!-- name -->
+  <text x="80" y="290" font-family="Inter, system-ui, sans-serif"
+        font-size="84" font-weight="800" fill="#e4e8ef" letter-spacing="-2">
+    Sarthak Bichhawa
+  </text>
+
+  <!-- headline -->
+  <text x="80" y="380" font-family="Inter, system-ui, sans-serif"
+        font-size="44" font-weight="600" fill="#e4e8ef" letter-spacing="-1">
+    Production AI that
+  </text>
+  <text x="80" y="432" font-family="Inter, system-ui, sans-serif"
+        font-size="44" font-weight="600" fill="#22d3ee" letter-spacing="-1">
+    moves the number.
+  </text>
+
+  <!-- impact chips -->
+  <g transform="translate(80, 500)">
+    <rect x="0" y="0" width="180" height="40" rx="4" fill="none"
+          stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+    <text x="16" y="26" font-family="'SF Mono', 'Space Mono', ui-monospace, monospace"
+          font-size="14" font-weight="700" fill="#e4e8ef" letter-spacing="1">
+      9+ YEARS IN DS/ML
+    </text>
+
+    <rect x="196" y="0" width="210" height="40" rx="4" fill="none"
+          stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+    <text x="212" y="26" font-family="'SF Mono', 'Space Mono', ui-monospace, monospace"
+          font-size="14" font-weight="700" fill="#e4e8ef" letter-spacing="1">
+      $10M+ MoM IMPACT
+    </text>
+
+    <rect x="422" y="0" width="240" height="40" rx="4" fill="none"
+          stroke="rgba(34,211,238,0.5)" stroke-width="1"/>
+    <text x="438" y="26" font-family="'SF Mono', 'Space Mono', ui-monospace, monospace"
+          font-size="14" font-weight="700" fill="#22d3ee" letter-spacing="1">
+      GENAI AGENT SHIPPED
+    </text>
+  </g>
+
+  <!-- url -->
+  <text x="80" y="588" font-family="'SF Mono', 'Space Mono', ui-monospace, monospace"
+        font-size="14" fill="#9ba5b4" letter-spacing="2">
+    sarthak0501.github.io
+  </text>
+
+  <!-- monogram tile -->
+  <g transform="translate(980, 120)">
+    <rect width="140" height="140" rx="20" fill="#0b0e14"
+          stroke="url(#accent)" stroke-width="2"/>
+    <text x="70" y="102" text-anchor="middle"
+          font-family="Inter, system-ui, sans-serif"
+          font-size="76" font-weight="800" fill="url(#accent)">SB</text>
+  </g>
+
+  <!-- focus keywords -->
+  <g transform="translate(980, 290)" font-family="'SF Mono', 'Space Mono', ui-monospace, monospace"
+     font-size="12" fill="#9ba5b4" letter-spacing="2">
+    <text x="140" y="0" text-anchor="end">// LLM AGENTS</text>
+    <text x="140" y="22" text-anchor="end">// APPLIED ML</text>
+    <text x="140" y="44" text-anchor="end">// EMBEDDINGS</text>
+    <text x="140" y="66" text-anchor="end">// AZURE STORAGE</text>
+  </g>
+</svg>
