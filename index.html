@@ -778,7 +778,7 @@
       I ship <span class="accent-green">production AI</span><br>
       that <span class="accent">moves the number</span>.
     </h1>
-    <p class="hero-lead">From a <strong style="color:var(--green)">GenAI customer-health agent</strong> running on Azure OpenAI for Fortune-scale enterprise customers, to attribution pipelines driving tens of millions in monthly revenue — 9+ years turning messy enterprise data into decisions the C-suite trusts.</p>
+    <p class="hero-lead">From a <strong style="color:var(--green)">GenAI customer-health agent</strong> on Azure OpenAI, to <strong style="color:var(--cyan)">Account2Vec</strong> — a fleet-wide embedding platform for millions of Azure Storage accounts — to attribution pipelines driving tens of millions in monthly revenue. 9+ years turning messy enterprise data into decisions the C-suite trusts.</p>
     <div class="hero-links">
       <a href="#featured-work" class="btn btn-primary">See the work →</a>
       <a href="mailto:sarthaksgsits@gmail.com" class="btn btn-outline">Let's talk</a>
@@ -832,12 +832,17 @@
   </div>
 </section>
 
-<!-- FEATURED CASE STUDY -->
+<!-- FEATURED CASE STUDIES -->
 <section class="case-study" id="featured-work">
   <div class="case-study-header">
-    <div class="section-label">// featured_case_study</div>
-    <div class="section-title" style="margin-bottom:0.5rem;">MCC AI Agent <span class="ai-chip" style="margin-left:0.75rem;">GENAI · FLAGSHIP</span></div>
-    <p class="case-study-tagline">How I built and shipped a <strong style="color:var(--green)">production LLM agent on Azure OpenAI</strong> that replaced multi-day customer-health readouts with natural-language answers — trusted by engineering leaders, CSAMs, and on-call responders across Azure Storage.</p>
+    <div class="section-label">// featured_work</div>
+    <div class="section-title" style="margin-bottom:0.5rem;">Two flagship systems I shipped at Microsoft.</div>
+    <p class="case-study-tagline">One is a <strong style="color:var(--green)">production GenAI agent</strong> that executives and on-call engineers use to query customer health in natural language. The other is a <strong style="color:var(--cyan)">foundational embedding platform</strong> that represents millions of Azure Storage accounts as dense vectors — turning raw telemetry into a reusable ML primitive across the org.</p>
+  </div>
+
+  <!-- CASE 01: MCC AI AGENT -->
+  <div style="margin-bottom:1rem;">
+    <div class="sub-project featured" style="font-size:0.85rem;">// PROJECT 01 &nbsp; · &nbsp; MCC AI Agent — LLM-Powered Customer Health Copilot <span class="ai-chip">GENAI · FLAGSHIP</span></div>
   </div>
 
   <div class="case-grid">
@@ -881,6 +886,53 @@
     <span class="tag">Prompt Engineering</span>
     <span class="tag">Guardrails</span>
   </div>
+
+  <!-- CASE 02: ACCOUNT2VEC -->
+  <div style="margin-top:4rem; margin-bottom:1rem;">
+    <div class="sub-project featured" style="font-size:0.85rem;border-left-color:var(--cyan);background:linear-gradient(90deg,rgba(0,255,255,0.04),transparent);color:var(--cyan);text-shadow:0 0 12px rgba(0,255,255,0.4);">// PROJECT 02 &nbsp; · &nbsp; Account2Vec — Foundational Embedding Platform for Azure Storage <span class="ai-chip" style="color:var(--cyan);border-color:var(--cyan);background:rgba(0,255,255,0.05);">ML PLATFORM</span></div>
+  </div>
+
+  <div class="case-grid">
+    <div class="case-cell problem">
+      <div class="cell-label">01 · The Problem</div>
+      <h3>~100 raw metrics per account. No unified way to reason about millions of them.</h3>
+      <p>Every ML effort in Azure Storage — customer similarity, anomaly detection, forecasting, workload segmentation — was rebuilding its own feature set from the same raw telemetry. There was no shared representation of what an "account" actually looks like at scale.</p>
+    </div>
+    <div class="case-cell build">
+      <div class="cell-label">02 · The Build</div>
+      <h3>Hierarchical autoencoders turning fleet telemetry into a reusable ML primitive.</h3>
+      <ul>
+        <li>Unsupervised <strong>autoencoder</strong> compressing ~100 metrics → dense embedding</li>
+        <li>Hierarchical: <strong>Account2Vec → Subscription2Vec → Customer2Vec (TPID)</strong></li>
+        <li>Owned the <strong>AccountFeatureMatrix</strong> pipeline (~40–50 behavioral features across transactions, capacity, auth, latency, config)</li>
+        <li>Fleet-scale training on <strong>millions of accounts</strong> via Synapse + PyTorch</li>
+        <li>Drift / coverage / staleness monitoring and alerting</li>
+        <li>Authored full design docs: motivation, modeling, scalability tradeoffs</li>
+      </ul>
+    </div>
+    <div class="case-cell impact">
+      <div class="cell-label">03 · The Impact</div>
+      <h3>A platform primitive — not a one-off model — powering the next generation of Storage ML.</h3>
+      <div class="impact-metric"><span class="val">M+</span><span class="desc">Azure Storage accounts embedded at fleet scale</span></div>
+      <div class="impact-metric"><span class="val">3</span><span class="desc">tiers: account · subscription · customer (TPID)</span></div>
+      <div class="impact-metric"><span class="val">5+</span><span class="desc">downstream uses: similarity, anomaly, forecasting, LLM reasoning, MCC workload agents</span></div>
+      <div class="impact-metric"><span class="val">★</span><span class="desc">positioned as org-wide platform, with full drift + coverage monitoring</span></div>
+    </div>
+  </div>
+
+  <div class="case-stack">
+    <span class="stack-label">Tech Stack</span>
+    <span class="tag">PyTorch</span>
+    <span class="tag">Autoencoders</span>
+    <span class="tag">Representation Learning</span>
+    <span class="tag">Azure Synapse</span>
+    <span class="tag">Azure Data Explorer / KQL</span>
+    <span class="tag">Feature Engineering</span>
+    <span class="tag">Embeddings</span>
+    <span class="tag">Python</span>
+    <span class="tag">Drift Monitoring</span>
+    <span class="tag">Hierarchical Modeling</span>
+  </div>
 </section>
 
 <hr class="divider" />
@@ -900,9 +952,9 @@
     </div>
     <div class="service-card">
       <span class="icon">◇</span>
-      <h3>Applied ML &amp; Causal Inference</h3>
-      <p>Experimentation platforms, multi-armed bandits, attribution models, and simulation-based decision systems — built to ship, not sit in notebooks.</p>
-      <div class="service-meta">// Stress Testing · Multi-Touch Attribution</div>
+      <h3>Applied ML &amp; ML Platforms</h3>
+      <p>Foundational representation-learning (autoencoders, hierarchical embeddings), experimentation platforms, multi-armed bandits, attribution models, and simulation-based decision systems — built to ship, not sit in notebooks.</p>
+      <div class="service-meta">// Account2Vec · Stress Testing · Attribution</div>
     </div>
     <div class="service-card">
       <span class="icon">▲</span>
@@ -950,30 +1002,55 @@
         <div class="job-date">NOV 2020 — PRESENT</div>
       </div>
       <div class="job-company">MICROSOFT · REDMOND, WA</div>
-      <div class="role-summary">Shipping <strong>LLM-powered agents and applied ML</strong> across Azure Storage — from a production GenAI customer-health copilot (RAG + tool-calling on Azure OpenAI) to adaptive stress-testing and multi-touch attribution, driving strategy, experimentation, and cross-functional alignment at scale.</div>
+      <div class="role-summary">Shipping <strong>LLM-powered agents, foundational ML platforms, and applied ML</strong> across Azure Storage — from a production GenAI customer-health copilot to Account2Vec (fleet-wide behavioral embeddings), adaptive stress-testing, partner attribution, and service-level dashboards. Drive strategy, experimentation, security, and cross-functional alignment at scale.</div>
+
+      <div class="sub-project featured" style="border-left-color:var(--cyan);color:var(--cyan);text-shadow:0 0 12px rgba(0,255,255,0.4);background:linear-gradient(90deg,rgba(0,255,255,0.04),transparent);">// Account2Vec — Foundational Embedding Platform <span class="ai-chip" style="color:var(--cyan);border-color:var(--cyan);background:rgba(0,255,255,0.05);">ML PLATFORM ★</span></div>
+      <ul>
+        <li>Designed and authored <strong>Account2Vec</strong>: an unsupervised <strong>autoencoder</strong> that compresses ~100 raw behavioral metrics per account into a dense embedding — enabling similarity, clustering, anomaly detection, forecasting, and LLM-based reasoning from a single shared representation.</li>
+        <li>Defined a <strong>hierarchical embedding model</strong>: Account2Vec → Subscription2Vec → Customer2Vec (TPID) so downstream teams reason at whichever granularity fits their problem.</li>
+        <li>Owned the <strong>AccountFeatureMatrix</strong> pipeline aggregating XStore telemetry into ~40–50 rolling behavioral features across transactions, capacity, auth, reliability, latency, and configuration.</li>
+        <li>Planned fleet-scale training on <strong>millions of accounts</strong> using <strong>Azure Synapse + PyTorch</strong>; defined monitoring for coverage drops, embedding drift, pipeline failures, and staleness.</li>
+        <li>Authored detailed design docs (motivation, feature engineering, modeling, scalability tradeoffs); positioned Account2Vec as a <strong>platform primitive</strong> — not a one-off model — powering MCC workload agents, customer similarity reasoning, and summarization agents.</li>
+      </ul>
+
+      <div class="sub-project featured">// MCC AI Agent — LLM Customer Health Copilot <span class="ai-chip">GENAI · FLAGSHIP ★</span></div>
+      <ul class="featured-section">
+        <li>Shipped an <strong>LLM agent on Azure OpenAI</strong> for natural-language customer health — RAG over telemetry/tickets/CRIs, function-calling into live KQL, grounding + guardrails + eval harness. See <a href="#featured-work" style="color:var(--green);text-decoration:underline;">the full case study above ↑</a> for architecture and impact.</li>
+        <li>Program outcomes: <strong>~50% reduction</strong> in >10-day aging CRIs, <strong>~16%</strong> Time-to-Mitigate improvement, and reversed churn risk for <strong>10+ critical customers</strong> (multi-millions/month in Azure Storage revenue).</li>
+      </ul>
+
+      <div class="sub-project">// MCC Customer Health & MAL Analytics</div>
+      <ul>
+        <li>Owned recurring <strong>MCC analytics</strong> focused on MAL (Minutes of Availability Loss) — built executive-ready summaries highlighting WoW / MoM trends, concern customers, and stealth risks.</li>
+        <li>Differentiated <strong>systemic issues vs single-account failures</strong>; correlated MAL with active ICMs and explicitly flagged gaps where high customer impact had no corresponding investigation.</li>
+        <li>Drove <strong>workload- and customer-level prioritization</strong> instead of raw metric monitoring — turning dashboards into decisions.</li>
+      </ul>
+
       <div class="sub-project">// Intelligent Stress Testing</div>
       <ul>
         <li>Built a pre-release stress-testing program for Azure Storage to inform per-build ship/hold decisions; helped prevent <strong>10+ Sev1/Sev2</strong> customer incidents by catching top-severity regressions before rollout.</li>
         <li>Ran thousands of controlled simulations per build across <strong>20 workload types</strong>; reduced ~500 failure signals into 15 recurring failure modes and confirmed <strong>50+ issues</strong> with clear reproduction steps and quantified impact.</li>
         <li>Used <strong>multi-armed bandits</strong> to prioritize high-yield scenarios and tuned scoring thresholds based on outcomes, cutting false positives <strong>60%</strong>; led a 2-person effort, coordinated fixes to closure, and authored the design doc + internal white paper.</li>
       </ul>
-      <div class="sub-project">// Multi-Touch Partner Attribution</div>
+
+      <div class="sub-project">// Revenue & Partner Analytics (ACR / Influence Logic)</div>
       <ul>
-        <li>Transformed a <strong>20+ component</strong> partner attribution pipeline by replacing single "last-writer-wins" credit with multi-partner attribution (expanded eligible partners and attribution types), increasing partner-attributed influenced revenue by <strong>>10% MoM</strong> (tens of millions in impact).</li>
+        <li>Transformed a <strong>20+ component</strong> partner attribution pipeline by replacing "last-writer-wins" credit with multi-partner attribution, increasing partner-attributed influenced revenue by <strong>>10% MoM</strong> (tens of millions in impact).</li>
+        <li>Investigated and fixed <strong>ACR data drops and inconsistencies</strong> affecting partner and revenue reporting; shipped code fixes, backfilled historical data, and coordinated with downstream consumers to restore account coverage in production.</li>
+        <li>Led modernization of partner influence logic — moved off legacy <code>StorageAccountCapTx</code> dependencies, defined "legacy vs modern" influenced accounts, and documented retention / migration tradeoffs.</li>
       </ul>
-      <div class="sub-project featured">// MCC AI Agent — LLM-Powered Customer Health Copilot <span class="ai-chip">GENAI · FLAGSHIP</span></div>
-      <ul class="featured-section">
-        <li>Designed and shipped an <strong>LLM-powered agent on Azure OpenAI (GPT-4-class)</strong> that lets executives, CSAMs, and on-call engineers query customer health, incidents, and signals in natural language — replacing multi-day manual readouts with near-real-time answers.</li>
-        <li>Built a <strong>retrieval-augmented generation (RAG)</strong> backbone over heterogeneous sources: telemetry pipelines, ticket systems, CRI records, and ownership graphs — with embedding-based semantic search and structured filters to keep retrieval precise and grounded.</li>
-        <li>Implemented <strong>tool / function calling</strong> so the agent plans multi-step workflows — pulls live KQL/SQL from Azure Data Explorer, joins it against customer metadata, and returns cited, structured summaries instead of free-form text.</li>
-        <li>Engineered <strong>grounding and guardrails</strong> to minimize hallucination: source-cited responses, schema-validated outputs, refusal paths for low-confidence retrieval, and PII-aware prompt construction suitable for enterprise customer data.</li>
-        <li>Stood up an <strong>LLM evaluation harness</strong> — golden-set regression tests, groundedness/faithfulness scoring, and human-in-the-loop review — so prompt, retrieval, and model changes could ship safely with measurable quality gates.</li>
-        <li>Drove cross-functional alignment across <strong>8+ engineering/support teams</strong>, unifying fragmented health signals into a single conversational surface; program delivered <strong>~50% reduction</strong> in >10-day aging CRIs, <strong>~16%</strong> Time-to-Mitigate improvement, and helped reverse churn risk for <strong>10+ critical customers</strong> (multi-millions in monthly Azure Storage revenue).</li>
-      </ul>
-      <div class="sub-project">// Additional Work</div>
+
+      <div class="sub-project">// Storage Service-Level Dashboards (Blob / Object)</div>
       <ul>
-        <li>Built and operated large-scale <strong>telemetry data pipelines</strong> and governed metrics, applying statistical analysis and modeling to detect anomalies, validate data quality, and turn ambiguous signals into decision-ready insights.</li>
-        <li>Shipped <strong>15+ Azure Advisor recommendations</strong> adopted across hundreds of thousands of customer accounts to improve cost/performance; partnered with engineering/support to validate and operationalize.</li>
+        <li>Core contributor to <strong>Azure Storage service-level dashboards</strong> — worked on product identification (FNS / HNS), query-logic vs dashboard-filtering decisions, and internal-vs-external customer classification.</li>
+        <li>Ensured metrics were correct at the data-model layer and aligned to leadership-level <strong>R/Y/G KPIs</strong>; positioned ADX dashboards as rapid iteration surfaces feeding Power BI, Copilot, and downstream agents.</li>
+      </ul>
+
+      <div class="sub-project">// Security, Reliability & Operational Ownership</div>
+      <ul>
+        <li>Hardened internal analytics tools and dashboards: <strong>disabled local auth</strong>, restricted access to Microsoft CorpNet, and integrated <strong>Microsoft Entra (EAD)</strong> authentication.</li>
+        <li>Raised operational gaps around pipeline ownership and lack of automated alerting when data breaks; advocated for sustainable workflows over manual monitoring.</li>
+        <li>Shipped <strong>15+ Azure Advisor recommendations</strong> adopted across hundreds of thousands of customer accounts to improve cost/performance; authored shared technical design docs, scripts, and PowerShell / pipeline artifacts used across teams.</li>
       </ul>
     </div>
 
@@ -1043,19 +1120,23 @@
       <h3>Languages & Tools</h3>
       <div class="tags">
         <span class="tag">Python</span><span class="tag">SQL</span><span class="tag">PySpark</span>
-        <span class="tag">R</span><span class="tag">Azure Data Explorer (KQL)</span>
+        <span class="tag">PyTorch</span><span class="tag">R</span>
+        <span class="tag">Azure Data Explorer (KQL)</span><span class="tag">Azure Synapse</span>
         <span class="tag">Azure ML</span><span class="tag">Azure AI Search</span>
-        <span class="tag">Power BI</span><span class="tag">Tableau</span><span class="tag">Azure DevOps</span>
+        <span class="tag">Power BI</span><span class="tag">Tableau</span>
+        <span class="tag">Azure DevOps</span><span class="tag">PowerShell</span>
+        <span class="tag">Microsoft Entra (EAD)</span>
       </div>
     </div>
     <div class="skill-group">
       <h3>ML & Analytics</h3>
       <div class="tags">
-        <span class="tag">Multi-Armed Bandits</span><span class="tag">Causal Inference</span>
-        <span class="tag">Statistical Modeling</span><span class="tag">Experiment & Metric Design</span>
-        <span class="tag">NLP / Classification</span><span class="tag">Optimization & Simulation</span>
-        <span class="tag">Clustering & Segmentation</span><span class="tag">Anomaly Detection</span>
-        <span class="tag">Data Quality & Monitoring</span>
+        <span class="tag">Autoencoders</span><span class="tag">Representation Learning</span>
+        <span class="tag">Hierarchical Embeddings</span><span class="tag">Multi-Armed Bandits</span>
+        <span class="tag">Causal Inference</span><span class="tag">Statistical Modeling</span>
+        <span class="tag">Experiment & Metric Design</span><span class="tag">NLP / Classification</span>
+        <span class="tag">Optimization & Simulation</span><span class="tag">Clustering & Segmentation</span>
+        <span class="tag">Anomaly Detection</span><span class="tag">Data Quality & Monitoring</span>
       </div>
     </div>
     <div class="skill-group">
@@ -1117,9 +1198,10 @@
   <div class="section-title">Hi, I'm Sarthak.</div>
   <div class="about-grid">
     <div class="about-narrative">
+      <p style="font-size:1.1rem;color:var(--text);opacity:1;padding:1rem 1.25rem;border-left:3px solid var(--cyan);background:rgba(0,255,255,0.03);margin-bottom:2rem;">I work on <strong style="color:var(--cyan)">Azure Storage analytics and ML systems</strong> — customer health, behavioral embeddings (Account2Vec), service-level dashboards, revenue correctness, and operationalizing analytics into agents and executive-ready insights.</p>
       <p>I'm drawn to problems where <strong>the data is ambiguous and the stakes are real</strong> — where the signal is buried in noise, the decision has to ship, and the result shows up on someone's dashboard or someone's customer call.</p>
-      <p>Nine years in, I've moved from CLTV models at Mu Sigma to planogram optimization at Walmart to Azure Storage reliability and GenAI at Microsoft. The thread: I like <strong>turning ambiguity into a system</strong> — and I care a lot about whether the system actually moves the number it claimed it would.</p>
-      <p>Right now I'm most energized by production LLM agents — making them grounded, evaluable, and safe enough to put in front of real enterprise users — and by the quieter work of making causal measurement and attribution trustworthy at scale.</p>
+      <p>Nine years in, I've moved from CLTV models at Mu Sigma to planogram optimization at Walmart to Azure Storage reliability, foundational ML platforms (Account2Vec), and GenAI at Microsoft. The thread: I like <strong>turning ambiguity into a system</strong> — and I care a lot about whether the system actually moves the number it claimed it would.</p>
+      <p>Right now I'm most energized by two things: production LLM agents (grounded, evaluable, safe enough for real enterprise users), and foundational ML platforms — the kind of representation work where <em>one</em> model becomes the primitive that ten downstream teams build on.</p>
     </div>
     <div class="about-side">
       <h4>How I Work</h4>
