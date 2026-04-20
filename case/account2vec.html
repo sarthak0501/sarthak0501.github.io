@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b0e14" />
+
+  <title>Account2Vec — Foundational Embedding Platform · Case Study</title>
+  <meta name="description" content="How we turned raw Azure Storage telemetry into a fleet-wide ML primitive — hierarchical autoencoders that compress ~100 per-account metrics into a reusable embedding for similarity, anomaly, forecasting, and LLM reasoning." />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="canonical" href="https://sarthak0501.github.io/case/account2vec.html" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://sarthak0501.github.io/case/account2vec.html" />
+  <meta property="og:title" content="Account2Vec — Foundational Embedding Platform" />
+  <meta property="og:description" content="Case study: hierarchical autoencoders turning Azure Storage telemetry into a reusable ML primitive for millions of accounts." />
+  <meta property="og:image" content="https://sarthak0501.github.io/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://sarthak0501.github.io/og-image.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+
+  <style>
+    .case-body { padding: 2rem 0 5rem; }
+
+    .case-summary {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 3.5rem;
+    }
+    .case-summary .cell { background: var(--bg); padding: 1.1rem 1.2rem; }
+    .case-summary .k {
+      font-family: var(--font-mono);
+      font-size: 0.7rem; font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+    .case-summary .v { font-size: 0.95rem; color: var(--text); font-weight: 500; line-height: 1.45; }
+    @media (max-width: 820px) { .case-summary { grid-template-columns: repeat(2, 1fr); } }
+
+    h2.s {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      color: var(--text);
+      margin: 3.5rem 0 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+    h2.s::before {
+      content: attr(data-n);
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.7rem; font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 2px;
+      margin-bottom: 0.5rem;
+    }
+
+    .case-prose { font-size: 1.02rem; line-height: 1.8; color: var(--text); }
+    .case-prose > * + * { margin-top: 1.2rem; }
+    .case-prose p { color: var(--text); opacity: 0.92; }
+    .case-prose p strong { color: var(--text); font-weight: 600; }
+    .case-prose em { color: var(--accent); font-style: normal; }
+
+    .case-prose ul { list-style: none; padding: 0; }
+    .case-prose li {
+      position: relative; padding-left: 1.4rem; margin-bottom: 0.55rem;
+      color: var(--text-2); line-height: 1.72;
+    }
+    .case-prose li::before {
+      content: ''; position: absolute; left: 0; top: 0.7em;
+      width: 8px; height: 1px; background: var(--accent);
+    }
+    .case-prose li strong { color: var(--text); font-weight: 600; }
+
+    .case-prose code {
+      font-family: var(--font-mono);
+      font-size: 0.86em; color: var(--accent);
+      background: var(--surface);
+      border: 1px solid var(--border); border-radius: 4px;
+      padding: 0.1em 0.4em;
+    }
+
+    .code-card {
+      margin: 1.5rem 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .code-card .ch {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.7rem 1rem;
+      background: var(--bg-soft);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 0.72rem; font-weight: 600;
+      color: var(--text-3);
+      letter-spacing: 1.5px; text-transform: uppercase;
+    }
+    .code-card .ch .lbl { color: var(--accent); }
+    .code-card pre {
+      margin: 0; padding: 1.2rem 1.3rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem; line-height: 1.75;
+      color: var(--text); overflow-x: auto;
+    }
+    .code-card pre .cmt { color: var(--text-3); }
+    .code-card pre .kw  { color: var(--accent); }
+    .code-card pre .str { color: #a5d8ff; }
+    .code-card pre .num { color: #fbbf24; }
+    .code-card pre .cls { color: #f9a8d4; }
+
+    .diagram-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem 1.75rem;
+      margin: 1.5rem 0;
+    }
+    .diagram-wrap .dw-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem; font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .diagram { width: 100%; height: auto; }
+    .diagram .node-box { fill: var(--surface-2); stroke: var(--border-strong); stroke-width: 1; }
+    .diagram .node-box.primary { stroke: var(--accent); fill: var(--bg-soft); }
+    .diagram .node-label { font-family: var(--font-sans); font-size: 11px; font-weight: 600; fill: var(--text); }
+    .diagram .node-label.sub { font-size: 9px; font-weight: 500; fill: var(--text-2); }
+    .diagram .node-label.tag { font-family: var(--font-mono); font-size: 9px; font-weight: 600; fill: var(--accent); letter-spacing: 1px; }
+    .diagram .flow-line { stroke: var(--border-strong); stroke-width: 1.5; fill: none; }
+    .diagram .flow-line.accent { stroke: var(--accent); }
+    .diagram .wrap-label { font-family: var(--font-mono); font-size: 9px; font-weight: 600; fill: var(--accent); letter-spacing: 1.5px; }
+
+    .metric-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden; margin: 2rem 0;
+    }
+    .metric-grid .m { background: var(--bg); padding: 1.25rem 1.5rem; }
+    .metric-grid .m .val {
+      font-family: var(--font-mono);
+      font-size: 1.8rem; font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.35rem; letter-spacing: -0.01em;
+    }
+    .metric-grid .m .desc { font-size: 0.9rem; color: var(--text-2); line-height: 1.5; }
+
+    .feat-table {
+      width: 100%; margin: 1.5rem 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border-collapse: collapse;
+    }
+    .feat-table th, .feat-table td {
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-size: 0.88rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .feat-table tr:last-child td { border-bottom: 0; }
+    .feat-table thead th {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 1.5px; text-transform: uppercase;
+      background: var(--bg-soft);
+      font-weight: 600;
+    }
+    .feat-table td.group {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    .feat-table td.count {
+      font-family: var(--font-mono);
+      color: var(--text-3);
+      font-size: 0.82rem;
+    }
+
+    .next-nav {
+      margin-top: 4rem; padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem;
+    }
+    .next-nav a {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: var(--text-2); font-size: 0.95rem;
+      transition: color 0.15s var(--ease), transform 0.15s var(--ease);
+    }
+    .next-nav a:hover { color: var(--accent); transform: translateX(2px); }
+    .next-nav a.prev:hover { transform: translateX(-2px); }
+    .next-nav a svg { width: 16px; height: 16px; }
+    .next-nav .lbl {
+      font-family: var(--font-mono);
+      font-size: 0.68rem; color: var(--text-3);
+      letter-spacing: 1.5px; text-transform: uppercase;
+      display: block; margin-bottom: 0.2rem;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="topnav" id="topnav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <span class="nav-brand-mark">SB</span>
+      <span>Sarthak Bichhawa</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="nav-links" id="navLinks">
+      <a href="/#featured" class="active">Work</a>
+      <a href="/writing/">Writing</a>
+      <a href="/#experience">Experience</a>
+      <a href="/#about">About</a>
+      <a href="/#contact" class="nav-cta">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<article>
+  <header class="page-head">
+    <div class="wrap-read">
+      <a href="/#featured" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        All case studies
+      </a>
+      <div class="page-meta">
+        <span class="kind">// Case 02</span>
+        <span class="sep">·</span>
+        <span>ML Platform</span>
+        <span class="sep">·</span>
+        <span>Microsoft · Azure Storage</span>
+      </div>
+      <h1 class="page-title">
+        Account2Vec — turning fleet telemetry into a<br>
+        <span class="accent">reusable ML primitive.</span>
+      </h1>
+      <p class="page-dek">
+        An unsupervised autoencoder that compresses ~100 behavioral metrics per Azure Storage account into a dense embedding — then extends hierarchically to subscriptions and customers. One shared representation powering similarity, anomaly, forecasting, and LLM reasoning across the org.
+      </p>
+    </div>
+  </header>
+
+  <section class="case-body">
+    <div class="wrap-read">
+
+      <div class="case-summary">
+        <div class="cell">
+          <div class="k">Role</div>
+          <div class="v">Designer, model &amp; pipeline owner</div>
+        </div>
+        <div class="cell">
+          <div class="k">Stack</div>
+          <div class="v">PyTorch · Azure Synapse · ADX / KQL</div>
+        </div>
+        <div class="cell">
+          <div class="k">Scale</div>
+          <div class="v">M+ accounts embedded at fleet scale</div>
+        </div>
+        <div class="cell">
+          <div class="k">Shape</div>
+          <div class="v">3-tier: account · subscription · TPID</div>
+        </div>
+      </div>
+
+      <div class="case-prose">
+
+        <h2 class="s" data-n="01 · CONTEXT">One feature set, built once.</h2>
+
+        <p>
+          Every ML effort in Azure Storage — customer similarity, anomaly detection, forecasting, workload segmentation, LLM-based reasoning for the MCC agent — was rebuilding its own feature set from the same raw telemetry. There was <strong>no shared representation</strong> of what an "account" actually looked like at scale.
+        </p>
+        <p>
+          This is the shape of wasted ML work inside big orgs. Every team ends up with its own slightly-different version of the same derived features, which means their models can't be compared, their anomaly scores can't be joined, and the next team has to start over. <em>The productivity cost compounds every quarter.</em>
+        </p>
+        <p>
+          Account2Vec's premise: if ~100 raw metrics describe an account, there's a much smaller latent space that captures the meaningful behavioral variation. Learn that space once, hand the vectors out, let a dozen downstream teams reason in shared coordinates.
+        </p>
+
+        <h2 class="s" data-n="02 · ARCHITECTURE">Pipeline shape.</h2>
+
+        <div class="diagram-wrap">
+          <div class="dw-label">// platform architecture</div>
+          <svg class="diagram" viewBox="0 0 960 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Account2Vec architecture">
+            <defs>
+              <marker id="b1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#22d3ee"/></marker>
+              <marker id="b1m" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.35)"/></marker>
+            </defs>
+            <g>
+              <rect class="node-box" x="20" y="120" width="140" height="80" rx="8"/>
+              <text class="node-label tag" x="90" y="142" text-anchor="middle">INPUT</text>
+              <text class="node-label" x="90" y="160" text-anchor="middle">XStore telemetry</text>
+              <text class="node-label sub" x="90" y="176" text-anchor="middle">~100 raw metrics</text>
+              <text class="node-label sub" x="90" y="190" text-anchor="middle">per account</text>
+            </g>
+            <g>
+              <rect class="node-box" x="200" y="120" width="160" height="80" rx="8"/>
+              <text class="node-label tag" x="280" y="142" text-anchor="middle">PIPELINE</text>
+              <text class="node-label" x="280" y="160" text-anchor="middle">AccountFeatureMatrix</text>
+              <text class="node-label sub" x="280" y="176" text-anchor="middle">40–50 rolling features</text>
+              <text class="node-label sub" x="280" y="190" text-anchor="middle">txn · capacity · auth · latency</text>
+            </g>
+            <g>
+              <rect class="node-box primary" x="400" y="110" width="160" height="100" rx="10"/>
+              <text class="node-label tag" x="480" y="132" text-anchor="middle">MODEL</text>
+              <text class="node-label" x="480" y="152" text-anchor="middle" style="font-size:13px;">Autoencoder</text>
+              <text class="node-label sub" x="480" y="170" text-anchor="middle">PyTorch · Azure Synapse</text>
+              <text class="node-label sub" x="480" y="186" text-anchor="middle">fleet-scale training</text>
+              <text class="node-label sub" x="480" y="200" text-anchor="middle">M+ accounts</text>
+            </g>
+            <g>
+              <rect class="node-box" x="600" y="60" width="150" height="48" rx="8"/>
+              <text class="node-label" x="675" y="82" text-anchor="middle">Account2Vec</text>
+              <text class="node-label sub" x="675" y="98" text-anchor="middle">per storage account</text>
+            </g>
+            <g>
+              <rect class="node-box" x="600" y="136" width="150" height="48" rx="8"/>
+              <text class="node-label" x="675" y="158" text-anchor="middle">Subscription2Vec</text>
+              <text class="node-label sub" x="675" y="174" text-anchor="middle">per subscription</text>
+            </g>
+            <g>
+              <rect class="node-box" x="600" y="212" width="150" height="48" rx="8"/>
+              <text class="node-label" x="675" y="234" text-anchor="middle">Customer2Vec</text>
+              <text class="node-label sub" x="675" y="250" text-anchor="middle">per TPID</text>
+            </g>
+            <g><rect class="node-box" x="790" y="40"  width="150" height="40" rx="6"/><text class="node-label" x="865" y="64"  text-anchor="middle">Similarity</text></g>
+            <g><rect class="node-box" x="790" y="92"  width="150" height="40" rx="6"/><text class="node-label" x="865" y="116" text-anchor="middle">Anomaly</text></g>
+            <g><rect class="node-box" x="790" y="144" width="150" height="40" rx="6"/><text class="node-label" x="865" y="168" text-anchor="middle">Forecasting</text></g>
+            <g><rect class="node-box" x="790" y="196" width="150" height="40" rx="6"/><text class="node-label" x="865" y="220" text-anchor="middle">LLM reasoning</text></g>
+            <g><rect class="node-box" x="790" y="248" width="150" height="40" rx="6"/><text class="node-label" x="865" y="272" text-anchor="middle">MCC agents</text></g>
+
+            <path class="flow-line" d="M 160 160 L 198 160" marker-end="url(#b1m)"/>
+            <path class="flow-line" d="M 360 160 L 398 160" marker-end="url(#b1m)"/>
+            <path class="flow-line accent" d="M 560 140 L 598 84"  marker-end="url(#b1)"/>
+            <path class="flow-line accent" d="M 560 160 L 598 160" marker-end="url(#b1)"/>
+            <path class="flow-line accent" d="M 560 180 L 598 236" marker-end="url(#b1)"/>
+            <path class="flow-line" d="M 750 84  L 790 60"  marker-end="url(#b1m)"/>
+            <path class="flow-line" d="M 750 160 L 790 112" marker-end="url(#b1m)"/>
+            <path class="flow-line" d="M 750 160 L 790 164" marker-end="url(#b1m)"/>
+            <path class="flow-line" d="M 750 160 L 790 216" marker-end="url(#b1m)"/>
+            <path class="flow-line" d="M 750 236 L 790 268" marker-end="url(#b1m)"/>
+
+            <text class="wrap-label" x="20" y="306">DRIFT · COVERAGE · STALENESS MONITORING</text>
+          </svg>
+        </div>
+
+        <p>
+          The pipeline runs in four stages: raw XStore telemetry is aggregated into the <strong>AccountFeatureMatrix</strong> (a stable, versioned view of ~40–50 per-account rolling features); the autoencoder compresses those features into a dense embedding; embeddings are hierarchically pooled into subscription and customer tiers; and the whole surface is instrumented with drift, coverage and staleness monitoring.
+        </p>
+        <p>
+          The design decision that mattered most was separating <em>the feature matrix</em> from <em>the model</em>. The feature matrix is the platform contract — other teams can use it directly even without embeddings. The embeddings are an optional-but-powerful second layer.
+        </p>
+
+        <h2 class="s" data-n="03 · ARTIFACT A">The AccountFeatureMatrix schema.</h2>
+
+        <p>
+          The single most important artifact in the whole system. If this schema isn't stable, nothing downstream can compound. Versioned, column-level documented, and treated as a product contract.
+        </p>
+
+        <table class="feat-table">
+          <thead>
+            <tr><th>Feature group</th><th>Examples</th><th># cols</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="group">Transactions</td><td>read/write ops, GET/PUT mix, P95 request size, hot-blob ratio</td><td class="count">12</td></tr>
+            <tr><td class="group">Capacity</td><td>used TB, tier split (hot/cool/archive), growth velocity (7d/30d/90d)</td><td class="count">8</td></tr>
+            <tr><td class="group">Auth</td><td>key-based vs Entra share, SAS token reliance, public-access flags</td><td class="count">6</td></tr>
+            <tr><td class="group">Reliability</td><td>throttling rate, 5xx rate, availability vs SLA, MAL minutes</td><td class="count">9</td></tr>
+            <tr><td class="group">Latency</td><td>P50/P95/P99 per op class, cross-region variance</td><td class="count">7</td></tr>
+            <tr><td class="group">Configuration</td><td>redundancy (LRS/ZRS/GRS), soft-delete, versioning, lifecycle rules</td><td class="count">6</td></tr>
+            <tr><td class="group">Meta</td><td>account age, last-modified, region, owning subscription</td><td class="count">4</td></tr>
+          </tbody>
+        </table>
+
+        <p>
+          Every column has a rolling window (7d/30d/90d), is standardized per-region, and is null-masked so newly-created accounts don't drag the embedding space. <em>Boring decisions, enormous downstream leverage.</em>
+        </p>
+
+        <h2 class="s" data-n="04 · ARTIFACT B">The training loop.</h2>
+
+        <p>
+          A standard denoising autoencoder — the interesting engineering is everything around it: batch composition, scheduling, checkpointing, and the hierarchical pool.
+        </p>
+
+        <div class="code-card">
+          <div class="ch"><span class="lbl">// a2v/model.py</span><span>representative · abridged</span></div>
+<pre><span class="kw">class</span> <span class="cls">AccountEncoder</span>(nn.Module):
+    <span class="kw">def</span> __init__(self, n_features=<span class="num">52</span>, d=<span class="num">32</span>):
+        super().__init__()
+        self.enc = nn.Sequential(
+            nn.Linear(n_features, <span class="num">128</span>), nn.GELU(), nn.Dropout(<span class="num">0.1</span>),
+            nn.Linear(<span class="num">128</span>, <span class="num">64</span>),         nn.GELU(),
+            nn.Linear(<span class="num">64</span>, d),                  <span class="cmt"># bottleneck = embedding</span>
+        )
+        self.dec = nn.Sequential(
+            nn.Linear(d, <span class="num">64</span>),               nn.GELU(),
+            nn.Linear(<span class="num">64</span>, <span class="num">128</span>),             nn.GELU(), nn.Dropout(<span class="num">0.1</span>),
+            nn.Linear(<span class="num">128</span>, n_features),
+        )
+
+    <span class="kw">def</span> forward(self, x, mask):
+        z = self.enc(x * mask)               <span class="cmt"># null-mask raw inputs</span>
+        xr = self.dec(z)
+        <span class="kw">return</span> z, xr
+
+<span class="cmt"># training step (abridged)</span>
+<span class="kw">for</span> batch <span class="kw">in</span> loader:                   <span class="cmt"># stratified by region + age</span>
+    x, mask = batch[<span class="str">"feats"</span>], batch[<span class="str">"mask"</span>]
+    x_noisy = x + noise(x, p=<span class="num">0.15</span>)       <span class="cmt"># denoising</span>
+    z, xr = model(x_noisy, mask)
+    loss = masked_mse(xr, x, mask) + \
+           <span class="num">0.01</span> * z.pow(<span class="num">2</span>).mean()        <span class="cmt"># soft unit-norm</span>
+    loss.backward(); opt.step(); opt.zero_grad()</pre>
+        </div>
+
+        <p>
+          Two details that matter: <em>null-masking</em> the loss (so brand-new accounts with missing history don't pull the embedding toward zero), and a <em>soft unit-norm penalty</em> on the bottleneck (so cosine similarity on the embeddings is meaningful out of the box, which is what downstream teams actually want).
+        </p>
+
+        <h2 class="s" data-n="05 · ARTIFACT C">A downstream query — account similarity.</h2>
+
+        <p>
+          This is the payoff. Once embeddings exist, any team can run a query like "find me 20 accounts similar to this one" without writing a model.
+        </p>
+
+        <div class="code-card">
+          <div class="ch"><span class="lbl">// downstream: similarity search</span><span>cosine over 32-d embeddings</span></div>
+<pre><span class="cmt"># seed: a newly-escalated account</span>
+seed = a2v.get(account_id=<span class="str">"stacc-7f1a..."</span>)       <span class="cmt"># (32,)</span>
+
+<span class="cmt"># k-NN over the fleet index (M+ accounts)</span>
+neighbors = a2v.knn(
+    seed, k=<span class="num">20</span>,
+    filters=dict(
+        region=<span class="str">"apac"</span>,
+        capacity_tb=(<span class="num">5</span>, <span class="num">50</span>),
+        age_months=(<span class="num">3</span>, <span class="num">36</span>),
+    ),
+)
+
+<span class="kw">for</span> n <span class="kw">in</span> neighbors:
+    <span class="kw">print</span>(n.account_id, n.cosine, n.top_drivers)
+<span class="cmt"># → nearest accounts share workload shape even if sized differently</span>
+<span class="cmt">#   → used by MCC to surface "similar at-risk customers"</span>
+<span class="cmt">#   → used by forecasting to borrow seasonality from peers</span>
+<span class="cmt">#   → used by anomaly to calibrate expected ranges per cohort</span></pre>
+        </div>
+
+        <h2 class="s" data-n="06 · HIERARCHY">Account → subscription → customer.</h2>
+
+        <p>
+          Downstream teams don't always reason at the account level. The same platform exposes pooled embeddings at two higher tiers so a forecasting team can ask questions at the TPID level and an anomaly team can operate per-account, without either rebuilding features.
+        </p>
+        <p>
+          The pooling strategy is a weighted mean with per-axis attention learned against a small set of aggregation tasks — <em>not</em> a plain average, because naive averaging collapses bimodal customers (two very different subscriptions) into a meaningless middle point.
+        </p>
+
+        <h2 class="s" data-n="07 · IMPACT">What the platform shape unlocked.</h2>
+
+        <div class="metric-grid">
+          <div class="m">
+            <div class="val">M+</div>
+            <div class="desc">Azure Storage accounts embedded at fleet scale</div>
+          </div>
+          <div class="m">
+            <div class="val">3</div>
+            <div class="desc">tiers: account · subscription · customer (TPID)</div>
+          </div>
+          <div class="m">
+            <div class="val">5+</div>
+            <div class="desc">downstream uses: similarity, anomaly, forecasting, LLM reasoning, MCC agents</div>
+          </div>
+          <div class="m">
+            <div class="val">★</div>
+            <div class="desc">positioned as org-wide platform — not a one-off model</div>
+          </div>
+        </div>
+
+        <h2 class="s" data-n="08 · LESSONS">What I'd repeat — and what I'd change.</h2>
+
+        <p><strong>Would repeat:</strong></p>
+        <ul>
+          <li>Separate <em>the feature matrix</em> from <em>the model</em>. The matrix is the contract; the model is an implementation.</li>
+          <li>Version everything. Every schema change ships with a migration plan for downstream consumers.</li>
+          <li>Design docs before code. A good design doc is what turns a model into a platform — it's the thing that names the abstraction for the rest of the org.</li>
+          <li>Instrument drift from day one. You will not have time to add it later, and you will need it.</li>
+        </ul>
+        <p><strong>Would change:</strong></p>
+        <ul>
+          <li>I'd invest earlier in the <em>onboarding story</em> for downstream teams. The embeddings are only as useful as the number of teams comfortable reaching for them — that's a docs-and-evangelism problem, not a modeling one.</li>
+          <li>I'd spec the pooling task loss more carefully. Naive averaging was our first pass and cost us a quarter of rework.</li>
+        </ul>
+
+        <div class="next-nav">
+          <a href="/case/mcc-ai-agent.html" class="prev">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>
+              <span class="lbl">Previous case</span>
+              MCC AI Agent
+            </span>
+          </a>
+          <a href="/writing/">
+            <span style="text-align:right;">
+              <span class="lbl">Read more</span>
+              Writing &amp; essays
+            </span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</article>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-inner">
+      <span>© 2026 Sarthak Bichhawa</span>
+      <div class="foot-edu">
+        <span>MS Business Analytics, UIC</span>
+        <span>B.E. Computer Eng, SGSITS</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('topnav');
+  const navToggle = document.getElementById('navToggle');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+  document.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  navToggle.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+</script>
+
+</body>
+</html>

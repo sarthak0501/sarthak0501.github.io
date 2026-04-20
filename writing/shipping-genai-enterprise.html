@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b0e14" />
+
+  <title>Shipping GenAI in enterprise: what actually breaks — Sarthak Bichhawa</title>
+  <meta name="description" content="Five lessons from shipping a production LLM agent on Azure OpenAI: why demos lie, why grounding is the product, why you build evals before users, and why PII is 30% of the work." />
+  <meta name="author" content="Sarthak Bichhawa" />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="canonical" href="https://sarthak0501.github.io/writing/shipping-genai-enterprise.html" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://sarthak0501.github.io/writing/shipping-genai-enterprise.html" />
+  <meta property="og:title" content="Shipping GenAI in enterprise: what actually breaks" />
+  <meta property="og:description" content="Five lessons from shipping a production LLM agent on Azure OpenAI — demos, grounding, evals, PII, and what the 10% of engineering nobody shows you." />
+  <meta property="og:image" content="https://sarthak0501.github.io/og-image.png" />
+  <meta property="article:author" content="Sarthak Bichhawa" />
+  <meta property="article:published_time" content="2026-04-20" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Shipping GenAI in enterprise: what actually breaks" />
+  <meta name="twitter:description" content="Five lessons from shipping a production LLM agent on Azure OpenAI." />
+  <meta name="twitter:image" content="https://sarthak0501.github.io/og-image.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+
+  <style>
+    .post { padding: 2rem 0 5rem; }
+
+    .post-body {
+      font-size: 1.08rem;
+      line-height: 1.8;
+      color: var(--text);
+    }
+    .post-body > * + * { margin-top: 1.4rem; }
+    .post-body p { color: var(--text); opacity: 0.92; }
+    .post-body p strong { color: var(--text); font-weight: 600; }
+    .post-body p em { color: var(--accent); font-style: normal; }
+
+    .post-body h2 {
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      color: var(--text);
+      margin-top: 3.5rem !important;
+      margin-bottom: 0.25rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .post-body h2::before {
+      content: attr(data-n);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 2px;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .post-body h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 2rem !important;
+    }
+
+    .post-body ul, .post-body ol {
+      padding-left: 0;
+      list-style: none;
+    }
+    .post-body li {
+      position: relative;
+      padding-left: 1.4rem;
+      margin-bottom: 0.65rem;
+      color: var(--text-2);
+      line-height: 1.75;
+    }
+    .post-body li::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0.7em;
+      width: 8px; height: 1px;
+      background: var(--accent);
+    }
+    .post-body li strong { color: var(--text); font-weight: 600; }
+
+    .post-body blockquote {
+      margin: 1.5rem 0;
+      padding: 1.1rem 1.35rem;
+      border-left: 3px solid var(--accent);
+      background: var(--bg-soft);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      color: var(--text);
+      font-size: 1.04rem;
+      line-height: 1.7;
+    }
+    .post-body blockquote p { color: var(--text); }
+
+    .post-body code {
+      font-family: var(--font-mono);
+      font-size: 0.86em;
+      color: var(--accent);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.1em 0.4em;
+    }
+    .post-body pre {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.3rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+    .post-body pre .cmt { color: var(--text-3); }
+    .post-body pre .kw  { color: var(--accent); }
+    .post-body pre .str { color: #a5d8ff; }
+    .post-body pre code {
+      background: transparent; border: 0; color: inherit; padding: 0; font-size: inherit;
+    }
+
+    .post-body a {
+      color: var(--accent);
+      border-bottom: 1px solid rgba(34, 211, 238, 0.35);
+      transition: border-color 0.15s var(--ease);
+    }
+    .post-body a:hover { border-bottom-color: var(--accent); }
+
+    .post-body hr {
+      border: 0;
+      height: 1px;
+      background: var(--border);
+      margin: 3rem auto;
+      width: 64px;
+    }
+
+    .tldr {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.4rem;
+      margin-bottom: 2.5rem;
+    }
+    .tldr-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .tldr p { font-size: 0.98rem; line-height: 1.7; color: var(--text-2); }
+
+    .end-cta {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 1rem;
+    }
+    .end-cta .author {
+      font-size: 0.92rem;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+    .end-cta .author b { color: var(--text); font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<nav class="topnav" id="topnav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <span class="nav-brand-mark">SB</span>
+      <span>Sarthak Bichhawa</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="nav-links" id="navLinks">
+      <a href="/#featured">Work</a>
+      <a href="/writing/" class="active">Writing</a>
+      <a href="/#experience">Experience</a>
+      <a href="/#about">About</a>
+      <a href="/#contact" class="nav-cta">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<article>
+  <header class="page-head">
+    <div class="wrap-read">
+      <a href="/writing/" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        All writing
+      </a>
+      <div class="page-meta">
+        <span class="kind">// Essay</span>
+        <span class="sep">·</span>
+        <span>April 2026</span>
+        <span class="sep">·</span>
+        <span>9 min read</span>
+      </div>
+      <h1 class="page-title">
+        Shipping GenAI in enterprise:<br>
+        <span class="accent">what actually breaks.</span>
+      </h1>
+      <p class="page-dek">
+        Five lessons from building a production LLM agent on Azure OpenAI — the gap between the prototype that wowed the leadership review and the thing that held up when real engineers tried to break it.
+      </p>
+    </div>
+  </header>
+
+  <section class="post">
+    <div class="wrap-read">
+      <div class="tldr">
+        <div class="tldr-label">TL;DR</div>
+        <p>
+          Demos lie. Grounding is the product, not the model. Build evals before you expose users. PII is 30% of the work nobody budgets for. The LLM call is 10% of the system. The interesting engineering lives in the last 10% nobody demos.
+        </p>
+      </div>
+
+      <div class="post-body">
+
+        <p>
+          An exec opens the customer-health copilot and asks, <em>"how is Contoso doing?"</em>
+          Six seconds later: three bullet points, grounded in eight live data sources, every claim linking back to the ICM, the ADX query, the raw row. Six months earlier that same question took three days and a deck.
+        </p>
+        <p>
+          The delta between those two worlds — demo script versus real prod — is where most GenAI projects die.
+          Here's what actually broke along the way.
+        </p>
+
+        <h2 data-n="01 · PROTOTYPES">Demos lie.</h2>
+
+        <p>
+          The prototype that wowed the leadership review was a forty-line script with a clever prompt and three curated questions. It answered them beautifully. Everyone nodded.
+        </p>
+        <p>
+          Then engineers started using it. One of the first real questions was:
+        </p>
+        <blockquote>
+          "Which APAC customers with &gt;10TB capacity have both ticket volume trending up <em>and</em> MAL regressions this quarter?"
+        </blockquote>
+        <p>
+          The prompt melted. The agent confidently cited three customer names. Two didn't exist. One did, but the MAL claim was hallucinated.
+        </p>
+        <p>
+          The gap between <strong>"it works in a demo"</strong> and <strong>"it holds up in prod"</strong> is the gap between a one-hop query over pre-fetched data and a multi-step reasoning problem where the model has to choose tools, compose filters, and stay honest about what it can't see. You won't know your prototype is a toy until someone tries to break it with a real question. <em>That's the point at which you start building the actual system.</em>
+        </p>
+
+        <h2 data-n="02 · GROUNDING">Grounding is the product.</h2>
+
+        <p>
+          Nobody in the org cared whether we used GPT-4 or Claude Opus. They cared that when the agent said <em>"Contoso had three MAL regressions last week,"</em> they could click through to the ICMs, the KQL, the raw rows.
+        </p>
+        <p>
+          One hallucinated customer name and the whole tool loses trust — permanently. That's the asymmetric risk of GenAI in enterprise: a thousand correct answers buy you one user; one confident wrong answer loses you ten. Trust is spent, not earned.
+        </p>
+        <p>
+          Specific things that moved the number:
+        </p>
+        <ul>
+          <li>Chunking telemetry metadata <strong>at the metric level</strong>, not the document level — the model needed to reason about individual signals, not prose paragraphs</li>
+          <li><strong>Schema-valid outputs</strong> for every tool call; reject and retry on malformed JSON rather than letting the model improvise its way out</li>
+          <li><strong>Row-count assertions</strong> on every KQL the agent generated — a query returning zero rows would never be surfaced as "I found no regressions"</li>
+          <li>Explicit <strong>refusal paths</strong> for <em>"I don't have enough context to answer this"</em> — measurably better than confident wrong answers</li>
+        </ul>
+        <p>
+          None of these are exotic. All of them are boring. All of them were the difference between a demo and a tool people actually used.
+        </p>
+
+        <h2 data-n="03 · EVALS">Evals before users.</h2>
+
+        <p>
+          We built the eval harness before we exposed the agent to anyone. This was the single highest-leverage decision of the project.
+        </p>
+        <p>
+          Why: once real users interact, every prompt tweak becomes political. <em>"It was better yesterday"</em> becomes the loudest signal in the room, and the loudest signal is rarely the most important one. You need an objective thing to point at.
+        </p>
+        <p>
+          The harness was straightforward:
+        </p>
+        <pre><code><span class="cmt"># golden set: ~180 questions drawn from historical exec queries</span>
+<span class="cmt"># each labeled with the grounded answer + expected citations</span>
+
+<span class="kw">for</span> case <span class="kw">in</span> golden_set:
+    answer = agent.run(case.question)
+    scores = {
+        <span class="str">"groundedness"</span>: grounded_score(answer, case.sources),
+        <span class="str">"correctness"</span>:  correctness_score(answer, case.expected),
+        <span class="str">"citations"</span>:    citation_validity(answer.citations),
+    }
+    harness.log(case.id, prompt_version, scores)</code></pre>
+        <p>
+          It caught a regression I would never have seen otherwise: a prompt tweak that improved tone but dropped citations in 12% of answers. In a one-off qualitative review nobody would have noticed. The eval flagged it in eight minutes.
+        </p>
+        <p>
+          A golden set of 180 cases is small enough that a product team can actually maintain it, and large enough to catch real regressions. Start there. <em>Not a thousand synthetic questions — a hundred and eighty real ones.</em>
+        </p>
+
+        <h2 data-n="04 · PII">PII is 30% of the work.</h2>
+
+        <p>
+          Nobody budgets for this. Everyone gets surprised by it.
+        </p>
+        <p>
+          Customer names. Ticket contents. Internal ownership. Every data source has its own sensitivity rules, its own approval workflow, its own audit expectations. Getting the right masking in the RAG store, the right redaction in responses, the right logging for who asked what about whom — this was as much code as the agent itself.
+        </p>
+        <p>
+          The pattern that worked: a middleware layer between the LLM and every tool call that ran PII scrubbing on outputs before they hit the prompt context. Imperfect — regex-based scrubbers always are — but <strong>auditable</strong>, which is what compliance actually cares about.
+        </p>
+        <p>
+          Adjacent, underbudgeted work in the same category:
+        </p>
+        <ul>
+          <li>Per-user <strong>authorization scoping</strong> on tool calls — the agent inherits the user's read perms, not the service account's</li>
+          <li><strong>Prompt logging with retention policy</strong> — you need the logs to debug, but not forever</li>
+          <li><strong>Refusal for out-of-scope requests</strong> — someone always tries to ask your customer-health agent about HR</li>
+          <li><strong>Entra / managed identity</strong> plumbing for every downstream service</li>
+        </ul>
+
+        <h2 data-n="05 · THE SYSTEM">The LLM call is 10% of the system.</h2>
+
+        <p>
+          The model call is the cheap part. What took real engineering:
+        </p>
+        <ul>
+          <li><strong>Retrieval</strong> — hybrid BM25 + embeddings over telemetry metadata, with different chunking strategies per source (a ticket is not a metric definition is not an ownership record)</li>
+          <li><strong>Tool registry</strong> — a dozen tools, each with schemas, timeouts, retry policies, cost accounting, and per-tool eval cases</li>
+          <li><strong>Guardrails</strong> — input scope classification, output validation, refusal routing, confidence thresholds</li>
+          <li><strong>Observability</strong> — every agent trace logged with tool decisions, retries, groundedness scores, latency breakdown</li>
+          <li><strong>Cost controls</strong> — token budgets per session, fallback to smaller models for low-stakes paths</li>
+        </ul>
+        <p>
+          If you're scoping a GenAI project around <em>"prompt engineering and maybe some fine-tuning,"</em> you are off by 10x. The prompt is the tip of the iceberg. The iceberg is a distributed system with a language model somewhere in the middle.
+        </p>
+
+        <hr>
+
+        <p>
+          The interesting engineering lives in the last 10% that nobody puts in a conference talk. The first 90% — frameworks, fine-tuning, the latest retrieval pattern — is mostly a solved problem, or at least a problem the ecosystem is happily solving for you.
+        </p>
+        <p>
+          The last 10% is where your agent earns its place in production, or loses it.
+        </p>
+        <p>
+          If you're building in this space and want to compare notes — I'd love to hear what you're running into.
+        </p>
+
+        <div class="end-cta">
+          <div class="author">
+            <b>Sarthak Bichhawa</b> — Senior Data &amp; Applied Scientist at Microsoft, shipping LLM agents and foundational ML platforms on Azure Storage.
+          </div>
+          <a href="/#contact" class="btn btn-primary">Get in touch</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</article>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-inner">
+      <span>© 2026 Sarthak Bichhawa</span>
+      <div class="foot-edu">
+        <span>MS Business Analytics, UIC</span>
+        <span>B.E. Computer Eng, SGSITS</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('topnav');
+  const navToggle = document.getElementById('navToggle');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+  document.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  navToggle.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+</script>
+
+</body>
+</html>

@@ -17,7 +17,8 @@
   <meta property="og:url" content="https://sarthak0501.github.io/" />
   <meta property="og:title" content="Sarthak Bichhawa — Senior Data &amp; Applied Scientist" />
   <meta property="og:description" content="I ship production AI that moves the number — LLM agents, foundational ML platforms, and decision systems on Azure Storage at Microsoft." />
-  <meta property="og:image" content="https://sarthak0501.github.io/og-image.svg" />
+  <meta property="og:image" content="https://sarthak0501.github.io/og-image.png" />
+  <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
 
@@ -25,7 +26,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Sarthak Bichhawa — Senior Data &amp; Applied Scientist" />
   <meta name="twitter:description" content="I ship production AI that moves the number — LLM agents, foundational ML platforms, and decision systems on Azure Storage at Microsoft." />
-  <meta name="twitter:image" content="https://sarthak0501.github.io/og-image.svg" />
+  <meta name="twitter:image" content="https://sarthak0501.github.io/og-image.png" />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -481,48 +482,6 @@
     }
 
     /* ============================================================
-       FOCUS STRIP
-       ============================================================ */
-    .focus {
-      padding: 2.5rem 0;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      background: var(--bg-soft);
-    }
-    .focus-inner {
-      display: grid;
-      grid-template-columns: 180px 1fr;
-      gap: 2.5rem;
-      align-items: center;
-    }
-    .focus-label {
-      font-family: var(--font-mono);
-      font-size: 0.78rem;
-      color: var(--text-3);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-    }
-    .focus-items {
-      display: flex; flex-wrap: wrap; gap: 0.5rem;
-    }
-    .focus-chip {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.4rem 0.8rem;
-      font-size: 0.82rem;
-      color: var(--text-2);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-    }
-    .focus-chip .ic {
-      width: 4px; height: 4px; border-radius: 50%;
-      background: var(--accent);
-    }
-    @media (max-width: 680px) {
-      .focus-inner { grid-template-columns: 1fr; gap: 1rem; }
-    }
-
-    /* ============================================================
        CASE STUDIES
        ============================================================ */
     .case-head {
@@ -632,6 +591,24 @@
       line-height: 1.55;
     }
 
+    .case-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-top: 0.5rem;
+      padding: 0.95rem 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text);
+      transition: border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease);
+    }
+    .case-cta svg { width: 15px; height: 15px; color: var(--accent); transition: transform 0.2s var(--ease); }
+    .case-cta:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+    .case-cta:hover svg { transform: translateX(3px); }
+
     .diagram-wrap {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -727,49 +704,6 @@
     }
     @media (max-width: 680px) {
       .xp { grid-template-columns: 1fr; gap: 0.75rem; padding: 1.5rem; }
-    }
-
-    /* ============================================================
-       HELP (3 cards)
-       ============================================================ */
-    .help-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.25rem;
-    }
-    @media (max-width: 820px) {
-      .help-grid { grid-template-columns: 1fr; }
-    }
-    .help-card {
-      padding: 1.75rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      transition: transform 0.25s var(--ease), border-color 0.25s var(--ease);
-    }
-    .help-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
-    .help-icon {
-      width: 38px; height: 38px;
-      border-radius: 8px;
-      background: var(--accent-soft);
-      border: 1px solid var(--accent);
-      display: inline-flex; align-items: center; justify-content: center;
-      color: var(--accent);
-      margin-bottom: 1rem;
-    }
-    .help-card h3 {
-      font-size: 1.05rem; font-weight: 600;
-      margin-bottom: 0.5rem; line-height: 1.35;
-    }
-    .help-card p {
-      font-size: 0.92rem; color: var(--text-2); line-height: 1.7;
-    }
-    .help-card .ref {
-      margin-top: 1rem;
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      color: var(--text-3);
-      letter-spacing: 1px;
     }
 
     /* ============================================================
@@ -993,10 +927,9 @@
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <div class="nav-links" id="navLinks">
-      <a href="#mcc">MCC Agent</a>
-      <a href="#a2v">Account2Vec</a>
+      <a href="#featured">Work</a>
+      <a href="/writing/">Writing</a>
       <a href="#experience">Experience</a>
-      <a href="#help">How I help</a>
       <a href="#about">About</a>
       <a href="#contact" class="nav-cta">Contact</a>
     </div>
@@ -1015,12 +948,12 @@
           Senior Data &amp; Applied Scientist · Microsoft
         </div>
         <h1>
-          Production AI that<br>
-          <span class="accent">moves the number.</span>
+          Production AI,<br>
+          <span class="accent">built to actually ship.</span>
         </h1>
         <p class="hero-lead">
-          I ship <strong>LLM agents, foundational ML platforms, and decision systems</strong> on Azure Storage —
-          from a GenAI customer-health copilot to <strong>Account2Vec</strong>, a fleet-wide embedding platform for millions of accounts, to attribution pipelines that move tens of millions in monthly revenue.
+          I build <strong>LLM agents, foundational ML platforms, and decision systems</strong> on Azure Storage —
+          a GenAI customer-health copilot, <strong>Account2Vec</strong> (a fleet-wide embedding platform for millions of accounts), and attribution pipelines that move tens of millions in monthly revenue.
         </p>
         <div class="hero-meta">
           <b>9+ years</b> turning messy enterprise data into decisions the C-suite trusts.
@@ -1029,7 +962,7 @@
         </div>
 
         <div class="hero-ctas">
-          <a href="#mcc" class="btn btn-primary">
+          <a href="#featured" class="btn btn-primary">
             See the work
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </a>
@@ -1079,26 +1012,9 @@
 </header>
 
 <!-- ============================================================
-     FOCUS STRIP
-     ============================================================ -->
-<section class="focus">
-  <div class="wrap">
-    <div class="focus-inner reveal">
-      <div class="focus-label">// currently focused on</div>
-      <div class="focus-items">
-        <span class="focus-chip"><span class="ic"></span>LLM agents in production</span>
-        <span class="focus-chip"><span class="ic"></span>Hierarchical embeddings at fleet scale</span>
-        <span class="focus-chip"><span class="ic"></span>Evaluation &amp; guardrails for GenAI</span>
-        <span class="focus-chip"><span class="ic"></span>Azure Storage reliability</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
      CASE 01 — MCC AI AGENT
      ============================================================ -->
-<section class="section-pad" id="mcc">
+<section class="section-pad" id="featured">
   <div class="wrap">
     <div class="reveal">
       <div class="section-eyebrow">featured work</div>
@@ -1240,6 +1156,11 @@
         </div>
       </div>
     </div>
+
+    <a href="/case/mcc-ai-agent.html" class="case-cta reveal">
+      <span>Read the full case — system prompt, eval harness output, agent-generated KQL</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
   </div>
 </section>
 
@@ -1415,6 +1336,11 @@
         </div>
       </div>
     </div>
+
+    <a href="/case/account2vec.html" class="case-cta reveal">
+      <span>Read the full case — feature schema, PyTorch encoder, hierarchy pooling</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
   </div>
 </section>
 
@@ -1444,7 +1370,7 @@
           <div class="xp-co">Microsoft · Redmond, WA</div>
           <div class="xp-body">
             Shipping LLM-powered agents, foundational ML platforms, and applied ML across Azure Storage.
-            Beyond the <a href="#mcc" style="color:var(--accent);border-bottom:1px solid var(--accent)">MCC AI Agent</a> and <a href="#a2v" style="color:var(--accent);border-bottom:1px solid var(--accent)">Account2Vec</a> above:
+            Beyond the <a href="/case/mcc-ai-agent.html" style="color:var(--accent);border-bottom:1px solid var(--accent)">MCC AI Agent</a> and <a href="/case/account2vec.html" style="color:var(--accent);border-bottom:1px solid var(--accent)">Account2Vec</a> above:
             <strong>intelligent stress-testing</strong> preventing 10+ Sev1/Sev2 incidents pre-release;
             <strong>partner attribution</strong> pipeline shift from last-writer-wins to multi-partner credit (&gt;10% MoM revenue lift, tens of $M);
             <strong>ACR data fixes</strong> restoring partner &amp; revenue coverage;
@@ -1525,50 +1451,6 @@
           </div>
         </div>
       </article>
-    </div>
-  </div>
-</section>
-
-<hr class="rule"/>
-
-<!-- ============================================================
-     HELP
-     ============================================================ -->
-<section class="section-pad" id="help">
-  <div class="wrap">
-    <div class="reveal">
-      <div class="section-eyebrow">how I can help</div>
-      <h2 class="section-title">Three places where I move the needle.</h2>
-      <p class="section-sub">
-        Each backed by shipped, in-production work. If you're hiring, building, or advising on any of these — let's talk.
-      </p>
-    </div>
-
-    <div class="help-grid">
-      <div class="help-card reveal">
-        <div class="help-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 L2 7 L12 12 L22 7 Z"/><path d="M2 17 L12 22 L22 17"/><path d="M2 12 L12 17 L22 12"/></svg>
-        </div>
-        <h3>AI agents &amp; LLM systems</h3>
-        <p>Prototype-to-production GenAI: RAG over enterprise data, tool-using agents, structured outputs, evaluation harnesses, and the guardrails that let you deploy with confidence.</p>
-        <div class="ref">// MCC AI Agent · Azure OpenAI · RAG</div>
-      </div>
-      <div class="help-card reveal">
-        <div class="help-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="6" r="2"/><circle cx="20" cy="6" r="2"/><circle cx="4" cy="18" r="2"/><circle cx="20" cy="18" r="2"/><line x1="6" y1="6" x2="10" y2="10"/><line x1="18" y1="6" x2="14" y2="10"/><line x1="6" y1="18" x2="10" y2="14"/><line x1="18" y1="18" x2="14" y2="14"/></svg>
-        </div>
-        <h3>Applied ML &amp; ML platforms</h3>
-        <p>Representation learning (autoencoders, hierarchical embeddings), experimentation platforms, multi-armed bandits, attribution models, simulation-based decision systems — built to ship, not sit in notebooks.</p>
-        <div class="ref">// Account2Vec · Stress Testing · Attribution</div>
-      </div>
-      <div class="help-card reveal">
-        <div class="help-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>
-        </div>
-        <h3>Data reliability &amp; analytics leadership</h3>
-        <p>Telemetry pipelines, metric frameworks, anomaly detection, executive-ready dashboards — plus technical roadmap, design docs, XFN alignment, and mentorship for ML/DS orgs turning ideas into measurable outcomes.</p>
-        <div class="ref">// Azure Storage · 15+ Advisor Recs · XFN 8+ teams</div>
-      </div>
     </div>
   </div>
 </section>

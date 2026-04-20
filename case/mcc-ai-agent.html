@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b0e14" />
+
+  <title>MCC AI Agent — Customer-Health Copilot · Case Study</title>
+  <meta name="description" content="How we shipped a production GenAI agent on Azure OpenAI that answers natural-language customer-health questions, grounded in live telemetry, tickets and ownership data." />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="canonical" href="https://sarthak0501.github.io/case/mcc-ai-agent.html" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://sarthak0501.github.io/case/mcc-ai-agent.html" />
+  <meta property="og:title" content="MCC AI Agent — Customer-Health Copilot" />
+  <meta property="og:description" content="Case study: a production LLM agent on Azure OpenAI for natural-language customer-health queries, with an eval harness, guardrails, and live KQL." />
+  <meta property="og:image" content="https://sarthak0501.github.io/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://sarthak0501.github.io/og-image.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+
+  <style>
+    .case-body { padding: 2rem 0 5rem; }
+
+    .case-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 3.5rem;
+    }
+    .case-summary .cell {
+      background: var(--bg);
+      padding: 1.1rem 1.2rem;
+    }
+    .case-summary .k {
+      font-family: var(--font-mono);
+      font-size: 0.7rem; font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+    .case-summary .v {
+      font-size: 0.95rem;
+      color: var(--text);
+      font-weight: 500;
+      line-height: 1.45;
+    }
+    @media (max-width: 820px) { .case-summary { grid-template-columns: repeat(2, 1fr); } }
+
+    h2.s {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      color: var(--text);
+      margin: 3.5rem 0 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+    h2.s::before {
+      content: attr(data-n);
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.7rem; font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 2px;
+      margin-bottom: 0.5rem;
+    }
+
+    .case-prose { font-size: 1.02rem; line-height: 1.8; color: var(--text); }
+    .case-prose > * + * { margin-top: 1.2rem; }
+    .case-prose p { color: var(--text); opacity: 0.92; }
+    .case-prose p strong { color: var(--text); font-weight: 600; }
+    .case-prose em { color: var(--accent); font-style: normal; }
+
+    .case-prose ul { list-style: none; padding: 0; }
+    .case-prose li {
+      position: relative;
+      padding-left: 1.4rem;
+      margin-bottom: 0.55rem;
+      color: var(--text-2);
+      line-height: 1.72;
+    }
+    .case-prose li::before {
+      content: ''; position: absolute;
+      left: 0; top: 0.7em;
+      width: 8px; height: 1px;
+      background: var(--accent);
+    }
+    .case-prose li strong { color: var(--text); font-weight: 600; }
+
+    .case-prose code {
+      font-family: var(--font-mono);
+      font-size: 0.86em;
+      color: var(--accent);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.1em 0.4em;
+    }
+
+    .code-card {
+      margin: 1.5rem 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .code-card .ch {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.7rem 1rem;
+      background: var(--bg-soft);
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 0.72rem; font-weight: 600;
+      color: var(--text-3);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+    .code-card .ch .lbl { color: var(--accent); }
+    .code-card pre {
+      margin: 0;
+      padding: 1.2rem 1.3rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.75;
+      color: var(--text);
+      overflow-x: auto;
+    }
+    .code-card pre .cmt { color: var(--text-3); }
+    .code-card pre .kw  { color: var(--accent); }
+    .code-card pre .str { color: #a5d8ff; }
+    .code-card pre .num { color: #fbbf24; }
+
+    .diagram-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem 1.75rem;
+      margin: 1.5rem 0;
+    }
+    .diagram-wrap .dw-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem; font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .diagram { width: 100%; height: auto; }
+    .diagram .node-box { fill: var(--surface-2); stroke: var(--border-strong); stroke-width: 1; }
+    .diagram .node-box.primary { stroke: var(--accent); fill: var(--bg-soft); }
+    .diagram .node-label { font-family: var(--font-sans); font-size: 11px; font-weight: 600; fill: var(--text); }
+    .diagram .node-label.sub { font-size: 9px; font-weight: 500; fill: var(--text-2); }
+    .diagram .node-label.tag { font-family: var(--font-mono); font-size: 9px; font-weight: 600; fill: var(--accent); letter-spacing: 1px; }
+    .diagram .flow-line { stroke: var(--border-strong); stroke-width: 1.5; fill: none; }
+    .diagram .flow-line.accent { stroke: var(--accent); }
+    .diagram .wrap-rect { fill: none; stroke: var(--accent); stroke-width: 1; stroke-dasharray: 4 4; opacity: 0.45; }
+    .diagram .wrap-label { font-family: var(--font-mono); font-size: 9px; font-weight: 600; fill: var(--accent); letter-spacing: 1.5px; }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 2rem 0;
+    }
+    .metric-grid .m {
+      background: var(--bg);
+      padding: 1.25rem 1.5rem;
+    }
+    .metric-grid .m .val {
+      font-family: var(--font-mono);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+      letter-spacing: -0.01em;
+    }
+    .metric-grid .m .desc {
+      font-size: 0.9rem;
+      color: var(--text-2);
+      line-height: 1.5;
+    }
+
+    .next-nav {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem;
+    }
+    .next-nav a {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: var(--text-2);
+      font-size: 0.95rem;
+      transition: color 0.15s var(--ease), transform 0.15s var(--ease);
+    }
+    .next-nav a:hover { color: var(--accent); transform: translateX(2px); }
+    .next-nav a.prev:hover { transform: translateX(-2px); }
+    .next-nav a svg { width: 16px; height: 16px; }
+    .next-nav .lbl {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-3);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="topnav" id="topnav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <span class="nav-brand-mark">SB</span>
+      <span>Sarthak Bichhawa</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="nav-links" id="navLinks">
+      <a href="/#featured" class="active">Work</a>
+      <a href="/writing/">Writing</a>
+      <a href="/#experience">Experience</a>
+      <a href="/#about">About</a>
+      <a href="/#contact" class="nav-cta">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<article>
+  <header class="page-head">
+    <div class="wrap-read">
+      <a href="/#featured" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        All case studies
+      </a>
+      <div class="page-meta">
+        <span class="kind">// Case 01</span>
+        <span class="sep">·</span>
+        <span>Flagship · GenAI</span>
+        <span class="sep">·</span>
+        <span>Microsoft · Azure Storage</span>
+      </div>
+      <h1 class="page-title">
+        MCC AI Agent — an LLM copilot for<br>
+        <span class="accent">"how is this customer really doing?"</span>
+      </h1>
+      <p class="page-dek">
+        A grounded, tool-using agent on Azure OpenAI that replaced 3–5 day exec readouts with real-time natural-language answers over eight live data sources. Shipped with an eval harness, guardrails, and PII-aware prompts so it could hold up under real enterprise load.
+      </p>
+    </div>
+  </header>
+
+  <section class="case-body">
+    <div class="wrap-read">
+
+      <div class="case-summary">
+        <div class="cell">
+          <div class="k">Role</div>
+          <div class="v">Technical lead, design &amp; implementation</div>
+        </div>
+        <div class="cell">
+          <div class="k">Stack</div>
+          <div class="v">Azure OpenAI · GPT-4 · ADX/KQL · Python</div>
+        </div>
+        <div class="cell">
+          <div class="k">Status</div>
+          <div class="v">In production</div>
+        </div>
+        <div class="cell">
+          <div class="k">Headline</div>
+          <div class="v">~50% reduction in aging CRIs</div>
+        </div>
+      </div>
+
+      <div class="case-prose">
+
+        <h2 class="s" data-n="01 · CONTEXT">The gap the agent was built to close.</h2>
+
+        <p>
+          Customer health inside Azure Storage lived across at least eight disconnected tools — telemetry in ADX, tickets in ICM, CRIs in a separate tracker, ownership graphs in yet another service. Every exec readout was a <strong>three-to-five day manual hunt</strong>: an analyst joined tables in their head, pieced together a narrative, and shipped a deck.
+        </p>
+        <p>
+          By the time the story was told, the window to act on it was often closed. <em>Critical accounts hit Sev1 before the right person saw the signal.</em>
+        </p>
+        <p>
+          The core ask from leadership wasn't <em>"build us a chatbot."</em> It was: <strong>can anyone in this org, at any hour, ask a plain-English question about a customer and get a trustworthy answer?</strong>
+        </p>
+
+        <h2 class="s" data-n="02 · ARCHITECTURE">How the system is wired.</h2>
+
+        <div class="diagram-wrap">
+          <div class="dw-label">// agent architecture</div>
+          <svg class="diagram" viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MCC AI Agent architecture">
+            <defs>
+              <marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#22d3ee"/></marker>
+              <marker id="a1m" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.35)"/></marker>
+            </defs>
+            <rect class="wrap-rect" x="20" y="32" width="860" height="280" rx="10"/>
+            <text class="wrap-label" x="36" y="24">EVAL HARNESS · GUARDRAILS · GROUNDEDNESS</text>
+
+            <g>
+              <rect class="node-box" x="40" y="140" width="140" height="60" rx="8"/>
+              <text class="node-label" x="110" y="165" text-anchor="middle">User query</text>
+              <text class="node-label sub" x="110" y="183" text-anchor="middle">exec · on-call · PM</text>
+            </g>
+            <g>
+              <rect class="node-box primary" x="280" y="120" width="200" height="100" rx="10"/>
+              <text class="node-label tag" x="380" y="142" text-anchor="middle">LLM AGENT</text>
+              <text class="node-label" x="380" y="162" text-anchor="middle" style="font-size:13px;">Azure OpenAI</text>
+              <text class="node-label sub" x="380" y="180" text-anchor="middle">GPT-4 · function calling</text>
+              <text class="node-label sub" x="380" y="196" text-anchor="middle">grounded · schema-valid</text>
+            </g>
+            <g>
+              <rect class="node-box" x="295" y="55" width="170" height="44" rx="8"/>
+              <text class="node-label" x="380" y="75" text-anchor="middle">RAG + Tools</text>
+              <text class="node-label sub" x="380" y="90" text-anchor="middle">vector search · KQL exec</text>
+            </g>
+            <g>
+              <rect class="node-box" x="570" y="60" width="150" height="48" rx="8"/>
+              <text class="node-label" x="645" y="82" text-anchor="middle">ADX / KQL</text>
+              <text class="node-label sub" x="645" y="98" text-anchor="middle">telemetry</text>
+            </g>
+            <g>
+              <rect class="node-box" x="570" y="126" width="150" height="48" rx="8"/>
+              <text class="node-label" x="645" y="148" text-anchor="middle">Tickets · CRIs</text>
+              <text class="node-label sub" x="645" y="164" text-anchor="middle">ICM · support</text>
+            </g>
+            <g>
+              <rect class="node-box" x="570" y="192" width="150" height="48" rx="8"/>
+              <text class="node-label" x="645" y="214" text-anchor="middle">Ownership graph</text>
+              <text class="node-label sub" x="645" y="230" text-anchor="middle">accounts · subs · TPIDs</text>
+            </g>
+            <g>
+              <rect class="node-box primary" x="760" y="140" width="120" height="60" rx="8"/>
+              <text class="node-label" x="820" y="165" text-anchor="middle" fill="#22d3ee">Answer</text>
+              <text class="node-label sub" x="820" y="183" text-anchor="middle">grounded · cited</text>
+            </g>
+
+            <path class="flow-line accent" d="M 180 170 L 278 170" marker-end="url(#a1)"/>
+            <path class="flow-line accent" d="M 380 118 L 380 101" marker-end="url(#a1)"/>
+            <path class="flow-line" d="M 465 80 L 568 82" marker-end="url(#a1m)"/>
+            <path class="flow-line" d="M 475 150 L 568 150" marker-end="url(#a1m)"/>
+            <path class="flow-line" d="M 465 200 L 568 216" marker-end="url(#a1m)"/>
+            <path class="flow-line accent" d="M 480 170 L 758 170" marker-end="url(#a1)"/>
+          </svg>
+        </div>
+
+        <p>
+          At the center: a GPT-4-class agent on Azure OpenAI with function/tool calling. Around it: a retrieval layer that can pull metric definitions, ticket excerpts and ownership records; a tool registry that can execute live KQL against Azure Data Explorer; and a wrapping evaluation + guardrails layer that runs on every response before it ships.
+        </p>
+        <p>
+          The non-obvious design choice was to treat <em>retrieval as a tool, not a preprocessing step</em>. The agent decides when it needs metric definitions versus raw rows versus ownership lookups, rather than receiving a pre-stuffed context window. That single decision is what let it answer multi-hop questions like <em>"which APAC customers with &gt;10TB capacity have both ticket volume trending up and MAL regressions this quarter?"</em>
+        </p>
+
+        <h2 class="s" data-n="03 · ARTIFACT A">The system prompt (redacted).</h2>
+
+        <p>
+          Every grounded behavior in the agent starts here. The shape of this prompt went through probably 40 revisions — every one scored by the eval harness before it shipped.
+        </p>
+
+        <div class="code-card">
+          <div class="ch"><span class="lbl">// system-prompt.v7</span><span>redacted · representative</span></div>
+<pre><span class="cmt"># role</span>
+You are a customer-health analyst for Azure Storage. You answer
+questions by calling tools against live data. You do not guess.
+
+<span class="cmt"># grounding rules</span>
+- Every numeric claim MUST cite the source (tool + query id).
+- If a tool returns zero rows, report that. Do not interpolate.
+- If you lack a needed tool or permission, say so and stop.
+- Never combine values from different time windows without saying so.
+
+<span class="cmt"># tool selection policy</span>
+1. Look up the customer by TPID before any other call.
+2. Prefer aggregated tools (MAL, CRI summaries) over raw KQL.
+3. Only write KQL when no aggregated tool can answer the question.
+4. Budget: at most 6 tool calls per answer.
+
+<span class="cmt"># output schema</span>
+Return a JSON object with: summary, findings[] (claim, evidence),
+confidence (low|med|high), refusal (bool, reason).
+</pre>
+        </div>
+
+        <p>
+          Two lines did disproportionate work: <em>"if a tool returns zero rows, report that"</em> and <em>"never combine values from different time windows without saying so."</em> The first killed a whole class of <em>"I found no issues"</em> hallucinations. The second killed a subtler one where the model would happily mix last week's MAL with last quarter's ticket volume.
+        </p>
+
+        <h2 class="s" data-n="04 · ARTIFACT B">A KQL query the agent generates.</h2>
+
+        <p>
+          For the long tail of questions no pre-built tool covered, the agent could write KQL. Every generated query went through a row-count assertion and a syntax check before the results were surfaced.
+        </p>
+
+        <div class="code-card">
+          <div class="ch"><span class="lbl">// agent-generated KQL</span><span>after grounding &amp; validation</span></div>
+<pre><span class="cmt">// resolved from: "APAC customers &gt;10TB w/ MAL regressions this Q"</span>
+<span class="cmt">// agent call: exec_kql(cluster="xstore-analytics", db="...")</span>
+
+StorageAccountMetrics
+| <span class="kw">where</span> TimeGenerated <span class="kw">between</span> (startofquarter(now()) .. now())
+| <span class="kw">where</span> GeoRegion == <span class="str">"APAC"</span>
+| <span class="kw">summarize</span> CapacityTB  = avg(CapacityBytes) / <span class="num">1e12</span>,
+            WowMAL      = sum(MALMinutes)
+  <span class="kw">by</span> TPID, AccountName
+| <span class="kw">where</span> CapacityTB &gt; <span class="num">10</span>
+| <span class="kw">where</span> WowMAL &gt; tolong(prev(WowMAL, <span class="num">1</span>, <span class="num">0</span>)) * <span class="num">1.25</span>
+| <span class="kw">join</span> kind=inner TicketTrends <span class="kw">on</span> TPID
+| <span class="kw">where</span> TicketsWoWDelta &gt; <span class="num">0</span>
+| <span class="kw">project</span> TPID, AccountName, CapacityTB, WowMAL, TicketsWoWDelta
+| <span class="kw">order by</span> WowMAL <span class="kw">desc</span>
+| <span class="kw">take</span> <span class="num">25</span></pre>
+        </div>
+
+        <p>
+          The answer the user saw wasn't the query. The user saw a paragraph with five customer names and a clickable link to the query, the row count, and the raw table. The query was the receipt — which is what turned <em>"an LLM answered my question"</em> into <em>"a trustworthy signal I can act on."</em>
+        </p>
+
+        <h2 class="s" data-n="05 · ARTIFACT C">The eval harness.</h2>
+
+        <p>
+          Built before any real users touched the agent. A golden set of ~180 historical exec questions, each labeled with its grounded answer and expected citations. Every prompt change ran the full set before ship.
+        </p>
+
+        <div class="code-card">
+          <div class="ch"><span class="lbl">// eval run (abridged)</span><span>groundedness · correctness · citations</span></div>
+<pre><span class="kw">RUN</span>  eval/2026-04-18-prompt-v7  <span class="cmt">· 180 cases</span>
+
+┌──────────────────────────┬────────┬────────┬────────┐
+│ dimension                │ v6     │ v7     │ delta  │
+├──────────────────────────┼────────┼────────┼────────┤
+│ groundedness (mean)      │ 0.841  │ 0.902  │ +0.061 │
+│ correctness (mean)       │ 0.793  │ 0.821  │ +0.028 │
+│ citation validity        │ 0.941  │ 0.827  │ -0.114 │  <span class="cmt">← regression</span>
+│ refusal (appropriate)    │ 0.876  │ 0.902  │ +0.026 │
+│ refusal (over-refused)   │ 0.042  │ 0.058  │ +0.016 │
+│ tool-budget exceeded     │ 0.033  │ 0.011  │ -0.022 │
+└──────────────────────────┴────────┴────────┴────────┘
+
+<span class="kw">VERDICT</span>  block ship — citation validity regressed on 12% of
+         cases. investigate §4.2 tone-tweak before merge.</pre>
+        </div>
+
+        <p>
+          This specific regression is real. A prompt tweak that improved tone also dropped citations on 12% of cases — the kind of thing that would slip past any qualitative review but would have destroyed user trust in production. The harness flagged it in under ten minutes.
+        </p>
+
+        <h2 class="s" data-n="06 · IMPACT">What it changed.</h2>
+
+        <div class="metric-grid">
+          <div class="m">
+            <div class="val">~50%</div>
+            <div class="desc">reduction in &gt;10-day aging CRIs across the tracked portfolio</div>
+          </div>
+          <div class="m">
+            <div class="val">~16%</div>
+            <div class="desc">improvement in Time-to-Mitigate on tracked incidents</div>
+          </div>
+          <div class="m">
+            <div class="val">8+</div>
+            <div class="desc">teams unified on a single conversational surface</div>
+          </div>
+          <div class="m">
+            <div class="val">10+</div>
+            <div class="desc">at-risk customers (multi-$M/mo in Azure Storage revenue) de-risked</div>
+          </div>
+        </div>
+
+        <h2 class="s" data-n="07 · LESSONS">Things I'd do again — and one I wouldn't.</h2>
+
+        <p><strong>Would do again:</strong></p>
+        <ul>
+          <li>Build the eval harness <em>before</em> anyone uses the agent. Every hour spent here saved a week of political feedback later.</li>
+          <li>Treat retrieval as a tool, not a preprocessor. Let the model ask for what it needs.</li>
+          <li>Schema-valid outputs everywhere. Reject + retry is boring; it's also what ships.</li>
+          <li>Assert on every KQL the agent writes before surfacing rows.</li>
+        </ul>
+        <p><strong>Would change:</strong></p>
+        <ul>
+          <li>We underscoped PII and authorization work by at least 2×. If I were starting today, I'd spec the middleware layer (scrubbing, per-user scoping, audit trail) in week one, not week six.</li>
+        </ul>
+
+        <p style="margin-top:2rem">
+          If you want the longer write-up on the mental model behind this, there's an essay:
+          <a href="/writing/shipping-genai-enterprise.html" style="color:var(--accent);border-bottom:1px solid rgba(34,211,238,0.35);">Shipping GenAI in enterprise: what actually breaks</a>.
+        </p>
+
+        <div class="next-nav">
+          <a href="/#featured" class="prev">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>
+              <span class="lbl">Back</span>
+              All case studies
+            </span>
+          </a>
+          <a href="/case/account2vec.html">
+            <span style="text-align:right;">
+              <span class="lbl">Next case</span>
+              Account2Vec — ML platform
+            </span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</article>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-inner">
+      <span>© 2026 Sarthak Bichhawa</span>
+      <div class="foot-edu">
+        <span>MS Business Analytics, UIC</span>
+        <span>B.E. Computer Eng, SGSITS</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('topnav');
+  const navToggle = document.getElementById('navToggle');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+  document.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  navToggle.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+</script>
+
+</body>
+</html>

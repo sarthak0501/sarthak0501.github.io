@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b0e14" />
+
+  <title>Writing — Sarthak Bichhawa</title>
+  <meta name="description" content="Notes on shipping GenAI, ML platforms, and production data systems — from Sarthak Bichhawa, Senior Data &amp; Applied Scientist at Microsoft." />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="canonical" href="https://sarthak0501.github.io/writing/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sarthak0501.github.io/writing/" />
+  <meta property="og:title" content="Writing — Sarthak Bichhawa" />
+  <meta property="og:description" content="Notes on shipping GenAI, ML platforms, and production data systems." />
+  <meta property="og:image" content="https://sarthak0501.github.io/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://sarthak0501.github.io/og-image.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+
+  <style>
+    .listing { padding: 2rem 0 6rem; }
+
+    .post-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 1.5rem;
+    }
+    .post-row {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 2rem;
+      padding: 1.75rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+      transition: background 0.2s var(--ease);
+      border-radius: var(--radius-sm);
+    }
+    .post-row:first-child { border-top: 1px solid var(--border); }
+    .post-row.post-live { cursor: pointer; }
+    .post-row.post-live:hover { background: var(--bg-soft); padding-left: 0.75rem; padding-right: 0.75rem; }
+
+    .post-when {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-3);
+      letter-spacing: 1px;
+      line-height: 1.5;
+      padding-top: 0.3rem;
+    }
+    .post-when .read { color: var(--text-3); display: block; margin-top: 0.2rem; }
+    .post-when .soon {
+      display: inline-block;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.68rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .post-meta h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .post-live:hover .post-meta h2 { color: var(--accent); }
+    .post-meta .dek {
+      font-size: 0.96rem;
+      line-height: 1.7;
+      color: var(--text-2);
+      max-width: 680px;
+    }
+    .post-meta .tags {
+      display: flex; flex-wrap: wrap; gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+    .post-meta .tags span {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-3);
+      padding: 0.18rem 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .post-row.post-upcoming {
+      opacity: 0.55;
+    }
+    .post-row.post-upcoming .post-meta h2 { color: var(--text-2); }
+
+    .subscribe-note {
+      margin-top: 3rem;
+      padding: 1.5rem 1.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      color: var(--text-2);
+      line-height: 1.7;
+    }
+    .subscribe-note strong { color: var(--text); }
+    .subscribe-note a { color: var(--accent); border-bottom: 1px solid rgba(34,211,238,0.35); }
+
+    @media (max-width: 680px) {
+      .post-row { grid-template-columns: 1fr; gap: 0.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="topnav" id="topnav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <span class="nav-brand-mark">SB</span>
+      <span>Sarthak Bichhawa</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="nav-links" id="navLinks">
+      <a href="/#featured">Work</a>
+      <a href="/writing/" class="active">Writing</a>
+      <a href="/#experience">Experience</a>
+      <a href="/#about">About</a>
+      <a href="/#contact" class="nav-cta">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="wrap-narrow">
+    <a href="/" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back home
+    </a>
+    <div class="section-eyebrow">writing</div>
+    <h1 class="page-title">Notes on shipping AI that<br><span class="accent">has to actually work.</span></h1>
+    <p class="page-dek">
+      Lessons from production LLM agents, ML platforms, and the parts of enterprise data work that nobody demos on stage. Short essays, opinionated takes, and the kind of details you only learn by shipping.
+    </p>
+  </div>
+</header>
+
+<section class="listing">
+  <div class="wrap-narrow">
+    <div class="post-list">
+
+      <a href="/writing/shipping-genai-enterprise.html" class="post-row post-live">
+        <div class="post-when">
+          APR 2026
+          <span class="read">9 min read</span>
+        </div>
+        <div class="post-meta">
+          <h2>Shipping GenAI in enterprise: what actually breaks.</h2>
+          <p class="dek">
+            Five lessons from building a production LLM agent on Azure OpenAI — the gap between the prototype that wowed the leadership review and the thing that held up when real engineers tried to break it.
+          </p>
+          <div class="tags">
+            <span>LLM agents</span>
+            <span>Azure OpenAI</span>
+            <span>RAG</span>
+            <span>Evaluation</span>
+            <span>Production</span>
+          </div>
+        </div>
+      </a>
+
+      <div class="post-row post-upcoming">
+        <div class="post-when">
+          <span class="soon">Soon</span>
+        </div>
+        <div class="post-meta">
+          <h2>Why we built Account2Vec as a platform, not a model.</h2>
+          <p class="dek">
+            A lot of ML work inside big orgs stays trapped inside one team's notebook. The trick to turning a model into a platform primitive is almost never the model — it's the feature matrix, the drift plumbing, and the design doc that names the abstraction.
+          </p>
+          <div class="tags">
+            <span>Representation learning</span>
+            <span>ML platforms</span>
+            <span>Design</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="post-row post-upcoming">
+        <div class="post-when">
+          <span class="soon">Soon</span>
+        </div>
+        <div class="post-meta">
+          <h2>180 questions: building the eval harness before the users.</h2>
+          <p class="dek">
+            Why the golden-set eval is the single highest-leverage artifact in any GenAI project — and how to keep it small enough that a product team can actually maintain it.
+          </p>
+          <div class="tags">
+            <span>LLM evaluation</span>
+            <span>Groundedness</span>
+            <span>Tooling</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="post-row post-upcoming">
+        <div class="post-when">
+          <span class="soon">Soon</span>
+        </div>
+        <div class="post-meta">
+          <h2>The loneliest job on a fleet-scale ML team: owning the feature matrix.</h2>
+          <p class="dek">
+            Nobody puts "designed the feature pipeline" on their principal-eng nomination. But if you've ever worked on a large ML system, you know this is the role that decides whether any of it ships.
+          </p>
+          <div class="tags">
+            <span>Data engineering</span>
+            <span>ML platforms</span>
+            <span>Feature engineering</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="subscribe-note">
+      <strong>New posts land here first.</strong> No feed reader, no newsletter — just bookmark the page.
+      If you want to chat about any of this or suggest a topic, <a href="/#contact">get in touch</a>.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-inner">
+      <span>© 2026 Sarthak Bichhawa</span>
+      <div class="foot-edu">
+        <span>MS Business Analytics, UIC</span>
+        <span>B.E. Computer Eng, SGSITS</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('topnav');
+  const navToggle = document.getElementById('navToggle');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+  document.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  navToggle.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+</script>
+
+</body>
+</html>
