@@ -360,10 +360,96 @@
       font-size: 0.72rem; color: var(--muted); letter-spacing: 1px;
     }
 
+    /* ROLE SUMMARY */
+    .role-summary {
+      font-size: 0.85rem; color: var(--text); opacity: 0.75;
+      margin-bottom: 1.1rem; line-height: 1.65;
+      padding-left: 0.9rem; border-left: 2px solid var(--purple);
+      font-style: italic;
+    }
+
+    /* HERO META */
+    .hero-meta {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem; color: var(--muted);
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-top: 1.5rem; display: flex; justify-content: center;
+      gap: 1.5rem; flex-wrap: wrap;
+    }
+    .hero-meta span::before {
+      content: '›'; color: var(--cyan); margin-right: 0.4rem;
+    }
+
+    /* RESUME DROPDOWN */
+    .resume-wrap { position: relative; display: inline-block; }
+    .resume-menu {
+      position: absolute; top: calc(100% + 0.5rem); right: 0;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; padding: 0.5rem; min-width: 320px;
+      opacity: 0; pointer-events: none; transform: translateY(-8px);
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 50; box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    }
+    .resume-wrap.open .resume-menu,
+    .resume-wrap:focus-within .resume-menu {
+      opacity: 1; pointer-events: auto; transform: translateY(0);
+    }
+    .resume-menu a {
+      display: block; padding: 0.6rem 0.8rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem; color: var(--muted);
+      text-decoration: none; letter-spacing: 1px;
+      text-transform: uppercase; border-radius: 2px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .resume-menu a:hover { background: rgba(0,255,255,0.05); color: var(--cyan); }
+
+    /* BACK TO TOP */
+    .back-to-top {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 90;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--cyan); font-size: 1.2rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: all 0.3s;
+      font-family: 'Space Mono', monospace;
+    }
+    .back-to-top.visible { opacity: 1; pointer-events: auto; }
+    .back-to-top:hover {
+      border-color: var(--cyan); box-shadow: var(--glow-cyan);
+      background: rgba(0,255,255,0.05);
+    }
+
+    /* MOBILE NAV */
+    .nav-toggle {
+      display: none; background: transparent; border: none;
+      color: var(--cyan); font-size: 1.4rem; cursor: pointer;
+      font-family: 'Space Mono', monospace;
+    }
+
+    @media (max-width: 760px) {
+      nav { padding: 0 1.25rem; }
+      .nav-toggle { display: block; }
+      nav ul {
+        position: absolute; top: 60px; left: 0; right: 0;
+        flex-direction: column; gap: 0;
+        background: rgba(2,4,8,0.98);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 1.5rem;
+        max-height: 0; overflow: hidden;
+        transition: max-height 0.3s;
+      }
+      nav.open ul { max-height: 400px; }
+      nav ul li { padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+      nav ul li:last-child { border-bottom: none; }
+      .resume-menu { right: auto; left: 0; }
+    }
+
     @media (max-width: 600px) {
-      nav ul { gap: 1.2rem; }
       .job-card { padding: 1.5rem; }
       .stat-card { border-right: none; border-bottom: 1px solid var(--border); }
+      .back-to-top { bottom: 1rem; right: 1rem; width: 40px; height: 40px; }
     }
   </style>
 </head>
@@ -372,13 +458,15 @@
 <canvas id="bg-canvas"></canvas>
 
 <!-- NAV -->
-<nav>
+<nav id="main-nav">
   <span class="logo">SB://</span>
+  <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">☰</button>
   <ul>
     <li><a href="#about">About</a></li>
     <li><a href="#experience">Experience</a></li>
     <li><a href="#skills">Skills</a></li>
     <li><a href="#specializations">Focus Areas</a></li>
+    <li><a href="#education">Education</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
@@ -394,8 +482,24 @@
     <p>Building production ML and data systems across reliability, causal inference, marketplace analytics, and customer insights — owning end-to-end pipelines, experimentation, and measurable business outcomes at scale.</p>
     <div class="hero-links">
       <a href="mailto:sarthaksgsits@gmail.com" class="btn btn-primary">Get in touch</a>
+      <div class="resume-wrap" id="resume-wrap">
+        <button class="btn btn-outline" id="resume-btn" type="button" aria-haspopup="true" aria-expanded="false">Resume ▾</button>
+        <div class="resume-menu" role="menu">
+          <a href="resumes/SeniorDS_ML_AppliedScience.pdf" target="_blank" role="menuitem">// ML & Applied Science</a>
+          <a href="resumes/SeniorDS_Experimentation_CausalInference.pdf" target="_blank" role="menuitem">// Experimentation & Causal Inference</a>
+          <a href="resumes/SeniorDS_DataReliability_Governance.pdf" target="_blank" role="menuitem">// Data Reliability & Governance</a>
+          <a href="resumes/SeniorDS_Marketplace_Growth.pdf" target="_blank" role="menuitem">// Marketplace & Growth</a>
+          <a href="resumes/SeniorDS_ProductAnalytics_Metrics.pdf" target="_blank" role="menuitem">// Product Analytics & Metrics</a>
+          <a href="resumes/MLManager_TechnicalLead.pdf" target="_blank" role="menuitem">// ML Manager / Technical Lead</a>
+        </div>
+      </div>
       <a href="https://github.com/sarthak0501" class="btn btn-outline" target="_blank">GitHub</a>
       <a href="https://linkedin.com/in/sarthakbichhawa" class="btn btn-outline" target="_blank">LinkedIn</a>
+    </div>
+    <div class="hero-meta">
+      <span>Redmond, WA</span>
+      <span>9+ Years in DS/ML</span>
+      <span>Open to Staff / Senior Roles</span>
     </div>
   </div>
 </div>
@@ -430,6 +534,7 @@
         <div class="job-date">NOV 2020 — PRESENT</div>
       </div>
       <div class="job-company">MICROSOFT · REDMOND, WA</div>
+      <div class="role-summary">Leading ML/DS initiatives across Azure Storage reliability, partner attribution, and customer health — driving strategy, experimentation, and cross-functional alignment with measurable business outcomes at scale.</div>
       <div class="sub-project">// Intelligent Stress Testing</div>
       <ul>
         <li>Built a pre-release stress-testing program for Azure Storage to inform per-build ship/hold decisions; helped prevent <strong>10+ Sev1/Sev2</strong> customer incidents by catching top-severity regressions before rollout.</li>
@@ -459,6 +564,7 @@
         <div class="job-date">FEB 2019 — NOV 2020</div>
       </div>
       <div class="job-company">WALMART LABS · BENTONVILLE, AR</div>
+      <div class="role-summary">Owned retail optimization and merchandising analytics — productionizing item-level placement workflows and leading cross-functional teams.</div>
       <ul>
         <li>Built an end-to-end planogram optimization system delivering <strong>~7% category revenue lift</strong> across 50 stores; cut planning cycles from weeks to hours.</li>
         <li>Led 4 DS/analysts + 2 interns to productionize a repeatable item-level placement workflow; earned a <strong>Spot Award</strong>.</li>
@@ -472,8 +578,10 @@
         <div class="job-date">JUN 2018 — AUG 2018</div>
       </div>
       <div class="job-company">INTEGRAL AD SCIENCE · NEW YORK, NY</div>
+      <div class="role-summary">Summer internship on large-scale contextual advertising classification for brand safety and ad-tech categorization.</div>
       <ul>
-        <li>Built a PySpark contextual text-classification pipeline processing <strong>~1M URLs/day</strong> across 846 categories at 88% accuracy; improved label quality via correlation analysis.</li>
+        <li>Built a PySpark contextual text-classification pipeline processing <strong>~1M URLs/day</strong> across 846 categories at 88% accuracy.</li>
+        <li>Improved label quality via correlation analysis to strengthen downstream targeting and brand-safety signals.</li>
       </ul>
     </div>
 
@@ -483,9 +591,10 @@
         <div class="job-date">OCT 2015 — JUL 2017</div>
       </div>
       <div class="job-company">MU SIGMA · BENGALURU, INDIA</div>
+      <div class="role-summary">Early-career DS role applying probabilistic modeling and entity resolution to retail and CPG analytics problems.</div>
       <ul>
-        <li>Estimated customer lifetime value (CLTV) using probabilistic/regression models.</li>
-        <li>Improved competitive reporting via fuzzy matching to unify product IDs across sources.</li>
+        <li>Estimated customer lifetime value (CLTV) using probabilistic/regression models to segment and prioritize high-value cohorts.</li>
+        <li>Improved competitive reporting by unifying product IDs via fuzzy matching, enabling cleaner, more reliable cross-source comparisons.</li>
       </ul>
     </div>
 
@@ -608,11 +717,47 @@
   </div>
 </div>
 
+<button class="back-to-top" id="back-to-top" aria-label="Back to top">↑</button>
+
 <footer>
   <p>© 2026 · SARTHAK BICHHAWA · BUILT WITH HTML/CSS · HOSTED ON GITHUB PAGES</p>
 </footer>
 
 <script>
+  // Mobile nav toggle
+  const navEl = document.getElementById('main-nav');
+  const navToggle = document.getElementById('nav-toggle');
+  if (navToggle) {
+    navToggle.addEventListener('click', () => navEl.classList.toggle('open'));
+    navEl.querySelectorAll('ul a').forEach(a =>
+      a.addEventListener('click', () => navEl.classList.remove('open'))
+    );
+  }
+
+  // Resume dropdown toggle
+  const resumeWrap = document.getElementById('resume-wrap');
+  const resumeBtn = document.getElementById('resume-btn');
+  if (resumeBtn) {
+    resumeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      resumeWrap.classList.toggle('open');
+      resumeBtn.setAttribute('aria-expanded', resumeWrap.classList.contains('open'));
+    });
+    document.addEventListener('click', (e) => {
+      if (!resumeWrap.contains(e.target)) {
+        resumeWrap.classList.remove('open');
+        resumeBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  // Back to top
+  const toTop = document.getElementById('back-to-top');
+  window.addEventListener('scroll', () => {
+    toTop.classList.toggle('visible', window.scrollY > 600);
+  });
+  toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
   // Animated grid/particle background
   const canvas = document.getElementById('bg-canvas');
   const ctx = canvas.getContext('2d');
