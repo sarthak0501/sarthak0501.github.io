@@ -794,6 +794,35 @@
     .about-narrative p:not(:first-child) { color: var(--text-2); }
     .about-narrative strong { color: var(--accent); font-weight: 600; }
 
+    .about-intro {
+      display: flex; align-items: center; gap: 1.5rem;
+      margin-bottom: 1.75rem;
+    }
+    .about-photo {
+      width: 120px; height: 120px;
+      flex-shrink: 0;
+      border-radius: 18px;
+      object-fit: cover;
+      border: 1px solid var(--border-strong);
+      box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(34, 211, 238, 0.08);
+      transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+    }
+    .about-photo:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 14px 44px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(34, 211, 238, 0.25);
+    }
+    .about-intro .about-heading { flex: 1; min-width: 0; }
+    .about-intro .section-eyebrow { margin-bottom: 0.6rem; }
+    .about-intro .section-title { margin-bottom: 0; }
+    @media (max-width: 560px) {
+      .about-intro { gap: 1rem; }
+      .about-photo { width: 84px; height: 84px; border-radius: 14px; }
+    }
+
     .about-side {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -1553,8 +1582,13 @@
   <div class="wrap">
     <div class="about-grid">
       <div class="about-narrative reveal">
-        <div class="section-eyebrow">about</div>
-        <h2 class="section-title" style="margin-bottom: 1.75rem;">Hi, I'm Sarthak.</h2>
+        <div class="about-intro">
+          <img class="about-photo" src="assets/sarthak.jpg" alt="Sarthak Bichhawa" width="120" height="120" loading="lazy" />
+          <div class="about-heading">
+            <div class="section-eyebrow">about</div>
+            <h2 class="section-title">Hi, I'm Sarthak.</h2>
+          </div>
+        </div>
         <p>
           I work on <strong>Azure Storage analytics and ML systems</strong> — customer health, behavioral embeddings, service-level dashboards, revenue correctness, and operationalizing analytics into agents and executive-ready insights.
         </p>
