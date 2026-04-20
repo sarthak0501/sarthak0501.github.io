@@ -368,6 +368,32 @@
       font-style: italic;
     }
 
+    /* FEATURED SUB-PROJECT (AI/LLM showcase) */
+    .sub-project.featured {
+      color: var(--green);
+      text-shadow: 0 0 12px rgba(0,255,136,0.4);
+      opacity: 1;
+      border-left: 3px solid var(--green);
+      padding-left: 0.75rem;
+      background: linear-gradient(90deg, rgba(0,255,136,0.04), transparent);
+    }
+    ul.featured-section li::before {
+      color: var(--green);
+      content: '▸';
+    }
+
+    /* AI BADGE inline */
+    .ai-chip {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem; font-weight: 700;
+      color: var(--green); border: 1px solid var(--green);
+      padding: 0.15rem 0.5rem; border-radius: 2px;
+      letter-spacing: 1.5px; margin-left: 0.5rem;
+      vertical-align: middle;
+      background: rgba(0,255,136,0.05);
+    }
+
     /* HERO META */
     .hero-meta {
       font-family: 'Space Mono', monospace;
@@ -475,11 +501,11 @@
 <div class="hero" id="about">
   <div class="hero-content">
     <div class="hero-badge">Available for new opportunities</div>
-    <div class="hero-subtitle">Senior Data Scientist · 9+ Years</div>
+    <div class="hero-subtitle">Senior Data & Applied Scientist · AI / LLM Systems</div>
     <h1>
       <span class="first">Sarthak </span><span class="last glitch" data-text="Bichhawa">Bichhawa</span>
     </h1>
-    <p>Building production ML and data systems across reliability, causal inference, marketplace analytics, and customer insights — owning end-to-end pipelines, experimentation, and measurable business outcomes at scale.</p>
+    <p>Shipping production <strong style="color:var(--cyan);text-shadow:var(--glow-cyan)">LLM-powered agents</strong> and ML systems at Microsoft — built a GenAI customer-health agent on Azure OpenAI with RAG, tool-calling, and evaluation; 9+ years turning messy telemetry into causal insight, reliability wins, and measurable business outcomes.</p>
     <div class="hero-links">
       <a href="mailto:sarthaksgsits@gmail.com" class="btn btn-primary">Get in touch</a>
       <div class="resume-wrap" id="resume-wrap">
@@ -498,7 +524,8 @@
     </div>
     <div class="hero-meta">
       <span>Redmond, WA</span>
-      <span>9+ Years in DS/ML</span>
+      <span>LLM Agents · RAG · Azure OpenAI</span>
+      <span>9+ Years DS / ML</span>
       <span>Open to Staff / Senior Roles</span>
     </div>
   </div>
@@ -510,12 +537,12 @@
 <div class="container">
   <div class="stats-wrapper">
     <div class="stats">
-      <div class="stat-card"><div class="number">9+</div><div class="label">Years of Experience</div></div>
+      <div class="stat-card"><div class="number">1</div><div class="label">LLM Agent in Production (MCC AI)</div></div>
+      <div class="stat-card"><div class="number">8+</div><div class="label">Teams Unified via RAG Pipeline</div></div>
+      <div class="stat-card"><div class="number">~50%</div><div class="label">Reduction in Aging CRIs</div></div>
       <div class="stat-card"><div class="number">10+</div><div class="label">Sev1/Sev2 Incidents Prevented</div></div>
       <div class="stat-card"><div class="number">>10%</div><div class="label">MoM Revenue Lift</div></div>
-      <div class="stat-card"><div class="number">~50%</div><div class="label">Reduction in Aging CRIs</div></div>
-      <div class="stat-card"><div class="number">50+</div><div class="label">Bugs Confirmed w/ Repro Steps</div></div>
-      <div class="stat-card"><div class="number">15+</div><div class="label">Azure Advisor Recs Shipped</div></div>
+      <div class="stat-card"><div class="number">9+</div><div class="label">Years in DS / ML</div></div>
     </div>
   </div>
 </div>
@@ -534,7 +561,7 @@
         <div class="job-date">NOV 2020 — PRESENT</div>
       </div>
       <div class="job-company">MICROSOFT · REDMOND, WA</div>
-      <div class="role-summary">Leading ML/DS initiatives across Azure Storage reliability, partner attribution, and customer health — driving strategy, experimentation, and cross-functional alignment with measurable business outcomes at scale.</div>
+      <div class="role-summary">Shipping <strong>LLM-powered agents and applied ML</strong> across Azure Storage — from a production GenAI customer-health copilot (RAG + tool-calling on Azure OpenAI) to adaptive stress-testing and multi-touch attribution, driving strategy, experimentation, and cross-functional alignment at scale.</div>
       <div class="sub-project">// Intelligent Stress Testing</div>
       <ul>
         <li>Built a pre-release stress-testing program for Azure Storage to inform per-build ship/hold decisions; helped prevent <strong>10+ Sev1/Sev2</strong> customer incidents by catching top-severity regressions before rollout.</li>
@@ -545,11 +572,14 @@
       <ul>
         <li>Transformed a <strong>20+ component</strong> partner attribution pipeline by replacing single "last-writer-wins" credit with multi-partner attribution (expanded eligible partners and attribution types), increasing partner-attributed influenced revenue by <strong>>10% MoM</strong> (tens of millions in impact).</li>
       </ul>
-      <div class="sub-project">// MCC AI Agent</div>
-      <ul>
-        <li>Drove the MCC forum and built a unified customer health view across <strong>8+ engineering/support teams</strong>, reducing executive/customer readiness insight from <strong>3–5 days to near real-time</strong>.</li>
-        <li>Shipped an <strong>LLM-powered MCC AI Agent</strong> enabling self-serve, natural-language customer insights and automated summaries/alerts.</li>
-        <li>Achieved <strong>~50% reduction</strong> in >10-day aging CRIs and ~16% improvement in Time to Mitigate; helped reverse churn/downtrend risk for <strong>10+ critical customers</strong> (each representing multi-millions in monthly Azure Storage revenue).</li>
+      <div class="sub-project featured">// MCC AI Agent — LLM-Powered Customer Health Copilot <span class="ai-chip">GENAI · FLAGSHIP</span></div>
+      <ul class="featured-section">
+        <li>Designed and shipped an <strong>LLM-powered agent on Azure OpenAI (GPT-4-class)</strong> that lets executives, CSAMs, and on-call engineers query customer health, incidents, and signals in natural language — replacing multi-day manual readouts with near-real-time answers.</li>
+        <li>Built a <strong>retrieval-augmented generation (RAG)</strong> backbone over heterogeneous sources: telemetry pipelines, ticket systems, CRI records, and ownership graphs — with embedding-based semantic search and structured filters to keep retrieval precise and grounded.</li>
+        <li>Implemented <strong>tool / function calling</strong> so the agent plans multi-step workflows — pulls live KQL/SQL from Azure Data Explorer, joins it against customer metadata, and returns cited, structured summaries instead of free-form text.</li>
+        <li>Engineered <strong>grounding and guardrails</strong> to minimize hallucination: source-cited responses, schema-validated outputs, refusal paths for low-confidence retrieval, and PII-aware prompt construction suitable for enterprise customer data.</li>
+        <li>Stood up an <strong>LLM evaluation harness</strong> — golden-set regression tests, groundedness/faithfulness scoring, and human-in-the-loop review — so prompt, retrieval, and model changes could ship safely with measurable quality gates.</li>
+        <li>Drove cross-functional alignment across <strong>8+ engineering/support teams</strong>, unifying fragmented health signals into a single conversational surface; program delivered <strong>~50% reduction</strong> in >10-day aging CRIs, <strong>~16%</strong> Time-to-Mitigate improvement, and helped reverse churn risk for <strong>10+ critical customers</strong> (multi-millions in monthly Azure Storage revenue).</li>
       </ul>
       <div class="sub-project">// Additional Work</div>
       <ul>
@@ -608,11 +638,24 @@
   <div class="section-label">// skills.json</div>
   <div class="section-title">Skills</div>
   <div class="skills-grid">
+    <div class="skill-group" style="border-color:rgba(0,255,136,0.3);">
+      <h3 style="color:var(--green);text-shadow:0 0 12px rgba(0,255,136,0.4);">AI / LLM Stack ★</h3>
+      <div class="tags">
+        <span class="tag">Azure OpenAI</span><span class="tag">GPT-4 / 4o</span>
+        <span class="tag">RAG Pipelines</span><span class="tag">Agent Orchestration</span>
+        <span class="tag">Function / Tool Calling</span><span class="tag">Semantic Kernel</span>
+        <span class="tag">LangChain</span><span class="tag">Vector Search / Embeddings</span>
+        <span class="tag">Prompt Engineering</span><span class="tag">LLM Evaluation</span>
+        <span class="tag">Groundedness / Faithfulness</span><span class="tag">Guardrails & Safety</span>
+        <span class="tag">Structured Outputs</span><span class="tag">LLM Observability</span>
+      </div>
+    </div>
     <div class="skill-group">
       <h3>Languages & Tools</h3>
       <div class="tags">
         <span class="tag">Python</span><span class="tag">SQL</span><span class="tag">PySpark</span>
-        <span class="tag">R</span><span class="tag">Azure Data Explorer</span>
+        <span class="tag">R</span><span class="tag">Azure Data Explorer (KQL)</span>
+        <span class="tag">Azure ML</span><span class="tag">Azure AI Search</span>
         <span class="tag">Power BI</span><span class="tag">Tableau</span><span class="tag">Azure DevOps</span>
       </div>
     </div>
@@ -623,7 +666,7 @@
         <span class="tag">Statistical Modeling</span><span class="tag">Experiment & Metric Design</span>
         <span class="tag">NLP / Classification</span><span class="tag">Optimization & Simulation</span>
         <span class="tag">Clustering & Segmentation</span><span class="tag">Anomaly Detection</span>
-        <span class="tag">Data Quality & Monitoring</span><span class="tag">LLMs / RAG</span>
+        <span class="tag">Data Quality & Monitoring</span>
       </div>
     </div>
     <div class="skill-group">
@@ -646,6 +689,10 @@
   <div class="section-label">// focus_areas.cfg</div>
   <div class="section-title">Areas of Expertise</div>
   <div class="skills-grid">
+    <div class="skill-group" style="border-color:rgba(0,255,136,0.3);">
+      <h3 style="color:var(--green);text-shadow:0 0 12px rgba(0,255,136,0.4);">AI Agents & LLM Systems ★</h3>
+      <p style="font-size:0.82rem;color:var(--muted);line-height:1.7;">Production LLM agents on Azure OpenAI — RAG over enterprise data, function/tool calling, grounded structured outputs, evaluation harnesses, and guardrails for customer-facing GenAI.</p>
+    </div>
     <div class="skill-group">
       <h3>ML & Applied Science</h3>
       <p style="font-size:0.82rem;color:var(--muted);line-height:1.7;">Production ML systems, optimization & simulation, online learning (multi-armed bandits), large-scale decision-making pipelines.</p>
