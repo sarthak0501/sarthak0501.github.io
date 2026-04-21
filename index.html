@@ -521,74 +521,40 @@
     }
     .case-lede strong { color: var(--text); font-weight: 600; }
 
-    .case-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      margin-bottom: 2.5rem;
-    }
-    @media (max-width: 820px) {
-      .case-grid { grid-template-columns: 1fr; }
-    }
-
-    .case-block {
+    .case-compact {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 1.75rem;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 2rem;
     }
-    .case-block-label {
-      font-family: var(--font-mono);
-      font-size: 0.72rem; font-weight: 600;
-      color: var(--accent);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 0.75rem;
-    }
-    .case-block h4 {
-      font-size: 1.05rem; font-weight: 600;
-      margin-bottom: 1rem; line-height: 1.4;
-      color: var(--text);
-    }
-    .case-block ul {
-      list-style: none;
-      display: flex; flex-direction: column; gap: 0.55rem;
-    }
-    .case-block li {
-      font-size: 0.9rem;
-      color: var(--text-2);
-      padding-left: 1.1rem;
-      position: relative;
-      line-height: 1.65;
-    }
-    .case-block li::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0.65em;
-      width: 6px; height: 1px;
-      background: var(--accent);
-    }
-    .case-block li strong { color: var(--text); font-weight: 600; }
-
-    .case-metrics {
-      display: flex; flex-direction: column; gap: 0;
-    }
-    .case-metric {
-      display: flex; align-items: baseline; gap: 1rem;
-      padding: 0.7rem 0;
+    .case-metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.25rem;
       border-bottom: 1px dashed var(--border);
     }
-    .case-metric:last-child { border-bottom: none; }
-    .case-metric .v {
-      font-family: var(--font-mono);
-      font-size: 1.15rem; font-weight: 700;
-      color: var(--accent);
-      min-width: 78px;
+    @media (max-width: 820px) {
+      .case-metric-strip { grid-template-columns: repeat(2, 1fr); }
     }
-    .case-metric .d {
-      font-size: 0.88rem;
+    .cms-item { display: flex; flex-direction: column; gap: 0.25rem; }
+    .cms-item .v {
+      font-family: var(--font-mono);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.01em;
+    }
+    .cms-item .d {
+      font-size: 0.82rem;
       color: var(--text-2);
       line-height: 1.55;
+    }
+    .case-stack {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 0.5rem;
     }
 
     .case-cta {
@@ -629,18 +595,6 @@
       height: auto;
     }
 
-    .stack-row {
-      display: flex; flex-wrap: wrap; align-items: center;
-      gap: 0.5rem;
-    }
-    .stack-label {
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      color: var(--text-3);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      margin-right: 0.75rem;
-    }
     .chip {
       font-size: 0.8rem; font-weight: 500;
       color: var(--text-2);
@@ -997,8 +951,8 @@
             <div class="impact-lbl">Sev1/Sev2 incidents prevented</div>
           </div>
           <div class="impact-cell">
-            <div class="impact-val">1<span class="unit">×</span></div>
-            <div class="impact-lbl">GenAI agent in production</div>
+            <div class="impact-val">M<span class="unit">+</span></div>
+            <div class="impact-lbl">Accounts embedded at fleet scale</div>
           </div>
         </div>
       </div>
@@ -1106,54 +1060,22 @@
       </svg>
     </div>
 
-    <div class="case-grid reveal">
-      <div class="case-block">
-        <div class="case-block-label">Problem</div>
-        <h4>Customer health lived in 8+ disconnected tools. Readouts took days.</h4>
-        <ul>
-          <li>Telemetry, tickets, CRIs and ownership data never joined</li>
-          <li>Manual hunt per exec readout; no consistent source of truth</li>
-          <li><strong>Critical accounts hit Sev1</strong> before signals reached the right people</li>
-        </ul>
+    <div class="case-compact reveal">
+      <div class="case-metric-strip">
+        <div class="cms-item"><span class="v">~50%</span><span class="d">reduction in &gt;10-day aging CRIs</span></div>
+        <div class="cms-item"><span class="v">~16%</span><span class="d">improvement in Time-to-Mitigate</span></div>
+        <div class="cms-item"><span class="v">8+</span><span class="d">teams on one conversational surface</span></div>
+        <div class="cms-item"><span class="v">10+</span><span class="d">at-risk customers de-risked</span></div>
       </div>
-
-      <div class="case-block">
-        <div class="case-block-label">Build</div>
-        <h4>Grounded tool-using agent + an eval harness you can trust in prod.</h4>
-        <ul>
-          <li><strong>Azure OpenAI</strong> (GPT-4-class) with function / tool calling</li>
-          <li><strong>RAG</strong> over telemetry, tickets, CRIs &amp; ownership graphs</li>
-          <li>Live <strong>KQL/SQL</strong> execution against Azure Data Explorer</li>
-          <li>Golden-set LLM evals + groundedness scoring</li>
-          <li>PII-aware prompts, refusal paths for low-confidence queries</li>
-        </ul>
-      </div>
-
-      <div class="case-block">
-        <div class="case-block-label">Impact</div>
-        <h4>Near-real-time customer insight. Millions in retained revenue.</h4>
-        <div class="case-metrics">
-          <div class="case-metric"><span class="v">~50%</span><span class="d">reduction in &gt;10-day aging CRIs</span></div>
-          <div class="case-metric"><span class="v">~16%</span><span class="d">improvement in Time-to-Mitigate</span></div>
-          <div class="case-metric"><span class="v">8+</span><span class="d">teams unified on one conversational surface</span></div>
-          <div class="case-metric"><span class="v">10+</span><span class="d">at-risk customers (multi-$M/mo) de-risked</span></div>
-        </div>
-      </div>
-
-      <div class="case-block">
-        <div class="case-block-label">Stack</div>
-        <h4>Production-grade GenAI on Azure.</h4>
-        <div class="stack-row">
-          <span class="chip">Azure OpenAI</span>
-          <span class="chip">GPT-4</span>
-          <span class="chip">RAG</span>
-          <span class="chip">Function Calling</span>
-          <span class="chip">ADX / KQL</span>
-          <span class="chip">Vector Search</span>
-          <span class="chip">Eval Harness</span>
-          <span class="chip">Guardrails</span>
-          <span class="chip">Python</span>
-        </div>
+      <div class="case-stack">
+        <span class="chip">Azure OpenAI</span>
+        <span class="chip">GPT-4</span>
+        <span class="chip">RAG</span>
+        <span class="chip">Function Calling</span>
+        <span class="chip">ADX / KQL</span>
+        <span class="chip">Eval Harness</span>
+        <span class="chip">Guardrails</span>
+        <span class="chip">Python</span>
       </div>
     </div>
 
@@ -1285,55 +1207,22 @@
       </svg>
     </div>
 
-    <div class="case-grid reveal">
-      <div class="case-block">
-        <div class="case-block-label">Problem</div>
-        <h4>~100 raw metrics per account. No unified way to reason about millions of them.</h4>
-        <ul>
-          <li>Every ML effort rebuilt its own feature set</li>
-          <li>No shared representation across similarity, anomaly, forecasting</li>
-          <li>Cross-team ML work stayed fragmented and hard to ship</li>
-        </ul>
+    <div class="case-compact reveal">
+      <div class="case-metric-strip">
+        <div class="cms-item"><span class="v">M+</span><span class="d">accounts embedded at fleet scale</span></div>
+        <div class="cms-item"><span class="v">3</span><span class="d">tiers: account · subscription · customer</span></div>
+        <div class="cms-item"><span class="v">5+</span><span class="d">downstream uses across the org</span></div>
+        <div class="cms-item"><span class="v">★</span><span class="d">platform primitive, not a one-off model</span></div>
       </div>
-
-      <div class="case-block">
-        <div class="case-block-label">Build</div>
-        <h4>Hierarchical autoencoders + a feature matrix built to last.</h4>
-        <ul>
-          <li>Unsupervised <strong>autoencoder</strong> — ~100 metrics → dense embedding</li>
-          <li>Hierarchical: <strong>Account → Subscription → Customer (TPID)</strong></li>
-          <li>Owner of the <strong>AccountFeatureMatrix</strong> pipeline (40–50 features)</li>
-          <li>Fleet-scale training on <strong>M+ accounts</strong> with Synapse + PyTorch</li>
-          <li>Drift, coverage, staleness monitoring + alerting</li>
-          <li>Design docs covering motivation, modeling, scalability tradeoffs</li>
-        </ul>
-      </div>
-
-      <div class="case-block">
-        <div class="case-block-label">Impact</div>
-        <h4>One primitive, many downstream teams.</h4>
-        <div class="case-metrics">
-          <div class="case-metric"><span class="v">M+</span><span class="d">Azure Storage accounts embedded at fleet scale</span></div>
-          <div class="case-metric"><span class="v">3</span><span class="d">tiers: account · subscription · customer</span></div>
-          <div class="case-metric"><span class="v">5+</span><span class="d">downstream uses: similarity, anomaly, forecasting, LLM reasoning, MCC agents</span></div>
-          <div class="case-metric"><span class="v">★</span><span class="d">positioned as org-wide platform — not a one-off model</span></div>
-        </div>
-      </div>
-
-      <div class="case-block">
-        <div class="case-block-label">Stack</div>
-        <h4>Representation learning at fleet scale.</h4>
-        <div class="stack-row">
-          <span class="chip">PyTorch</span>
-          <span class="chip">Autoencoders</span>
-          <span class="chip">Representation Learning</span>
-          <span class="chip">Azure Synapse</span>
-          <span class="chip">ADX / KQL</span>
-          <span class="chip">Embeddings</span>
-          <span class="chip">Feature Engineering</span>
-          <span class="chip">Drift Monitoring</span>
-          <span class="chip">Python</span>
-        </div>
+      <div class="case-stack">
+        <span class="chip">PyTorch</span>
+        <span class="chip">Autoencoders</span>
+        <span class="chip">Representation Learning</span>
+        <span class="chip">Azure Synapse</span>
+        <span class="chip">ADX / KQL</span>
+        <span class="chip">Embeddings</span>
+        <span class="chip">Drift Monitoring</span>
+        <span class="chip">Python</span>
       </div>
     </div>
 

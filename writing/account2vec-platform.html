@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b0e14" />
+
+  <title>Why we built Account2Vec as a platform, not a model — Sarthak Bichhawa</title>
+  <meta name="description" content="The trick to turning a model into a platform primitive is almost never the model. It's the feature matrix, the drift plumbing, and the design doc that names the abstraction." />
+  <meta name="author" content="Sarthak Bichhawa" />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="canonical" href="https://sarthak0501.github.io/writing/account2vec-platform.html" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://sarthak0501.github.io/writing/account2vec-platform.html" />
+  <meta property="og:title" content="Why we built Account2Vec as a platform, not a model" />
+  <meta property="og:description" content="The model was the easy part. The abstraction, the feature matrix, and the drift plumbing are what made ten other teams actually build on it." />
+  <meta property="og:image" content="https://sarthak0501.github.io/og-image.png" />
+  <meta property="article:author" content="Sarthak Bichhawa" />
+  <meta property="article:published_time" content="2026-04-20" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Why we built Account2Vec as a platform, not a model" />
+  <meta name="twitter:description" content="The model was the easy part. The abstraction is what made it a platform." />
+  <meta name="twitter:image" content="https://sarthak0501.github.io/og-image.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+
+  <style>
+    .post { padding: 2rem 0 5rem; }
+
+    .post-body {
+      font-size: 1.08rem;
+      line-height: 1.8;
+      color: var(--text);
+    }
+    .post-body > * + * { margin-top: 1.4rem; }
+    .post-body p { color: var(--text); opacity: 0.92; }
+    .post-body p strong { color: var(--text); font-weight: 600; }
+    .post-body p em { color: var(--accent); font-style: normal; }
+
+    .post-body h2 {
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      color: var(--text);
+      margin-top: 3.5rem !important;
+      margin-bottom: 0.25rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .post-body h2::before {
+      content: attr(data-n);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 2px;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .post-body h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 2rem !important;
+    }
+
+    .post-body ul, .post-body ol {
+      padding-left: 0;
+      list-style: none;
+    }
+    .post-body li {
+      position: relative;
+      padding-left: 1.4rem;
+      margin-bottom: 0.65rem;
+      color: var(--text-2);
+      line-height: 1.75;
+    }
+    .post-body li::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0.7em;
+      width: 8px; height: 1px;
+      background: var(--accent);
+    }
+    .post-body li strong { color: var(--text); font-weight: 600; }
+
+    .post-body blockquote {
+      margin: 1.5rem 0;
+      padding: 1.1rem 1.35rem;
+      border-left: 3px solid var(--accent);
+      background: var(--bg-soft);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      color: var(--text);
+      font-size: 1.04rem;
+      line-height: 1.7;
+    }
+    .post-body blockquote p { color: var(--text); }
+
+    .post-body code {
+      font-family: var(--font-mono);
+      font-size: 0.86em;
+      color: var(--accent);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.1em 0.4em;
+    }
+    .post-body pre {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.3rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+    .post-body pre .cmt { color: var(--text-3); }
+    .post-body pre .kw  { color: var(--accent); }
+    .post-body pre .str { color: #a5d8ff; }
+    .post-body pre code {
+      background: transparent; border: 0; color: inherit; padding: 0; font-size: inherit;
+    }
+
+    .post-body a {
+      color: var(--accent);
+      border-bottom: 1px solid rgba(34, 211, 238, 0.35);
+      transition: border-color 0.15s var(--ease);
+    }
+    .post-body a:hover { border-bottom-color: var(--accent); }
+
+    .post-body hr {
+      border: 0;
+      height: 1px;
+      background: var(--border);
+      margin: 3rem auto;
+      width: 64px;
+    }
+
+    .tldr {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.4rem;
+      margin-bottom: 2.5rem;
+    }
+    .tldr-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .tldr p { font-size: 0.98rem; line-height: 1.7; color: var(--text-2); }
+
+    .end-cta {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 1rem;
+    }
+    .end-cta .author {
+      font-size: 0.92rem;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+    .end-cta .author b { color: var(--text); font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<nav class="topnav" id="topnav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <span class="nav-brand-mark">SB</span>
+      <span>Sarthak Bichhawa</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="nav-links" id="navLinks">
+      <a href="/#featured">Work</a>
+      <a href="/writing/" class="active">Writing</a>
+      <a href="/#experience">Experience</a>
+      <a href="/#about">About</a>
+      <a href="/#contact" class="nav-cta">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<article>
+  <header class="page-head">
+    <div class="wrap-read">
+      <a href="/writing/" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        All writing
+      </a>
+      <div class="page-meta">
+        <span class="kind">// Essay</span>
+        <span class="sep">·</span>
+        <span>April 2026</span>
+        <span class="sep">·</span>
+        <span>8 min read</span>
+      </div>
+      <h1 class="page-title">
+        Why we built Account2Vec as a<br>
+        <span class="accent">platform, not a model.</span>
+      </h1>
+      <p class="page-dek">
+        A lot of ML work inside big orgs stays trapped in one team's notebook. The trick to turning a model into a platform primitive is almost never the model — it's the feature matrix, the drift plumbing, and the design doc that names the abstraction.
+      </p>
+    </div>
+  </header>
+
+  <section class="post">
+    <div class="wrap-read">
+      <div class="tldr">
+        <div class="tldr-label">TL;DR</div>
+        <p>
+          The autoencoder was the easy part. What made Account2Vec a platform — and not a slide in someone's OKR review — was naming the abstraction, owning the feature matrix, treating drift monitoring as day-zero work, and writing the design doc before the code. If one model becomes the primitive ten downstream teams build on, you've shipped a platform. Otherwise you've shipped a demo.
+        </p>
+      </div>
+
+      <div class="post-body">
+
+        <p>
+          Every large org has the same graveyard. Notebooks with beautiful t-SNE plots. Models with a training script in <code>team-a/src/</code>, a scoring script in <code>team-b/notebooks/</code>, and <em>no one who remembers which one went to prod</em>. The graveyard is almost never the model's fault. It's the fault of the thing around the model.
+        </p>
+        <p>
+          When we started Account2Vec, the fleet already had four or five half-finished attempts to learn account representations. All of them were technically fine. None of them had shipped. That was the problem to solve — not "train a better encoder."
+        </p>
+
+        <h2 data-n="01 · THE TRAP">The notebook-in-one-team trap.</h2>
+
+        <p>
+          You know the pattern. A strong IC on team A trains an autoencoder on 100 behavioral signals per account. The results look great. They brief the org. Team B says <em>"can we get the embeddings?"</em> Team A says yes, and then spends the next six weeks in meetings about scoring cadence, backfill, schema, and who owns the pager.
+        </p>
+        <p>
+          The embeddings never actually land in team B's pipeline. Team C sees this, decides <em>"we'll just build our own,"</em> and starts from raw telemetry. <strong>The org ends up with three identical models and zero platform.</strong>
+        </p>
+        <p>
+          The failure mode isn't modeling. It's that no one wrote down the <em>interface</em>. There's no versioned artifact, no SLA, no named abstraction anyone can cite in a design doc. There's just an IC and a notebook.
+        </p>
+
+        <h2 data-n="02 · THE NAME">Name the abstraction first.</h2>
+
+        <p>
+          The single highest-leverage decision on this project was naming the thing.
+        </p>
+        <p>
+          <strong>Account2Vec</strong> is a per-storage-account embedding. <strong>Subscription2Vec</strong> pools it to the subscription level. <strong>Customer2Vec</strong> (or TPID2Vec internally) pools to the paying customer. Three tiers, three names, one doc that explains when to use which.
+        </p>
+        <blockquote>
+          If downstream teams can't say the name of your abstraction in a meeting, it doesn't exist yet.
+        </blockquote>
+        <p>
+          Naming sounds like marketing. It isn't. A name is the slot in every future design doc that says <em>"we'll consume X from the platform."</em> Without the name, every team that wants to use your model has to re-explain it from scratch — and most of them give up and rebuild.
+        </p>
+        <p>
+          Once <code>Account2Vec</code> showed up in three or four design reviews I didn't write, the platform existed.
+        </p>
+
+        <h2 data-n="03 · THE FEATURE MATRIX">The feature matrix is the product.</h2>
+
+        <p>
+          The thing no one wants to own — and the thing the platform lives or dies on — is the <strong>feature matrix</strong>.
+        </p>
+        <p>
+          For us that was the <code>AccountFeatureMatrix</code>: a rolling 28-day rectangular table, one row per account, ~50 columns spanning transaction rates, capacity trajectories, auth patterns, reliability signals, latency percentiles, config churn, and a few metadata columns. Not 100 raw metrics. Fifty engineered features, each with a defended reason to exist.
+        </p>
+        <p>
+          Why this is the highest-leverage work on the whole project:
+        </p>
+        <ul>
+          <li>Every downstream model reads the same columns in the same order from the same source. <strong>There is no ambiguity</strong> about what "auth failure rate" means in team A's model vs team C's.</li>
+          <li>Feature drift gets monitored <strong>once</strong>, at the matrix level, not per-consumer. One dashboard flags the issue for every downstream at once.</li>
+          <li>Schema changes are governed. Adding a column is a PR with a reviewer. Removing one requires a deprecation window. That's what turns features into an <em>API</em>.</li>
+          <li>Backfill is centralized. When we added a new signal last quarter, every team got it the next day — no one had to rerun their own pipeline.</li>
+        </ul>
+        <p>
+          This work is deeply unglamorous. Nobody puts <em>"designed the feature pipeline"</em> on their principal-eng nomination. But if you look at a fleet-scale ML team that actually ships, you'll find exactly one person whose real job is owning this matrix, and they're the reason anything works.
+        </p>
+
+        <h2 data-n="04 · DRIFT">Drift plumbing is a day-zero feature.</h2>
+
+        <p>
+          The wrong time to build drift monitoring is after a downstream team pages you at 2am asking why their anomaly scores are weird.
+        </p>
+        <p>
+          By that point you've already lost the trust that makes a platform work. A platform isn't <em>"the model is correct today."</em> It's <em>"when the model stops being correct, you'll know before anyone else does."</em>
+        </p>
+        <p>
+          What we wired from day zero:
+        </p>
+        <pre><code><span class="cmt"># per-feature, per-embedding-dim, nightly</span>
+checks = [
+    <span class="str">"coverage"</span>,      <span class="cmt"># % of accounts with non-null values</span>
+    <span class="str">"staleness"</span>,     <span class="cmt"># lag between event time &amp; feature-matrix write</span>
+    <span class="str">"distribution"</span>,  <span class="cmt"># PSI vs 28-day baseline, per column</span>
+    <span class="str">"embedding_drift"</span> <span class="cmt"># centroid shift in z-space</span>,
+]
+
+<span class="kw">for</span> check <span class="kw">in</span> checks:
+    result = run(check)
+    <span class="kw">if</span> result.breached(threshold):
+        alert(check, severity=result.severity)</code></pre>
+        <p>
+          None of those checks are novel. The point is that they existed on day one, not day three hundred. The cost of adding them early is low; the cost of adding them retroactively — after downstream teams have already eaten a bad training run — is incalculable.
+        </p>
+
+        <h2 data-n="05 · HIERARCHY">The hierarchy is load-bearing.</h2>
+
+        <p>
+          Most orgs need embeddings at multiple granularities: account for reliability work, subscription for billing, customer (TPID) for exec reporting. The naive move is to train three separate autoencoders. Don't.
+        </p>
+        <p>
+          We trained <strong>one</strong> encoder on accounts and pooled up. Not a naive average — an attention-weighted pool, so that a noisy subscription with one very anomalous account doesn't drown the signal:
+        </p>
+        <pre><code><span class="kw">def</span> pool_to_subscription(account_embeds, weights):
+    <span class="cmt"># weights = softmax over account importance</span>
+    <span class="cmt"># (capacity-weighted, not row-count-weighted)</span>
+    <span class="kw">return</span> (account_embeds * weights).sum(dim=0)</code></pre>
+        <p>
+          Two reasons this is the right call:
+        </p>
+        <ul>
+          <li><strong>Coherence.</strong> Three separate encoders diverge over time — a similarity claim at the customer level stops implying anything at the account level. With pooling, the hierarchy is algebraically consistent.</li>
+          <li><strong>Cost.</strong> One model to retrain, one to monitor, one to debug. The pooling layers are cheap.</li>
+        </ul>
+
+        <h2 data-n="06 · THE DOC">The design doc is the real artifact.</h2>
+
+        <p>
+          The code was maybe 20% of the project. The model was maybe 10%. The design doc was where most of the leverage came from.
+        </p>
+        <p>
+          Not the pretty one-pager — the long one. The one that covers the motivation in plain English, the feature-matrix schema, the training regime, the hierarchy pooling math, the monitoring plan, and <em>the two or three things we explicitly decided not to do.</em>
+        </p>
+        <p>
+          That last part matters more than people admit. Every platform has a trail of <em>"why didn't we do X?"</em> questions that'll get asked in every review for the next two years. Writing down the answer once, with the context you had at the time, saves you from re-litigating the decision from scratch every quarter.
+        </p>
+        <p>
+          The doc is also the thing that makes the platform <em>legible</em> to people who weren't in the room. A new team that wants to build on Account2Vec shouldn't need to schedule a 1:1. They should read the doc, skim the schema, and start.
+        </p>
+
+        <hr>
+
+        <p>
+          A platform is a model plus an interface plus an SLA plus a doc. If you only ship the model, you have a prototype. If you ship all four, you've built something other teams can stand on — and that's the only way fleet-scale ML actually compounds inside a big org.
+        </p>
+        <p>
+          The unglamorous work is the work. <em>Own the feature matrix. Name the abstraction. Write the doc.</em>
+        </p>
+        <p>
+          If you're building something in this shape and want to compare notes — I'd love to hear what you're running into.
+        </p>
+
+        <div class="end-cta">
+          <div class="author">
+            <b>Sarthak Bichhawa</b> — Senior Data &amp; Applied Scientist at Microsoft, shipping LLM agents and foundational ML platforms on Azure Storage.
+          </div>
+          <a href="/#contact" class="btn btn-primary">Get in touch</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</article>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-inner">
+      <span>© 2026 Sarthak Bichhawa</span>
+      <div class="foot-edu">
+        <span>MS Business Analytics, UIC</span>
+        <span>B.E. Computer Eng, SGSITS</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('topnav');
+  const navToggle = document.getElementById('navToggle');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+  document.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  navToggle.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+</script>
+
+</body>
+</html>

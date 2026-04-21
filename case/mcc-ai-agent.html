@@ -196,8 +196,39 @@
       line-height: 1.5;
     }
 
+    .author-card {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      padding: 1.5rem 1.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-top: 3rem;
+    }
+    .author-card img {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      object-fit: cover;
+    }
+    .author-card .ac-body { flex: 1; min-width: 0; }
+    .author-card .ac-name {
+      font-weight: 600; color: var(--text); font-size: 0.95rem;
+      margin-bottom: 0.15rem;
+    }
+    .author-card .ac-bio {
+      font-size: 0.88rem; color: var(--text-2); line-height: 1.6;
+    }
+    .author-card .ac-cta { flex-shrink: 0; }
+    @media (max-width: 680px) {
+      .author-card { flex-wrap: wrap; }
+      .author-card .ac-cta { margin-top: 0.5rem; }
+    }
+
     .next-nav {
-      margin-top: 4rem;
+      margin-top: 3rem;
       padding-top: 2rem;
       border-top: 1px solid var(--border);
       display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem;
@@ -501,6 +532,15 @@ StorageAccountMetrics
           If you want the longer write-up on the mental model behind this, there's an essay:
           <a href="/writing/shipping-genai-enterprise.html" style="color:var(--accent);border-bottom:1px solid rgba(34,211,238,0.35);">Shipping GenAI in enterprise: what actually breaks</a>.
         </p>
+
+        <div class="author-card">
+          <img src="/assets/sarthak.jpg" alt="Sarthak Bichhawa" loading="lazy" />
+          <div class="ac-body">
+            <div class="ac-name">Sarthak Bichhawa</div>
+            <div class="ac-bio">Senior Data &amp; Applied Scientist at Microsoft. I ship LLM agents, foundational ML platforms, and decision systems on Azure Storage.</div>
+          </div>
+          <a href="/#contact" class="btn btn-primary ac-cta">Get in touch</a>
+        </div>
 
         <div class="next-nav">
           <a href="/#featured" class="prev">
