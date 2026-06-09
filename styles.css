@@ -3,22 +3,23 @@
    "Bold Signature" · near-black + amber
    ============================================================ */
 :root {
-  --bg:            #0a0a0b;
-  --bg-soft:       #0f0f11;
-  --surface:       #141416;
-  --surface-2:     #1c1c20;
-  --border:        rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.15);
+  /* Latent Space — cool near-black + electric iris/cyan/violet */
+  --bg:            #06070f;
+  --bg-soft:       #090b16;
+  --surface:       #0c0f1e;
+  --surface-2:     #11152a;
+  --border:        rgba(255, 255, 255, 0.085);
+  --border-strong: rgba(255, 255, 255, 0.16);
 
-  --accent:        #f5a623;
-  --accent-dim:    #c47d12;
-  --accent-bright: #ffc24d;
-  --accent-soft:   rgba(245, 166, 35, 0.12);
-  --accent-glow:   rgba(245, 166, 35, 0.20);
+  --accent:        #7c83ff;
+  --accent-dim:    #5a61d6;
+  --accent-bright: #8b91ff;
+  --accent-soft:   rgba(124, 131, 255, 0.14);
+  --accent-glow:   rgba(124, 131, 255, 0.30);
 
-  --text:          #f4f3f1;
-  --text-2:        #aba8a2;
-  --text-3:        #84817a;
+  --text:          #edeefb;
+  --text-2:        #a7aacb;
+  --text-3:        #6d7194;
 
   --font-display: 'Space Grotesk', 'Inter', -apple-system, sans-serif;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -49,14 +50,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
-::selection { background: var(--accent); color: #0a0a0b; }
+::selection { background: var(--accent); color: #fff; }
 
 body::before {
   content: '';
   position: fixed; inset: 0; z-index: 0;
   background:
     radial-gradient(ellipse 900px 540px at 12% -5%, var(--accent-glow), transparent 60%),
-    radial-gradient(ellipse 600px 420px at 88% 4%, rgba(245,166,35,0.06), transparent 62%);
+    radial-gradient(ellipse 600px 420px at 88% 4%, rgba(62,224,232,0.07), transparent 62%);
   pointer-events: none;
 }
 
