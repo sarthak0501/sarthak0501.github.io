@@ -1007,11 +1007,102 @@
     .diagram .flow-line.accent { stroke: var(--accent); }
     .diagram .wrap-rect { fill: none; stroke: var(--accent); stroke-width: 1; stroke-dasharray: 4 4; opacity: 0.4; }
     .diagram .wrap-label { font-family: var(--font-mono); font-size: 9px; font-weight: 600; fill: var(--accent); letter-spacing: 1.5px; }
+
+    /* ============================================================
+       SIGNATURE — embedding field · agent console · spotlight
+       The hero literally renders what Sarthak builds:
+       a living vector space + an autonomous agent at work.
+       ============================================================ */
+    #field {
+      position: fixed; inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      -webkit-mask-image: radial-gradient(ellipse 130% 78% at 50% -2%, #000 0%, #000 28%, transparent 80%);
+              mask-image: radial-gradient(ellipse 130% 78% at 50% -2%, #000 0%, #000 28%, transparent 80%);
+      transition: opacity 0.25s linear;
+    }
+
+    /* agent console */
+    .hero-console {
+      max-width: 580px;
+      margin: 0 0 2.25rem;
+      background: linear-gradient(180deg, rgba(22,22,25,0.92), rgba(15,15,17,0.92));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 28px 70px -34px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+    .hc-bar {
+      display: flex; align-items: center; gap: 0.45rem;
+      padding: 0.6rem 0.9rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.018);
+    }
+    .hc-bar .d { width: 10px; height: 10px; border-radius: 50%; background: var(--border-strong); }
+    .hc-bar .d:nth-child(3) { background: var(--accent-dim); }
+    .hc-title {
+      margin-left: auto;
+      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600;
+      letter-spacing: 1.4px; text-transform: uppercase; color: var(--text-3);
+      display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .hc-title::after {
+      content: ''; width: 7px; height: 7px; border-radius: 50%;
+      background: #34d399; box-shadow: 0 0 0 3px rgba(52,211,153,0.15);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    .hc-body {
+      font-family: var(--font-mono); font-size: 0.83rem;
+      color: var(--text-2); line-height: 1.65;
+      padding: 0.95rem 1rem;
+      min-height: 3em;
+      white-space: pre-wrap; word-break: break-word;
+    }
+    .hc-body .pr { color: var(--accent); }
+    .hc-body .ok { color: #34d399; }
+    .hc-caret {
+      display: inline-block; width: 8px; height: 1.05em;
+      background: var(--accent); margin-left: 3px; vertical-align: text-bottom;
+      animation: caret 1s steps(1) infinite;
+    }
+    @keyframes caret { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
+
+    /* cursor spotlight glow on cards */
+    .sys-card, .skill-card, .xp, .write-row, .recognition, .case-compact, .about-side {
+      --mx: 50%; --my: -40%;
+    }
+    .skill-card, .xp, .write-row, .recognition, .case-compact, .about-side {
+      position: relative; overflow: hidden;
+    }
+    .sys-card::before, .skill-card::before, .xp::before, .write-row::before,
+    .recognition::before, .case-compact::before, .about-side::before {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(circle 260px at var(--mx) var(--my), var(--accent-glow), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.35s var(--ease);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .sys-card:hover::before, .skill-card:hover::before, .xp:hover::before,
+    .write-row:hover::before, .recognition:hover::before,
+    .case-compact:hover::before, .about-side:hover::before { opacity: 1; }
+    .sys-card > *, .skill-card > *, .xp > *, .write-row > *,
+    .recognition > *, .case-compact > *, .about-side > * { position: relative; z-index: 1; }
+
+    /* metrics mid-decode read as crisp mono numerals */
+    .impact-val.decoding, .cms-item .v.decoding { color: var(--accent-bright); }
+
+    @media (max-width: 560px) { .hero-console { max-width: 100%; } }
   </style>
 </head>
 <body>
 
 <a href="#systems" class="skip-link">Skip to content</a>
+
+<!-- signature: living embedding field (Account2Vec, made visible) -->
+<canvas id="field" aria-hidden="true"></canvas>
 <div class="progress" id="progress"></div>
 
 <!-- ============================================================
@@ -1084,6 +1175,14 @@
             <a href="resumes/MLManager_TechnicalLead.pdf" target="_blank" role="menuitem">ML Manager / Technical Lead</a>
           </div>
         </div>
+      </div>
+
+      <div class="hero-console reveal" aria-hidden="true">
+        <div class="hc-bar">
+          <span class="d"></span><span class="d"></span><span class="d"></span>
+          <span class="hc-title">incident-agent · live</span>
+        </div>
+        <div class="hc-body"><span id="hcLine"></span><span class="hc-caret"></span></div>
       </div>
 
       <div class="hero-impact">
@@ -2068,6 +2167,165 @@
     });
   }, { rootMargin: '0px 0px -60px 0px', threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+  // ================================================================
+  // SIGNATURE INTERACTIONS — embedding field · agent console ·
+  // decode-on-reveal metrics · cursor spotlight
+  // ================================================================
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // 1) Living embedding field — drifting vector space that reaches
+  //    toward the cursor. This is Account2Vec, rendered.
+  (function field() {
+    const c = document.getElementById('field');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    let w, h, dpr, nodes = [], raf = null;
+    const mouse = { x: -9999, y: -9999 };
+
+    function size() {
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      w = window.innerWidth; h = window.innerHeight;
+      c.width = w * dpr; c.height = h * dpr;
+      c.style.width = w + 'px'; c.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const target = Math.min(78, Math.round((w * h) / 17000));
+      nodes = [];
+      for (let i = 0; i < target; i++) {
+        nodes.push({
+          x: Math.random() * w,
+          y: Math.random() * h * 0.92,
+          vx: (Math.random() - 0.5) * 0.22,
+          vy: (Math.random() - 0.5) * 0.22
+        });
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+      const linkDist = 132, mouseDist = 175;
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i];
+        a.x += a.vx; a.y += a.vy;
+        if (a.x < 0 || a.x > w) a.vx *= -1;
+        if (a.y < 0 || a.y > h) a.vy *= -1;
+        for (let j = i + 1; j < nodes.length; j++) {
+          const b = nodes[j];
+          const dx = a.x - b.x, dy = a.y - b.y, d = Math.hypot(dx, dy);
+          if (d < linkDist) {
+            ctx.strokeStyle = 'rgba(245,166,35,' + (1 - d / linkDist) * 0.15 + ')';
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+          }
+        }
+        const md = Math.hypot(a.x - mouse.x, a.y - mouse.y);
+        const near = md < mouseDist;
+        if (near) {
+          ctx.strokeStyle = 'rgba(255,194,77,' + (1 - md / mouseDist) * 0.5 + ')';
+          ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
+        }
+        ctx.fillStyle = near ? 'rgba(255,194,77,0.9)' : 'rgba(245,166,35,0.5)';
+        ctx.beginPath(); ctx.arc(a.x, a.y, near ? 2.4 : 1.5, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+
+    // field is a hero-only brand moment — fade it out past the hero
+    // so it never sits behind body copy below, and pause its render.
+    let hidden = false;
+    function onFade() {
+      const fadeEnd = (window.innerHeight || 800) * 0.9;
+      const op = Math.max(0, 1 - window.scrollY / fadeEnd);
+      c.style.opacity = op;
+      hidden = op <= 0.01;
+    }
+
+    function loop() {
+      raf = requestAnimationFrame(loop);
+      if (hidden) return;
+      draw();
+    }
+
+    size(); onFade(); draw();
+    if (!reduceMotion) {
+      window.addEventListener('scroll', onFade, { passive: true });
+      loop();
+      window.addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive: true });
+      window.addEventListener('pointerleave', () => { mouse.x = -9999; mouse.y = -9999; });
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) { if (raf) cancelAnimationFrame(raf); raf = null; }
+        else if (!raf) loop();
+      });
+    }
+    let rt;
+    window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(size, 200); }, { passive: true });
+  })();
+
+  // 2) Agent console — a planner/executor loop, narrated live.
+  (function console_() {
+    const line = document.getElementById('hcLine');
+    if (!line) return;
+    const seq = [
+      { c: 'pr', s: '▸', t: ' planner   routing incident SEV2-4471 · 10 MCP tools' },
+      { c: 'pr', s: '▸', t: ' executor  query ADX · scan tickets · check jobs' },
+      { c: 'pr', s: '▸', t: ' compacting context   198K → 24K tokens' },
+      { c: 'ok', s: '✓', t: ' report ready   confidence 0.94   ·   hrs → min' }
+    ];
+    const render = (item, n) =>
+      '<span class="' + item.c + '">' + item.s + '</span>' +
+      item.t.slice(0, n).replace(/</g, '&lt;');
+    if (reduceMotion) { const last = seq[seq.length - 1]; line.innerHTML = render(last, last.t.length); return; }
+    let si = 0;
+    function type() {
+      const item = seq[si];
+      let i = 0;
+      (function tick() {
+        line.innerHTML = render(item, i);
+        if (i < item.t.length) { i++; setTimeout(tick, 26); }
+        else setTimeout(() => { si = (si + 1) % seq.length; type(); }, 1600);
+      })();
+    }
+    type();
+  })();
+
+  // 3) Decode-on-reveal — metrics resolve out of noise.
+  (function decode() {
+    if (reduceMotion) return;
+    const glyphs = '01<>/{}$%#*+→·';
+    const run = (el) => {
+      const finalHTML = el.innerHTML;
+      const tmp = document.createElement('div'); tmp.innerHTML = finalHTML;
+      const text = tmp.textContent;
+      el.classList.add('decoding');
+      let frame = 0; const total = 13;
+      const id = setInterval(() => {
+        frame++;
+        const cut = text.length * (frame / total);
+        let out = '';
+        for (let i = 0; i < text.length; i++) {
+          out += (i < cut || text[i] === ' ') ? text[i] : glyphs[Math.floor(Math.random() * glyphs.length)];
+        }
+        el.textContent = out;
+        if (frame >= total) { clearInterval(id); el.innerHTML = finalHTML; el.classList.remove('decoding'); }
+      }, 34);
+    };
+    const obs = new IntersectionObserver((ents) => {
+      ents.forEach(e => { if (e.isIntersecting) { run(e.target); obs.unobserve(e.target); } });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('.impact-val, .cms-item .v').forEach(el => obs.observe(el));
+  })();
+
+  // 4) Cursor spotlight — radial glow tracks the pointer per card.
+  (function spotlight() {
+    const sel = '.sys-card, .skill-card, .xp, .write-row, .recognition, .case-compact, .about-side';
+    document.querySelectorAll(sel).forEach(card => {
+      card.addEventListener('pointermove', e => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      }, { passive: true });
+    });
+  })();
 </script>
 
 </body>

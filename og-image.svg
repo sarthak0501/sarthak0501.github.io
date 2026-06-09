@@ -1,97 +1,113 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
   <defs>
     <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#22d3ee"/>
-      <stop offset="1" stop-color="#0891b2"/>
+      <stop offset="0" stop-color="#ffc24d"/>
+      <stop offset="1" stop-color="#c47d12"/>
     </linearGradient>
-    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.035)" stroke-width="1"/>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M 48 0 L 0 0 0 48" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
     </pattern>
-    <radialGradient id="glow" cx="0.25" cy="0.4" r="0.6">
-      <stop offset="0" stop-color="rgba(34,211,238,0.12)"/>
-      <stop offset="1" stop-color="rgba(34,211,238,0)"/>
+    <radialGradient id="glow" cx="0.18" cy="0.0" r="0.75">
+      <stop offset="0" stop-color="rgba(245,166,35,0.20)"/>
+      <stop offset="1" stop-color="rgba(245,166,35,0)"/>
     </radialGradient>
   </defs>
 
-  <rect width="1200" height="630" fill="#0b0e14"/>
+  <rect width="1200" height="630" fill="#0a0a0b"/>
   <rect width="1200" height="630" fill="url(#grid)"/>
   <rect width="1200" height="630" fill="url(#glow)"/>
 
+  <!-- embedding-field motif (echoes the live hero) -->
+  <g stroke="#f5a623" stroke-width="1" opacity="0.35">
+    <line x1="980" y1="455" x2="1066" y2="498"/>
+    <line x1="1066" y1="498" x2="1120" y2="430"/>
+    <line x1="980" y1="455" x2="1030" y2="560"/>
+    <line x1="1066" y1="498" x2="1150" y2="545"/>
+    <line x1="1030" y1="560" x2="1120" y2="430"/>
+  </g>
+  <g fill="#f5a623">
+    <circle cx="980" cy="455" r="4"/>
+    <circle cx="1066" cy="498" r="5"/>
+    <circle cx="1120" cy="430" r="4"/>
+    <circle cx="1030" cy="560" r="4"/>
+    <circle cx="1150" cy="545" r="3.5"/>
+  </g>
+
   <!-- accent bar -->
-  <rect x="80" y="120" width="4" height="72" fill="url(#accent)"/>
+  <rect x="80" y="118" width="4" height="74" fill="url(#accent)"/>
 
   <!-- eyebrow -->
-  <text x="104" y="144" font-family="'SF Mono', 'Space Mono', ui-monospace, monospace"
-        font-size="16" font-weight="700" fill="#22d3ee" letter-spacing="4">
-    SENIOR DATA &amp; APPLIED SCIENTIST · MICROSOFT
+  <text x="104" y="142" font-family="'JetBrains Mono','SF Mono',ui-monospace,monospace"
+        font-size="16" font-weight="700" fill="#f5a623" letter-spacing="3.5">
+    SR. DATA &amp; APPLIED SCIENTIST · MICROSOFT · AI CHAMPION
   </text>
 
   <!-- location -->
-  <text x="104" y="180" font-family="'SF Mono', 'Space Mono', ui-monospace, monospace"
-        font-size="14" fill="#9ba5b4" letter-spacing="2">
+  <text x="104" y="178" font-family="'JetBrains Mono','SF Mono',ui-monospace,monospace"
+        font-size="14" fill="#aba8a2" letter-spacing="2">
     REDMOND, WA · AZURE STORAGE
   </text>
 
   <!-- name -->
-  <text x="80" y="290" font-family="Inter, system-ui, sans-serif"
-        font-size="84" font-weight="800" fill="#e4e8ef" letter-spacing="-2">
+  <text x="79" y="292" font-family="'Space Grotesk',Inter,system-ui,sans-serif"
+        font-size="86" font-weight="700" fill="#f4f3f1" letter-spacing="-3">
     Sarthak Bichhawa
   </text>
 
   <!-- headline -->
-  <text x="80" y="380" font-family="Inter, system-ui, sans-serif"
-        font-size="44" font-weight="600" fill="#e4e8ef" letter-spacing="-1">
-    Production AI that
+  <text x="80" y="382" font-family="'Space Grotesk',Inter,system-ui,sans-serif"
+        font-size="46" font-weight="600" fill="#f4f3f1" letter-spacing="-1.5">
+    Production AI,
   </text>
-  <text x="80" y="432" font-family="Inter, system-ui, sans-serif"
-        font-size="44" font-weight="600" fill="#22d3ee" letter-spacing="-1">
-    moves the number.
+  <text x="80" y="436" font-family="'Space Grotesk',Inter,system-ui,sans-serif"
+        font-size="46" font-weight="600" fill="#f5a623" letter-spacing="-1.5">
+    built to ship.
   </text>
 
   <!-- impact chips -->
   <g transform="translate(80, 500)">
-    <rect x="0" y="0" width="180" height="40" rx="4" fill="none"
+    <rect x="0" y="0" width="214" height="40" rx="4" fill="none"
           stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-    <text x="16" y="26" font-family="'SF Mono', 'Space Mono', ui-monospace, monospace"
-          font-size="14" font-weight="700" fill="#e4e8ef" letter-spacing="1">
-      9+ YEARS IN DS/ML
+    <text x="16" y="26" font-family="'JetBrains Mono','SF Mono',ui-monospace,monospace"
+          font-size="14" font-weight="700" fill="#f4f3f1" letter-spacing="1">
+      $45M/MO RECOVERED
     </text>
 
-    <rect x="196" y="0" width="210" height="40" rx="4" fill="none"
+    <rect x="230" y="0" width="196" height="40" rx="4" fill="none"
           stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-    <text x="212" y="26" font-family="'SF Mono', 'Space Mono', ui-monospace, monospace"
-          font-size="14" font-weight="700" fill="#e4e8ef" letter-spacing="1">
-      $10M+ MoM IMPACT
+    <text x="246" y="26" font-family="'JetBrains Mono','SF Mono',ui-monospace,monospace"
+          font-size="14" font-weight="700" fill="#f4f3f1" letter-spacing="1">
+      HRS → MIN TRIAGE
     </text>
 
-    <rect x="422" y="0" width="240" height="40" rx="4" fill="none"
-          stroke="rgba(34,211,238,0.5)" stroke-width="1"/>
-    <text x="438" y="26" font-family="'SF Mono', 'Space Mono', ui-monospace, monospace"
-          font-size="14" font-weight="700" fill="#22d3ee" letter-spacing="1">
-      GENAI AGENT SHIPPED
+    <rect x="442" y="0" width="270" height="40" rx="4" fill="none"
+          stroke="rgba(245,166,35,0.5)" stroke-width="1"/>
+    <text x="458" y="26" font-family="'JetBrains Mono','SF Mono',ui-monospace,monospace"
+          font-size="14" font-weight="700" fill="#f5a623" letter-spacing="1">
+      MULTI-AGENT LLM SHIPPED
     </text>
   </g>
 
   <!-- url -->
-  <text x="80" y="588" font-family="'SF Mono', 'Space Mono', ui-monospace, monospace"
-        font-size="14" fill="#9ba5b4" letter-spacing="2">
+  <text x="80" y="588" font-family="'JetBrains Mono','SF Mono',ui-monospace,monospace"
+        font-size="14" fill="#aba8a2" letter-spacing="2">
     sarthak0501.github.io
   </text>
 
   <!-- monogram tile -->
-  <g transform="translate(980, 120)">
-    <rect width="140" height="140" rx="20" fill="#0b0e14"
+  <g transform="translate(980, 118)">
+    <rect width="140" height="140" rx="20" fill="#0a0a0b"
           stroke="url(#accent)" stroke-width="2"/>
     <text x="70" y="102" text-anchor="middle"
-          font-family="Inter, system-ui, sans-serif"
-          font-size="76" font-weight="800" fill="url(#accent)">SB</text>
+          font-family="'Space Grotesk',Inter,system-ui,sans-serif"
+          font-size="74" font-weight="700" fill="url(#accent)">SB</text>
   </g>
 
   <!-- focus keywords -->
-  <g transform="translate(980, 290)" font-family="'SF Mono', 'Space Mono', ui-monospace, monospace"
-     font-size="12" fill="#9ba5b4" letter-spacing="2">
-    <text x="140" y="0" text-anchor="end">// LLM AGENTS</text>
-    <text x="140" y="22" text-anchor="end">// APPLIED ML</text>
+  <g transform="translate(980, 292)" font-family="'JetBrains Mono','SF Mono',ui-monospace,monospace"
+     font-size="12" fill="#aba8a2" letter-spacing="2">
+    <text x="140" y="0" text-anchor="end">// MULTI-AGENT LLM</text>
+    <text x="140" y="22" text-anchor="end">// FOUNDATIONAL ML</text>
     <text x="140" y="44" text-anchor="end">// EMBEDDINGS</text>
     <text x="140" y="66" text-anchor="end">// AZURE STORAGE</text>
   </g>
