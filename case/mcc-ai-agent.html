@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0b0e14" />
+  <meta name="theme-color" content="#0a0a0b" />
 
   <title>MCC AI Agent — Customer-Health Copilot · Case Study</title>
   <meta name="description" content="How we shipped a production GenAI agent on Azure OpenAI that answers natural-language customer-health questions, grounded in live telemetry, tickets and ownership data." />
@@ -21,7 +21,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
 
   <style>
@@ -293,7 +293,7 @@
         <span class="accent">"how is this customer really doing?"</span>
       </h1>
       <p class="page-dek">
-        A grounded, tool-using agent on Azure OpenAI that replaced 3–5 day exec readouts with real-time natural-language answers over eight live data sources. Shipped with an eval harness, guardrails, and PII-aware prompts so it could hold up under real enterprise load.
+        A grounded, tool-using agent on Azure OpenAI that turns natural-language questions into governed live Kusto/ADX queries — grounded on a curated catalog of 13 metric domains — cutting customer-health time-to-insight from days to under 2 minutes. Shipped with an eval harness, guardrails, and PII-aware prompts so it could hold up under real enterprise load.
       </p>
     </div>
   </header>
@@ -340,7 +340,7 @@
           <div class="dw-label">// agent architecture</div>
           <svg class="diagram" viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MCC AI Agent architecture">
             <defs>
-              <marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#22d3ee"/></marker>
+              <marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#f5a623"/></marker>
               <marker id="a1m" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.35)"/></marker>
             </defs>
             <rect class="wrap-rect" x="20" y="32" width="860" height="280" rx="10"/>
@@ -380,7 +380,7 @@
             </g>
             <g>
               <rect class="node-box primary" x="760" y="140" width="120" height="60" rx="8"/>
-              <text class="node-label" x="820" y="165" text-anchor="middle" fill="#22d3ee">Answer</text>
+              <text class="node-label" x="820" y="165" text-anchor="middle" fill="#f5a623">Answer</text>
               <text class="node-label sub" x="820" y="183" text-anchor="middle">grounded · cited</text>
             </g>
 
@@ -530,7 +530,7 @@ StorageAccountMetrics
 
         <p style="margin-top:2rem">
           If you want the longer write-up on the mental model behind this, there's an essay:
-          <a href="/writing/shipping-genai-enterprise.html" style="color:var(--accent);border-bottom:1px solid rgba(34,211,238,0.35);">Shipping GenAI in enterprise: what actually breaks</a>.
+          <a href="/writing/shipping-genai-enterprise.html" style="color:var(--accent);border-bottom:1px solid rgba(245,166,35,0.35);">Shipping GenAI in enterprise: what actually breaks</a>.
         </p>
 
         <div class="author-card">
