@@ -42,6 +42,9 @@
     "url": "https://sarthak0501.github.io/",
     "jobTitle": "Senior Data & Applied Scientist",
     "worksFor": { "@type": "Organization", "name": "Microsoft" },
+    "email": "mailto:sarthaksgsits@gmail.com",
+    "address": { "@type": "PostalAddress", "addressLocality": "Redmond", "addressRegion": "WA", "addressCountry": "US" },
+    "knowsAbout": ["LLM agents", "Azure OpenAI", "Machine learning", "Embeddings", "Representation learning", "MLOps", "Data platforms", "Model Context Protocol"],
     "sameAs": [
       "https://www.linkedin.com/in/sarthak-bichhawa/",
       "https://github.com/sarthak0501"
@@ -462,16 +465,19 @@
     .case-lede .ba { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--green); margin-right: 0.4rem; }
     .case-lede .ba.before { color: var(--orange); }
 
-    .diagram-wrap { padding: 2rem 1.8rem; margin-bottom: 1.6rem; }
+    .diagram-wrap { padding: 2rem 1.8rem; margin-bottom: 1.6rem; overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .diagram-wrap .dw-label { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600; color: var(--green); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1.5rem; }
     .diagram { width: 100%; height: auto; }
+    @media (max-width: 680px) { .diagram { min-width: 620px; } }
     .diagram .node-box { fill: rgba(244, 241, 230, 0.025); stroke: var(--border-2); stroke-width: 1; }
     .diagram .node-box.primary { stroke: var(--green-dim); fill: rgba(98, 233, 166, 0.07); }
     .diagram .node-label { font-family: var(--font-sans); font-size: 11px; font-weight: 600; fill: var(--paper); }
     .diagram .node-label.sub { font-size: 9px; font-weight: 500; fill: var(--paper-2); }
     .diagram .node-label.tag { font-family: var(--font-mono); font-size: 9px; font-weight: 600; fill: var(--green); letter-spacing: 1px; }
-    .diagram .flow-line { stroke: var(--border-2); stroke-width: 1.5; fill: none; }
+    .diagram .flow-line { stroke: rgba(238, 235, 222, 0.30); stroke-width: 1.5; fill: none; }
     .diagram .flow-line.accent { stroke: var(--green-dim); }
+    .diagram .diag-note { font-family: var(--font-mono); font-size: 8.5px; font-weight: 500; fill: var(--paper-3); letter-spacing: 0.4px; }
+    .diagram .diag-note.g { fill: var(--green); }
     .diagram .wrap-rect { fill: none; stroke: var(--green-dim); stroke-width: 1; stroke-dasharray: 4 4; opacity: 0.5; }
     .diagram .wrap-label { font-family: var(--font-mono); font-size: 9px; font-weight: 600; fill: var(--green); letter-spacing: 1.5px; }
 
@@ -629,13 +635,18 @@
     .resume-dossier .rd-head { padding: 0.7rem 1.3rem; border-bottom: 1px solid var(--border); font-family: var(--font-mono); font-size: 0.66rem; font-weight: 600; letter-spacing: 1.8px; text-transform: uppercase; color: var(--paper-3); background: rgba(244,241,230,0.018); }
     .rd-grid { display: grid; grid-template-columns: 1fr 1fr; }
     .rd-grid a { display: flex; align-items: center; gap: 0.6rem; padding: 0.85rem 1.3rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--paper-2); border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); transition: background 0.15s var(--ease), color 0.15s var(--ease); }
-    .rd-grid a:nth-child(2n) { border-right: 0; }
-    .rd-grid a:nth-last-child(-n+1) { border-bottom: 0; }
+    .rd-grid a:first-child { grid-column: 1 / -1; border-right: 0; }
+    .rd-grid a:nth-child(2n+1):not(:first-child) { border-right: 0; }
+    .rd-grid a:nth-last-child(-n+2) { border-bottom: 0; }
     .rd-grid a::before { content: '↓'; color: var(--green-dim); font-weight: 600; transition: color 0.15s var(--ease); }
     .rd-grid a:hover { background: var(--green-soft); color: var(--paper); }
     .rd-grid a:hover::before { color: var(--green); }
     .rd-grid a b { font-weight: 600; color: inherit; }
-    @media (max-width: 620px) { .rd-grid { grid-template-columns: 1fr; } .rd-grid a { border-right: 0 !important; } }
+    @media (max-width: 620px) {
+      .rd-grid { grid-template-columns: 1fr; }
+      .rd-grid a { border-right: 0 !important; border-bottom: 1px solid var(--border) !important; }
+      .rd-grid a:last-child { border-bottom: 0 !important; }
+    }
     .ask-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; font-family: var(--font-mono); font-size: 0.82rem; }
     .ask-link { color: var(--paper-2); display: inline-flex; align-items: center; gap: 0.45rem; transition: color 0.15s var(--ease); }
     .ask-link:hover { color: var(--green); }
@@ -664,7 +675,7 @@
       html { scroll-behavior: auto; }
     }
   </style>
-  <noscript><style>.reveal { opacity: 1; transform: none; } .triage-panel[hidden] { display: none; }</style></noscript>
+  <noscript><style>.reveal { opacity: 1; transform: none; } .triage-panel[hidden] { display: block; } .triage-tabs { display: none; }</style></noscript>
 </head>
 <body>
 
@@ -692,7 +703,7 @@
       Sarthak Bichhawa
       <span class="doc">/ THE BRIEF</span>
     </a>
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <div class="nav-links" id="navLinks">
@@ -725,18 +736,18 @@
     </div>
 
     <div class="reveal">
-      <div class="hero-eyebrow">Sr. Data &amp; Applied Scientist · Microsoft · <span class="g">&nbsp;org-recognized AI Champion</span></div>
+      <div class="hero-eyebrow">Sr. Data &amp; Applied Scientist · Microsoft · <span class="g">org-recognized AI Champion</span></div>
       <h1>The case for<br>hiring <em>Sarthak.</em></h1>
       <p class="hero-lead">
         Nine years of ML and AI in production — <strong>autonomous LLM agents</strong>, a <strong>fleet-scale embedding platform</strong>, and the revenue systems Finance reconciles against.
         <span class="no">Passionate about data.</span> This page argues like a hiring brief instead: claims up front, receipts attached, architecture on request.
       </p>
       <div class="hero-meta">
-        <b>Microsoft · 5+ yrs</b> <span class="sep">·</span> Redmond, WA
+        <b>9+ yrs production ML / AI</b> <span class="sep">·</span> Microsoft 5+ yrs · Redmond, WA
         <span class="sep">·</span> <span class="open">OPEN TO: Staff / Principal AS · ML Lead · GenAI Eng Mgr</span>
       </div>
       <div class="hero-ctas">
-        <a href="resumes/SarthakBichhawa_Resume_2026.pdf" target="_blank" class="btn btn-primary">
+        <a href="resumes/SarthakBichhawa_Resume_2026.pdf" target="_blank" rel="noopener" class="btn btn-primary">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Download résumé (2026)
         </a>
@@ -767,7 +778,7 @@
           <li><strong>Fastest path:</strong> grab the résumé, or copy a paste-ready summary for your ATS / intro email below.</li>
         </ul>
         <div class="triage-actions">
-          <a href="resumes/SarthakBichhawa_Resume_2026.pdf" target="_blank" class="btn btn-primary">Résumé PDF</a>
+          <a href="resumes/SarthakBichhawa_Resume_2026.pdf" target="_blank" rel="noopener" class="btn btn-primary">Résumé PDF</a>
           <button class="btn btn-mono copy-btn" type="button">⧉ copy candidate summary</button>
           <a href="https://www.linkedin.com/in/sarthak-bichhawa/" target="_blank" rel="noopener" class="btn btn-ghost">LinkedIn</a>
         </div>
@@ -921,7 +932,7 @@
             <path d="M 0 0 L 10 5 L 0 10 z" fill="#62e9a6"/>
           </marker>
           <marker id="arr3-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(238,235,222,0.35)"/>
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(238,235,222,0.5)"/>
           </marker>
         </defs>
 
@@ -929,53 +940,60 @@
         <text class="wrap-label" x="36" y="24">CONTEXT COMPACTION · CONCURRENT DISPATCH · 429 RETRY · LLM TRACING</text>
 
         <g>
-          <rect class="node-box" x="40" y="140" width="120" height="60" rx="8"/>
-          <text class="node-label" x="100" y="165" text-anchor="middle">Incident ID</text>
-          <text class="node-label sub" x="100" y="183" text-anchor="middle">POST /agent</text>
+          <rect class="node-box" x="44" y="141" width="120" height="58" rx="8"/>
+          <text class="node-label" x="104" y="166" text-anchor="middle">Incident ID</text>
+          <text class="node-label sub" x="104" y="184" text-anchor="middle">POST /agent</text>
         </g>
 
         <g>
-          <rect class="node-box primary" x="200" y="80" width="200" height="80" rx="10"/>
-          <text class="node-label tag" x="300" y="102" text-anchor="middle">PLANNER</text>
-          <text class="node-label" x="300" y="122" text-anchor="middle" style="font-size:13px;">high-reasoning · 40 turns</text>
-          <text class="node-label sub" x="300" y="140" text-anchor="middle">routes · summarizes</text>
-          <text class="node-label sub" x="300" y="154" text-anchor="middle">holds long context</text>
+          <rect class="node-box primary" x="204" y="72" width="196" height="84" rx="10"/>
+          <text class="node-label tag" x="302" y="94" text-anchor="middle">PLANNER</text>
+          <text class="node-label" x="302" y="114" text-anchor="middle" style="font-size:13px;">high-reasoning · 40 turns</text>
+          <text class="node-label sub" x="302" y="132" text-anchor="middle">routes · summarizes</text>
+          <text class="node-label sub" x="302" y="146" text-anchor="middle">holds long context</text>
         </g>
 
         <g>
-          <rect class="node-box primary" x="200" y="200" width="200" height="80" rx="10"/>
-          <text class="node-label tag" x="300" y="222" text-anchor="middle">EXECUTOR</text>
-          <text class="node-label" x="300" y="242" text-anchor="middle" style="font-size:13px;">lightweight · 12 turns</text>
-          <text class="node-label sub" x="300" y="260" text-anchor="middle">fresh ctx per task</text>
-          <text class="node-label sub" x="300" y="274" text-anchor="middle">concurrent dispatch</text>
+          <rect class="node-box primary" x="204" y="196" width="196" height="84" rx="10"/>
+          <text class="node-label tag" x="302" y="218" text-anchor="middle">EXECUTOR</text>
+          <text class="node-label" x="302" y="238" text-anchor="middle" style="font-size:13px;">lightweight · 12 turns</text>
+          <text class="node-label sub" x="302" y="256" text-anchor="middle">fresh ctx per task</text>
+          <text class="node-label sub" x="302" y="270" text-anchor="middle">concurrent dispatch</text>
         </g>
 
         <g>
-          <rect class="node-box" x="450" y="100" width="180" height="160" rx="8"/>
-          <text class="node-label tag" x="540" y="122" text-anchor="middle">MCP TOOL SERVERS</text>
-          <text class="node-label sub" x="540" y="142" text-anchor="middle">10 tools · managed identity</text>
-          <text class="node-label" x="540" y="166" text-anchor="middle" style="font-size:11px;">· Kusto query</text>
-          <text class="node-label" x="540" y="186" text-anchor="middle" style="font-size:11px;">· Incident / ticket APIs</text>
-          <text class="node-label" x="540" y="206" text-anchor="middle" style="font-size:11px;">· Job monitoring</text>
-          <text class="node-label" x="540" y="226" text-anchor="middle" style="font-size:11px;">· Data-stream platform</text>
-          <text class="node-label sub" x="540" y="248" text-anchor="middle">reused by Copilot · VS Code</text>
+          <rect class="node-box" x="455" y="128" width="180" height="152" rx="8"/>
+          <text class="node-label tag" x="545" y="148" text-anchor="middle">MCP TOOL SERVERS</text>
+          <text class="node-label sub" x="545" y="166" text-anchor="middle">10 tools · managed identity</text>
+          <text class="node-label" x="478" y="190" style="font-size:11px;">· Kusto query</text>
+          <text class="node-label" x="478" y="208" style="font-size:11px;">· Incident / ticket APIs</text>
+          <text class="node-label" x="478" y="226" style="font-size:11px;">· Job monitoring</text>
+          <text class="node-label" x="478" y="244" style="font-size:11px;">· Data-stream platform</text>
+          <text class="node-label sub" x="545" y="264" text-anchor="middle">reused by Copilot · VS Code</text>
         </g>
 
         <g>
-          <rect class="node-box primary" x="680" y="120" width="200" height="100" rx="10"/>
-          <text class="node-label tag" x="780" y="142" text-anchor="middle">REPORT</text>
-          <text class="node-label" x="780" y="162" text-anchor="middle" style="font-size:13px;">structured Markdown</text>
-          <text class="node-label sub" x="780" y="180" text-anchor="middle">confidence-scored</text>
-          <text class="node-label sub" x="780" y="194" text-anchor="middle">grounded · classified</text>
-          <text class="node-label sub" x="780" y="210" text-anchor="middle">trace → Kusto</text>
+          <rect class="node-box primary" x="692" y="120" width="188" height="96" rx="10"/>
+          <text class="node-label tag" x="786" y="142" text-anchor="middle">REPORT</text>
+          <text class="node-label" x="786" y="162" text-anchor="middle" style="font-size:13px;">structured Markdown</text>
+          <text class="node-label sub" x="786" y="180" text-anchor="middle">confidence-scored</text>
+          <text class="node-label sub" x="786" y="194" text-anchor="middle">grounded · classified</text>
+          <text class="node-label sub" x="786" y="208" text-anchor="middle">trace → Kusto</text>
         </g>
 
-        <path class="flow-line accent" d="M 160 170 L 198 120" marker-end="url(#arr3)"/>
-        <path class="flow-line accent" d="M 300 160 L 300 198" marker-end="url(#arr3)" stroke-dasharray="2 3"/>
-        <text class="node-label sub" x="312" y="182" style="fill:#62e9a6;font-family:var(--font-mono);font-size:8.5px;">execute_task</text>
-        <path class="flow-line accent" d="M 400 240 L 448 200" marker-end="url(#arr3)"/>
-        <path class="flow-line" d="M 450 180 L 402 220" marker-end="url(#arr3-muted)"/>
-        <path class="flow-line accent" d="M 400 120 L 678 160" marker-end="url(#arr3)"/>
+        <!-- intake -->
+        <path class="flow-line accent" d="M 164 170 H 184 V 114 H 200" marker-end="url(#arr3)"/>
+        <!-- planner ⇄ executor -->
+        <path class="flow-line accent" d="M 290 156 V 192" marker-end="url(#arr3)" stroke-dasharray="2 3"/>
+        <path class="flow-line" d="M 314 196 V 160" marker-end="url(#arr3-muted)"/>
+        <text class="diag-note g" x="324" y="172">execute_task</text>
+        <text class="diag-note" x="324" y="188">results</text>
+        <!-- executor ⇄ tools -->
+        <path class="flow-line accent" d="M 400 218 H 451" marker-end="url(#arr3)"/>
+        <path class="flow-line" d="M 455 258 H 404" marker-end="url(#arr3-muted)"/>
+        <!-- planner → report, routed above the tool column -->
+        <path class="flow-line accent" d="M 400 96 H 786 V 116" marker-end="url(#arr3)"/>
+        <text class="diag-note g" x="560" y="88" text-anchor="middle">synthesized report</text>
       </svg>
     </div>
 
@@ -1027,7 +1045,7 @@
             <path d="M 0 0 L 10 5 L 0 10 z" fill="#62e9a6"/>
           </marker>
           <marker id="arr1-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(238,235,222,0.35)"/>
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(238,235,222,0.5)"/>
           </marker>
         </defs>
 
@@ -1035,53 +1053,59 @@
         <text class="wrap-label" x="36" y="24">EVAL HARNESS · GUARDRAILS · GROUNDEDNESS</text>
 
         <g>
-          <rect class="node-box" x="40" y="140" width="140" height="60" rx="8"/>
-          <text class="node-label" x="110" y="165" text-anchor="middle">User query</text>
-          <text class="node-label sub" x="110" y="183" text-anchor="middle">exec · on-call · PM</text>
+          <rect class="node-box" x="40" y="146" width="140" height="60" rx="8"/>
+          <text class="node-label" x="110" y="171" text-anchor="middle">User query</text>
+          <text class="node-label sub" x="110" y="189" text-anchor="middle">exec · on-call · PM</text>
         </g>
 
         <g>
-          <rect class="node-box primary" x="280" y="120" width="200" height="100" rx="10"/>
-          <text class="node-label tag" x="380" y="142" text-anchor="middle">LLM AGENT</text>
-          <text class="node-label" x="380" y="162" text-anchor="middle" style="font-size:13px;">Azure OpenAI</text>
-          <text class="node-label sub" x="380" y="180" text-anchor="middle">GPT-4 · function calling</text>
-          <text class="node-label sub" x="380" y="196" text-anchor="middle">grounded · schema-valid</text>
+          <rect class="node-box" x="267" y="52" width="170" height="44" rx="8"/>
+          <text class="node-label" x="352" y="72" text-anchor="middle">RAG + Tools</text>
+          <text class="node-label sub" x="352" y="87" text-anchor="middle">vector search · KQL exec</text>
         </g>
 
         <g>
-          <rect class="node-box" x="295" y="55" width="170" height="44" rx="8"/>
-          <text class="node-label" x="380" y="75" text-anchor="middle">RAG + Tools</text>
-          <text class="node-label sub" x="380" y="90" text-anchor="middle">vector search · KQL exec</text>
+          <rect class="node-box primary" x="252" y="126" width="200" height="100" rx="10"/>
+          <text class="node-label tag" x="352" y="148" text-anchor="middle">LLM AGENT</text>
+          <text class="node-label" x="352" y="168" text-anchor="middle" style="font-size:13px;">Azure OpenAI</text>
+          <text class="node-label sub" x="352" y="186" text-anchor="middle">GPT-4 · function calling</text>
+          <text class="node-label sub" x="352" y="202" text-anchor="middle">grounded · schema-valid</text>
         </g>
 
         <g>
-          <rect class="node-box" x="570" y="60" width="150" height="48" rx="8"/>
-          <text class="node-label" x="645" y="82" text-anchor="middle">ADX / KQL</text>
-          <text class="node-label sub" x="645" y="98" text-anchor="middle">telemetry</text>
+          <rect class="node-box" x="560" y="64" width="160" height="48" rx="8"/>
+          <text class="node-label" x="640" y="86" text-anchor="middle">ADX / KQL</text>
+          <text class="node-label sub" x="640" y="102" text-anchor="middle">telemetry</text>
         </g>
         <g>
-          <rect class="node-box" x="570" y="126" width="150" height="48" rx="8"/>
-          <text class="node-label" x="645" y="148" text-anchor="middle">Tickets · CRIs</text>
-          <text class="node-label sub" x="645" y="164" text-anchor="middle">ICM · support</text>
+          <rect class="node-box" x="560" y="150" width="160" height="48" rx="8"/>
+          <text class="node-label" x="640" y="172" text-anchor="middle">Tickets · CRIs</text>
+          <text class="node-label sub" x="640" y="188" text-anchor="middle">ICM · support</text>
         </g>
         <g>
-          <rect class="node-box" x="570" y="192" width="150" height="48" rx="8"/>
-          <text class="node-label" x="645" y="214" text-anchor="middle">Ownership graph</text>
-          <text class="node-label sub" x="645" y="230" text-anchor="middle">accounts · subs · TPIDs</text>
+          <rect class="node-box" x="560" y="236" width="160" height="48" rx="8"/>
+          <text class="node-label" x="640" y="258" text-anchor="middle">Ownership graph</text>
+          <text class="node-label sub" x="640" y="274" text-anchor="middle">accounts · subs · TPIDs</text>
         </g>
 
         <g>
-          <rect class="node-box primary" x="760" y="140" width="120" height="60" rx="8"/>
-          <text class="node-label" x="820" y="165" text-anchor="middle" fill="#62e9a6">Answer</text>
-          <text class="node-label sub" x="820" y="183" text-anchor="middle">grounded · cited</text>
+          <rect class="node-box primary" x="768" y="146" width="112" height="60" rx="8"/>
+          <text class="node-label" x="824" y="171" text-anchor="middle" fill="#62e9a6">Answer</text>
+          <text class="node-label sub" x="824" y="189" text-anchor="middle">grounded · cited</text>
         </g>
 
-        <path class="flow-line accent" d="M 180 170 L 278 170" marker-end="url(#arr1)"/>
-        <path class="flow-line accent" d="M 380 118 L 380 101" marker-end="url(#arr1)"/>
-        <path class="flow-line" d="M 465 80 L 568 82" marker-end="url(#arr1-muted)"/>
-        <path class="flow-line" d="M 475 150 L 568 150" marker-end="url(#arr1-muted)"/>
-        <path class="flow-line" d="M 465 200 L 568 216" marker-end="url(#arr1-muted)"/>
-        <path class="flow-line accent" d="M 480 170 L 758 170" marker-end="url(#arr1)"/>
+        <!-- query in -->
+        <path class="flow-line accent" d="M 180 176 H 248" marker-end="url(#arr1)"/>
+        <!-- agent ⇄ retrieval -->
+        <path class="flow-line accent" d="M 352 122 V 100" marker-start="url(#arr1)" marker-end="url(#arr1)"/>
+        <!-- tool calls, request/response -->
+        <path class="flow-line" d="M 456 150 H 506 V 88 H 556" marker-start="url(#arr1-muted)" marker-end="url(#arr1-muted)"/>
+        <path class="flow-line" d="M 456 174 H 556" marker-start="url(#arr1-muted)" marker-end="url(#arr1-muted)"/>
+        <path class="flow-line" d="M 456 202 H 506 V 260 H 556" marker-start="url(#arr1-muted)" marker-end="url(#arr1-muted)"/>
+        <text class="diag-note" x="504" y="166" text-anchor="middle">governed KQL</text>
+        <!-- answer out, routed above the data column -->
+        <path class="flow-line accent" d="M 452 138 H 530 V 44 H 824 V 142" marker-end="url(#arr1)"/>
+        <text class="diag-note g" x="676" y="56" text-anchor="middle">narrative + citations</text>
       </svg>
     </div>
 
@@ -1139,85 +1163,92 @@
             <path d="M 0 0 L 10 5 L 0 10 z" fill="#62e9a6"/>
           </marker>
           <marker id="arr2-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(238,235,222,0.35)"/>
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(238,235,222,0.5)"/>
           </marker>
         </defs>
 
+        <rect class="wrap-rect" x="14" y="30" width="932" height="278" rx="10"/>
+        <text class="wrap-label" x="30" y="22">DRIFT · COVERAGE · STALENESS MONITORING</text>
+
         <g>
-          <rect class="node-box" x="20" y="120" width="140" height="80" rx="8"/>
-          <text class="node-label tag" x="90" y="142" text-anchor="middle">INPUT</text>
-          <text class="node-label" x="90" y="160" text-anchor="middle">XStore telemetry</text>
-          <text class="node-label sub" x="90" y="176" text-anchor="middle">~100 raw metrics</text>
-          <text class="node-label sub" x="90" y="190" text-anchor="middle">per account</text>
+          <rect class="node-box" x="36" y="128" width="140" height="80" rx="8"/>
+          <text class="node-label tag" x="106" y="150" text-anchor="middle">INPUT</text>
+          <text class="node-label" x="106" y="168" text-anchor="middle">XStore telemetry</text>
+          <text class="node-label sub" x="106" y="184" text-anchor="middle">~100 raw metrics</text>
+          <text class="node-label sub" x="106" y="198" text-anchor="middle">per account</text>
         </g>
 
         <g>
-          <rect class="node-box" x="200" y="120" width="160" height="80" rx="8"/>
-          <text class="node-label tag" x="280" y="142" text-anchor="middle">PIPELINE</text>
-          <text class="node-label" x="280" y="160" text-anchor="middle">AccountFeatureMatrix</text>
-          <text class="node-label sub" x="280" y="176" text-anchor="middle">40–50 rolling features</text>
-          <text class="node-label sub" x="280" y="190" text-anchor="middle">txn · capacity · auth · latency</text>
+          <rect class="node-box" x="216" y="128" width="164" height="80" rx="8"/>
+          <text class="node-label tag" x="298" y="150" text-anchor="middle">PIPELINE</text>
+          <text class="node-label" x="298" y="168" text-anchor="middle">AccountFeatureMatrix</text>
+          <text class="node-label sub" x="298" y="184" text-anchor="middle">40–50 rolling features</text>
+          <text class="node-label sub" x="298" y="198" text-anchor="middle">txn · capacity · auth · latency</text>
         </g>
 
         <g>
-          <rect class="node-box primary" x="400" y="110" width="160" height="100" rx="10"/>
-          <text class="node-label tag" x="480" y="132" text-anchor="middle">MODEL</text>
-          <text class="node-label" x="480" y="152" text-anchor="middle" style="font-size:13px;">Autoencoder</text>
-          <text class="node-label sub" x="480" y="170" text-anchor="middle">PyTorch · Azure Synapse</text>
-          <text class="node-label sub" x="480" y="186" text-anchor="middle">fleet-scale training</text>
-          <text class="node-label sub" x="480" y="200" text-anchor="middle">M+ accounts</text>
+          <rect class="node-box primary" x="420" y="118" width="160" height="100" rx="10"/>
+          <text class="node-label tag" x="500" y="140" text-anchor="middle">MODEL</text>
+          <text class="node-label" x="500" y="160" text-anchor="middle" style="font-size:13px;">Autoencoder</text>
+          <text class="node-label sub" x="500" y="178" text-anchor="middle">PyTorch · Azure Synapse</text>
+          <text class="node-label sub" x="500" y="194" text-anchor="middle">fleet-scale training</text>
+          <text class="node-label sub" x="500" y="208" text-anchor="middle">M+ accounts</text>
         </g>
 
         <g>
-          <rect class="node-box" x="600" y="60" width="150" height="48" rx="8"/>
-          <text class="node-label" x="675" y="82" text-anchor="middle">Account2Vec</text>
-          <text class="node-label sub" x="675" y="98" text-anchor="middle">per storage account</text>
+          <rect class="node-box" x="620" y="64" width="152" height="48" rx="8"/>
+          <text class="node-label" x="696" y="86" text-anchor="middle">Account2Vec</text>
+          <text class="node-label sub" x="696" y="102" text-anchor="middle">per storage account</text>
         </g>
         <g>
-          <rect class="node-box" x="600" y="136" width="150" height="48" rx="8"/>
-          <text class="node-label" x="675" y="158" text-anchor="middle">Subscription2Vec</text>
-          <text class="node-label sub" x="675" y="174" text-anchor="middle">per subscription</text>
+          <rect class="node-box" x="620" y="144" width="152" height="48" rx="8"/>
+          <text class="node-label" x="696" y="166" text-anchor="middle">Subscription2Vec</text>
+          <text class="node-label sub" x="696" y="182" text-anchor="middle">per subscription</text>
         </g>
         <g>
-          <rect class="node-box" x="600" y="212" width="150" height="48" rx="8"/>
-          <text class="node-label" x="675" y="234" text-anchor="middle">Customer2Vec</text>
-          <text class="node-label sub" x="675" y="250" text-anchor="middle">per TPID</text>
+          <rect class="node-box" x="620" y="224" width="152" height="48" rx="8"/>
+          <text class="node-label" x="696" y="246" text-anchor="middle">Customer2Vec</text>
+          <text class="node-label sub" x="696" y="262" text-anchor="middle">per TPID</text>
         </g>
 
         <g>
-          <rect class="node-box" x="790" y="40" width="150" height="40" rx="6"/>
-          <text class="node-label" x="865" y="64" text-anchor="middle">Similarity</text>
+          <rect class="node-box" x="814" y="58" width="126" height="38" rx="6"/>
+          <text class="node-label" x="877" y="82" text-anchor="middle">Similarity</text>
         </g>
         <g>
-          <rect class="node-box" x="790" y="92" width="150" height="40" rx="6"/>
-          <text class="node-label" x="865" y="116" text-anchor="middle">Anomaly</text>
+          <rect class="node-box" x="814" y="108" width="126" height="38" rx="6"/>
+          <text class="node-label" x="877" y="132" text-anchor="middle">Anomaly</text>
         </g>
         <g>
-          <rect class="node-box" x="790" y="144" width="150" height="40" rx="6"/>
-          <text class="node-label" x="865" y="168" text-anchor="middle">Forecasting</text>
+          <rect class="node-box" x="814" y="158" width="126" height="38" rx="6"/>
+          <text class="node-label" x="877" y="182" text-anchor="middle">Forecasting</text>
         </g>
         <g>
-          <rect class="node-box" x="790" y="196" width="150" height="40" rx="6"/>
-          <text class="node-label" x="865" y="220" text-anchor="middle">LLM reasoning</text>
+          <rect class="node-box" x="814" y="208" width="126" height="38" rx="6"/>
+          <text class="node-label" x="877" y="232" text-anchor="middle">LLM reasoning</text>
         </g>
         <g>
-          <rect class="node-box" x="790" y="248" width="150" height="40" rx="6"/>
-          <text class="node-label" x="865" y="272" text-anchor="middle">MCC agents</text>
+          <rect class="node-box" x="814" y="258" width="126" height="38" rx="6"/>
+          <text class="node-label" x="877" y="282" text-anchor="middle">MCC agents</text>
         </g>
 
-        <path class="flow-line" d="M 160 160 L 198 160" marker-end="url(#arr2-muted)"/>
-        <path class="flow-line" d="M 360 160 L 398 160" marker-end="url(#arr2-muted)"/>
-        <path class="flow-line accent" d="M 560 140 L 598 84"  marker-end="url(#arr2)"/>
-        <path class="flow-line accent" d="M 560 160 L 598 160" marker-end="url(#arr2)"/>
-        <path class="flow-line accent" d="M 560 180 L 598 236" marker-end="url(#arr2)"/>
-
-        <path class="flow-line" d="M 750 84  L 790 60"  marker-end="url(#arr2-muted)"/>
-        <path class="flow-line" d="M 750 160 L 790 112" marker-end="url(#arr2-muted)"/>
-        <path class="flow-line" d="M 750 160 L 790 164" marker-end="url(#arr2-muted)"/>
-        <path class="flow-line" d="M 750 160 L 790 216" marker-end="url(#arr2-muted)"/>
-        <path class="flow-line" d="M 750 236 L 790 268" marker-end="url(#arr2-muted)"/>
-
-        <text class="wrap-label" x="20" y="306">DRIFT · COVERAGE · STALENESS MONITORING</text>
+        <!-- telemetry → features → model -->
+        <path class="flow-line" d="M 176 168 H 212" marker-end="url(#arr2-muted)"/>
+        <path class="flow-line" d="M 380 168 H 416" marker-end="url(#arr2-muted)"/>
+        <!-- model → three embedding tiers -->
+        <path class="flow-line accent" d="M 580 142 H 600 V 88 H 616" marker-end="url(#arr2)"/>
+        <path class="flow-line accent" d="M 580 168 H 616" marker-end="url(#arr2)"/>
+        <path class="flow-line accent" d="M 580 194 H 600 V 248 H 616" marker-end="url(#arr2)"/>
+        <!-- one shared representation: bus rail feeding every consumer -->
+        <path class="flow-line" d="M 772 88 H 792"/>
+        <path class="flow-line" d="M 772 168 H 792"/>
+        <path class="flow-line" d="M 772 248 H 792"/>
+        <path class="flow-line" d="M 792 77 V 277"/>
+        <path class="flow-line" d="M 792 77 H 810" marker-end="url(#arr2-muted)"/>
+        <path class="flow-line" d="M 792 127 H 810" marker-end="url(#arr2-muted)"/>
+        <path class="flow-line" d="M 792 177 H 810" marker-end="url(#arr2-muted)"/>
+        <path class="flow-line" d="M 792 227 H 810" marker-end="url(#arr2-muted)"/>
+        <path class="flow-line" d="M 792 277 H 810" marker-end="url(#arr2-muted)"/>
       </svg>
     </div>
 
@@ -1572,7 +1603,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         sarthaksgsits@gmail.com
       </a>
-      <a href="resumes/SarthakBichhawa_Resume_2026.pdf" target="_blank" class="btn btn-ghost">
+      <a href="resumes/SarthakBichhawa_Resume_2026.pdf" target="_blank" rel="noopener" class="btn btn-ghost">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Download résumé (2026)
       </a>
@@ -1582,13 +1613,13 @@
     <div class="resume-dossier panel">
       <div class="rd-head">Role-tailored résumés — pick your opening</div>
       <div class="rd-grid">
-        <a href="resumes/SarthakBichhawa_Resume_2026.pdf" target="_blank"><b>Master résumé — 2026</b></a>
-        <a href="resumes/SeniorDS_ML_AppliedScience.pdf" target="_blank">ML &amp; Applied Science</a>
-        <a href="resumes/MLManager_TechnicalLead.pdf" target="_blank">ML Manager / Technical Lead</a>
-        <a href="resumes/SeniorDS_Experimentation_CausalInference.pdf" target="_blank">Experimentation &amp; Causal Inference</a>
-        <a href="resumes/SeniorDS_DataReliability_Governance.pdf" target="_blank">Data Reliability &amp; Governance</a>
-        <a href="resumes/SeniorDS_Marketplace_Growth.pdf" target="_blank">Marketplace &amp; Growth</a>
-        <a href="resumes/SeniorDS_ProductAnalytics_Metrics.pdf" target="_blank">Product Analytics &amp; Metrics</a>
+        <a href="resumes/SarthakBichhawa_Resume_2026.pdf" target="_blank" rel="noopener"><b>Master résumé — 2026</b></a>
+        <a href="resumes/SeniorDS_ML_AppliedScience.pdf" target="_blank" rel="noopener">ML &amp; Applied Science</a>
+        <a href="resumes/MLManager_TechnicalLead.pdf" target="_blank" rel="noopener">ML Manager / Technical Lead</a>
+        <a href="resumes/SeniorDS_Experimentation_CausalInference.pdf" target="_blank" rel="noopener">Experimentation &amp; Causal Inference</a>
+        <a href="resumes/SeniorDS_DataReliability_Governance.pdf" target="_blank" rel="noopener">Data Reliability &amp; Governance</a>
+        <a href="resumes/SeniorDS_Marketplace_Growth.pdf" target="_blank" rel="noopener">Marketplace &amp; Growth</a>
+        <a href="resumes/SeniorDS_ProductAnalytics_Metrics.pdf" target="_blank" rel="noopener">Product Analytics &amp; Metrics</a>
       </div>
     </div>
 

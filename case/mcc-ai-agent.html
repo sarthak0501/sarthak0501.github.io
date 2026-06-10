@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#06070f" />
+  <meta name="theme-color" content="#0a0e0c" />
 
   <title>MCC AI Agent — Customer-Health Copilot · Case Study</title>
   <meta name="description" content="How we shipped a production GenAI agent on Azure OpenAI that answers natural-language customer-health questions, grounded in live telemetry, tickets and ownership data." />
@@ -148,6 +148,8 @@
       border-radius: var(--radius);
       padding: 2rem 1.75rem;
       margin: 1.5rem 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
     .diagram-wrap .dw-label {
       font-family: var(--font-mono);
@@ -158,13 +160,16 @@
       margin-bottom: 1.5rem;
     }
     .diagram { width: 100%; height: auto; }
+    @media (max-width: 680px) { .diagram { min-width: 620px; } }
     .diagram .node-box { fill: var(--surface-2); stroke: var(--border-strong); stroke-width: 1; }
     .diagram .node-box.primary { stroke: var(--accent); fill: var(--bg-soft); }
     .diagram .node-label { font-family: var(--font-sans); font-size: 11px; font-weight: 600; fill: var(--text); }
     .diagram .node-label.sub { font-size: 9px; font-weight: 500; fill: var(--text-2); }
     .diagram .node-label.tag { font-family: var(--font-mono); font-size: 9px; font-weight: 600; fill: var(--accent); letter-spacing: 1px; }
-    .diagram .flow-line { stroke: var(--border-strong); stroke-width: 1.5; fill: none; }
+    .diagram .flow-line { stroke: rgba(238, 235, 222, 0.30); stroke-width: 1.5; fill: none; }
     .diagram .flow-line.accent { stroke: var(--accent); }
+    .diagram .diag-note { font-family: var(--font-mono); font-size: 8.5px; font-weight: 500; fill: var(--text-3); letter-spacing: 0.4px; }
+    .diagram .diag-note.g { fill: var(--accent); }
     .diagram .wrap-rect { fill: none; stroke: var(--accent); stroke-width: 1; stroke-dasharray: 4 4; opacity: 0.45; }
     .diagram .wrap-label { font-family: var(--font-mono); font-size: 9px; font-weight: 600; fill: var(--accent); letter-spacing: 1.5px; }
 
@@ -261,7 +266,7 @@
       <span class="nav-brand-mark">SB</span>
       <span>Sarthak Bichhawa</span>
     </a>
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <div class="nav-links" id="navLinks">
@@ -341,55 +346,57 @@
           <svg class="diagram" viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MCC AI Agent architecture">
             <defs>
               <marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#62e9a6"/></marker>
-              <marker id="a1m" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.35)"/></marker>
+              <marker id="a1m" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(238,235,222,0.5)"/></marker>
             </defs>
             <rect class="wrap-rect" x="20" y="32" width="860" height="280" rx="10"/>
             <text class="wrap-label" x="36" y="24">EVAL HARNESS · GUARDRAILS · GROUNDEDNESS</text>
 
             <g>
-              <rect class="node-box" x="40" y="140" width="140" height="60" rx="8"/>
-              <text class="node-label" x="110" y="165" text-anchor="middle">User query</text>
-              <text class="node-label sub" x="110" y="183" text-anchor="middle">exec · on-call · PM</text>
+              <rect class="node-box" x="40" y="146" width="140" height="60" rx="8"/>
+              <text class="node-label" x="110" y="171" text-anchor="middle">User query</text>
+              <text class="node-label sub" x="110" y="189" text-anchor="middle">exec · on-call · PM</text>
             </g>
             <g>
-              <rect class="node-box primary" x="280" y="120" width="200" height="100" rx="10"/>
-              <text class="node-label tag" x="380" y="142" text-anchor="middle">LLM AGENT</text>
-              <text class="node-label" x="380" y="162" text-anchor="middle" style="font-size:13px;">Azure OpenAI</text>
-              <text class="node-label sub" x="380" y="180" text-anchor="middle">GPT-4 · function calling</text>
-              <text class="node-label sub" x="380" y="196" text-anchor="middle">grounded · schema-valid</text>
+              <rect class="node-box" x="267" y="52" width="170" height="44" rx="8"/>
+              <text class="node-label" x="352" y="72" text-anchor="middle">RAG + Tools</text>
+              <text class="node-label sub" x="352" y="87" text-anchor="middle">vector search · KQL exec</text>
             </g>
             <g>
-              <rect class="node-box" x="295" y="55" width="170" height="44" rx="8"/>
-              <text class="node-label" x="380" y="75" text-anchor="middle">RAG + Tools</text>
-              <text class="node-label sub" x="380" y="90" text-anchor="middle">vector search · KQL exec</text>
+              <rect class="node-box primary" x="252" y="126" width="200" height="100" rx="10"/>
+              <text class="node-label tag" x="352" y="148" text-anchor="middle">LLM AGENT</text>
+              <text class="node-label" x="352" y="168" text-anchor="middle" style="font-size:13px;">Azure OpenAI</text>
+              <text class="node-label sub" x="352" y="186" text-anchor="middle">GPT-4 · function calling</text>
+              <text class="node-label sub" x="352" y="202" text-anchor="middle">grounded · schema-valid</text>
             </g>
             <g>
-              <rect class="node-box" x="570" y="60" width="150" height="48" rx="8"/>
-              <text class="node-label" x="645" y="82" text-anchor="middle">ADX / KQL</text>
-              <text class="node-label sub" x="645" y="98" text-anchor="middle">telemetry</text>
+              <rect class="node-box" x="560" y="64" width="160" height="48" rx="8"/>
+              <text class="node-label" x="640" y="86" text-anchor="middle">ADX / KQL</text>
+              <text class="node-label sub" x="640" y="102" text-anchor="middle">telemetry</text>
             </g>
             <g>
-              <rect class="node-box" x="570" y="126" width="150" height="48" rx="8"/>
-              <text class="node-label" x="645" y="148" text-anchor="middle">Tickets · CRIs</text>
-              <text class="node-label sub" x="645" y="164" text-anchor="middle">ICM · support</text>
+              <rect class="node-box" x="560" y="150" width="160" height="48" rx="8"/>
+              <text class="node-label" x="640" y="172" text-anchor="middle">Tickets · CRIs</text>
+              <text class="node-label sub" x="640" y="188" text-anchor="middle">ICM · support</text>
             </g>
             <g>
-              <rect class="node-box" x="570" y="192" width="150" height="48" rx="8"/>
-              <text class="node-label" x="645" y="214" text-anchor="middle">Ownership graph</text>
-              <text class="node-label sub" x="645" y="230" text-anchor="middle">accounts · subs · TPIDs</text>
+              <rect class="node-box" x="560" y="236" width="160" height="48" rx="8"/>
+              <text class="node-label" x="640" y="258" text-anchor="middle">Ownership graph</text>
+              <text class="node-label sub" x="640" y="274" text-anchor="middle">accounts · subs · TPIDs</text>
             </g>
             <g>
-              <rect class="node-box primary" x="760" y="140" width="120" height="60" rx="8"/>
-              <text class="node-label" x="820" y="165" text-anchor="middle" fill="#62e9a6">Answer</text>
-              <text class="node-label sub" x="820" y="183" text-anchor="middle">grounded · cited</text>
+              <rect class="node-box primary" x="768" y="146" width="112" height="60" rx="8"/>
+              <text class="node-label" x="824" y="171" text-anchor="middle" fill="#62e9a6">Answer</text>
+              <text class="node-label sub" x="824" y="189" text-anchor="middle">grounded · cited</text>
             </g>
 
-            <path class="flow-line accent" d="M 180 170 L 278 170" marker-end="url(#a1)"/>
-            <path class="flow-line accent" d="M 380 118 L 380 101" marker-end="url(#a1)"/>
-            <path class="flow-line" d="M 465 80 L 568 82" marker-end="url(#a1m)"/>
-            <path class="flow-line" d="M 475 150 L 568 150" marker-end="url(#a1m)"/>
-            <path class="flow-line" d="M 465 200 L 568 216" marker-end="url(#a1m)"/>
-            <path class="flow-line accent" d="M 480 170 L 758 170" marker-end="url(#a1)"/>
+            <path class="flow-line accent" d="M 180 176 H 248" marker-end="url(#a1)"/>
+            <path class="flow-line accent" d="M 352 122 V 100" marker-start="url(#a1)" marker-end="url(#a1)"/>
+            <path class="flow-line" d="M 456 150 H 506 V 88 H 556" marker-start="url(#a1m)" marker-end="url(#a1m)"/>
+            <path class="flow-line" d="M 456 174 H 556" marker-start="url(#a1m)" marker-end="url(#a1m)"/>
+            <path class="flow-line" d="M 456 202 H 506 V 260 H 556" marker-start="url(#a1m)" marker-end="url(#a1m)"/>
+            <text class="diag-note" x="504" y="166" text-anchor="middle">governed KQL</text>
+            <path class="flow-line accent" d="M 452 138 H 530 V 44 H 824 V 142" marker-end="url(#a1)"/>
+            <text class="diag-note g" x="676" y="56" text-anchor="middle">narrative + citations</text>
           </svg>
         </div>
 
@@ -530,7 +537,7 @@ StorageAccountMetrics
 
         <p style="margin-top:2rem">
           If you want the longer write-up on the mental model behind this, there's an essay:
-          <a href="/writing/shipping-genai-enterprise.html" style="color:var(--accent);border-bottom:1px solid rgba(245,166,35,0.35);">Shipping GenAI in enterprise: what actually breaks</a>.
+          <a href="/writing/shipping-genai-enterprise.html" style="color:var(--accent);border-bottom:1px solid rgba(98,233,166,0.35);">Shipping GenAI in enterprise: what actually breaks</a>.
         </p>
 
         <div class="author-card">

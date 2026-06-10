@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#06070f" />
+  <meta name="theme-color" content="#0a0e0c" />
 
   <title>Account2Vec — Foundational Embedding Platform · Case Study</title>
   <meta name="description" content="How we turned raw Azure Storage telemetry into a fleet-wide ML primitive — hierarchical autoencoders that compress ~100 per-account metrics into a reusable embedding for similarity, anomaly, forecasting, and LLM reasoning." />
@@ -128,6 +128,8 @@
       border-radius: var(--radius);
       padding: 2rem 1.75rem;
       margin: 1.5rem 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
     .diagram-wrap .dw-label {
       font-family: var(--font-mono);
@@ -137,13 +139,15 @@
       margin-bottom: 1.5rem;
     }
     .diagram { width: 100%; height: auto; }
+    @media (max-width: 680px) { .diagram { min-width: 620px; } }
     .diagram .node-box { fill: var(--surface-2); stroke: var(--border-strong); stroke-width: 1; }
     .diagram .node-box.primary { stroke: var(--accent); fill: var(--bg-soft); }
     .diagram .node-label { font-family: var(--font-sans); font-size: 11px; font-weight: 600; fill: var(--text); }
     .diagram .node-label.sub { font-size: 9px; font-weight: 500; fill: var(--text-2); }
     .diagram .node-label.tag { font-family: var(--font-mono); font-size: 9px; font-weight: 600; fill: var(--accent); letter-spacing: 1px; }
-    .diagram .flow-line { stroke: var(--border-strong); stroke-width: 1.5; fill: none; }
+    .diagram .flow-line { stroke: rgba(238, 235, 222, 0.30); stroke-width: 1.5; fill: none; }
     .diagram .flow-line.accent { stroke: var(--accent); }
+    .diagram .wrap-rect { fill: none; stroke: var(--accent); stroke-width: 1; stroke-dasharray: 4 4; opacity: 0.45; }
     .diagram .wrap-label { font-family: var(--font-mono); font-size: 9px; font-weight: 600; fill: var(--accent); letter-spacing: 1.5px; }
 
     .metric-grid {
@@ -258,7 +262,7 @@
       <span class="nav-brand-mark">SB</span>
       <span>Sarthak Bichhawa</span>
     </a>
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <div class="nav-links" id="navLinks">
@@ -338,63 +342,68 @@
           <svg class="diagram" viewBox="0 0 960 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Account2Vec architecture">
             <defs>
               <marker id="b1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#62e9a6"/></marker>
-              <marker id="b1m" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.35)"/></marker>
+              <marker id="b1m" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(238,235,222,0.5)"/></marker>
             </defs>
-            <g>
-              <rect class="node-box" x="20" y="120" width="140" height="80" rx="8"/>
-              <text class="node-label tag" x="90" y="142" text-anchor="middle">INPUT</text>
-              <text class="node-label" x="90" y="160" text-anchor="middle">XStore telemetry</text>
-              <text class="node-label sub" x="90" y="176" text-anchor="middle">~100 raw metrics</text>
-              <text class="node-label sub" x="90" y="190" text-anchor="middle">per account</text>
-            </g>
-            <g>
-              <rect class="node-box" x="200" y="120" width="160" height="80" rx="8"/>
-              <text class="node-label tag" x="280" y="142" text-anchor="middle">PIPELINE</text>
-              <text class="node-label" x="280" y="160" text-anchor="middle">AccountFeatureMatrix</text>
-              <text class="node-label sub" x="280" y="176" text-anchor="middle">40–50 rolling features</text>
-              <text class="node-label sub" x="280" y="190" text-anchor="middle">txn · capacity · auth · latency</text>
-            </g>
-            <g>
-              <rect class="node-box primary" x="400" y="110" width="160" height="100" rx="10"/>
-              <text class="node-label tag" x="480" y="132" text-anchor="middle">MODEL</text>
-              <text class="node-label" x="480" y="152" text-anchor="middle" style="font-size:13px;">Autoencoder</text>
-              <text class="node-label sub" x="480" y="170" text-anchor="middle">PyTorch · Azure Synapse</text>
-              <text class="node-label sub" x="480" y="186" text-anchor="middle">fleet-scale training</text>
-              <text class="node-label sub" x="480" y="200" text-anchor="middle">M+ accounts</text>
-            </g>
-            <g>
-              <rect class="node-box" x="600" y="60" width="150" height="48" rx="8"/>
-              <text class="node-label" x="675" y="82" text-anchor="middle">Account2Vec</text>
-              <text class="node-label sub" x="675" y="98" text-anchor="middle">per storage account</text>
-            </g>
-            <g>
-              <rect class="node-box" x="600" y="136" width="150" height="48" rx="8"/>
-              <text class="node-label" x="675" y="158" text-anchor="middle">Subscription2Vec</text>
-              <text class="node-label sub" x="675" y="174" text-anchor="middle">per subscription</text>
-            </g>
-            <g>
-              <rect class="node-box" x="600" y="212" width="150" height="48" rx="8"/>
-              <text class="node-label" x="675" y="234" text-anchor="middle">Customer2Vec</text>
-              <text class="node-label sub" x="675" y="250" text-anchor="middle">per TPID</text>
-            </g>
-            <g><rect class="node-box" x="790" y="40"  width="150" height="40" rx="6"/><text class="node-label" x="865" y="64"  text-anchor="middle">Similarity</text></g>
-            <g><rect class="node-box" x="790" y="92"  width="150" height="40" rx="6"/><text class="node-label" x="865" y="116" text-anchor="middle">Anomaly</text></g>
-            <g><rect class="node-box" x="790" y="144" width="150" height="40" rx="6"/><text class="node-label" x="865" y="168" text-anchor="middle">Forecasting</text></g>
-            <g><rect class="node-box" x="790" y="196" width="150" height="40" rx="6"/><text class="node-label" x="865" y="220" text-anchor="middle">LLM reasoning</text></g>
-            <g><rect class="node-box" x="790" y="248" width="150" height="40" rx="6"/><text class="node-label" x="865" y="272" text-anchor="middle">MCC agents</text></g>
+            <rect class="wrap-rect" x="14" y="30" width="932" height="278" rx="10"/>
+            <text class="wrap-label" x="30" y="22">DRIFT · COVERAGE · STALENESS MONITORING</text>
 
-            <path class="flow-line" d="M 160 160 L 198 160" marker-end="url(#b1m)"/>
-            <path class="flow-line" d="M 360 160 L 398 160" marker-end="url(#b1m)"/>
-            <path class="flow-line accent" d="M 560 140 L 598 84"  marker-end="url(#b1)"/>
-            <path class="flow-line accent" d="M 560 160 L 598 160" marker-end="url(#b1)"/>
-            <path class="flow-line accent" d="M 560 180 L 598 236" marker-end="url(#b1)"/>
-            <path class="flow-line" d="M 750 84  L 790 60"  marker-end="url(#b1m)"/>
-            <path class="flow-line" d="M 750 160 L 790 112" marker-end="url(#b1m)"/>
-            <path class="flow-line" d="M 750 160 L 790 164" marker-end="url(#b1m)"/>
-            <path class="flow-line" d="M 750 160 L 790 216" marker-end="url(#b1m)"/>
-            <path class="flow-line" d="M 750 236 L 790 268" marker-end="url(#b1m)"/>
+            <g>
+              <rect class="node-box" x="36" y="128" width="140" height="80" rx="8"/>
+              <text class="node-label tag" x="106" y="150" text-anchor="middle">INPUT</text>
+              <text class="node-label" x="106" y="168" text-anchor="middle">XStore telemetry</text>
+              <text class="node-label sub" x="106" y="184" text-anchor="middle">~100 raw metrics</text>
+              <text class="node-label sub" x="106" y="198" text-anchor="middle">per account</text>
+            </g>
+            <g>
+              <rect class="node-box" x="216" y="128" width="164" height="80" rx="8"/>
+              <text class="node-label tag" x="298" y="150" text-anchor="middle">PIPELINE</text>
+              <text class="node-label" x="298" y="168" text-anchor="middle">AccountFeatureMatrix</text>
+              <text class="node-label sub" x="298" y="184" text-anchor="middle">40–50 rolling features</text>
+              <text class="node-label sub" x="298" y="198" text-anchor="middle">txn · capacity · auth · latency</text>
+            </g>
+            <g>
+              <rect class="node-box primary" x="420" y="118" width="160" height="100" rx="10"/>
+              <text class="node-label tag" x="500" y="140" text-anchor="middle">MODEL</text>
+              <text class="node-label" x="500" y="160" text-anchor="middle" style="font-size:13px;">Autoencoder</text>
+              <text class="node-label sub" x="500" y="178" text-anchor="middle">PyTorch · Azure Synapse</text>
+              <text class="node-label sub" x="500" y="194" text-anchor="middle">fleet-scale training</text>
+              <text class="node-label sub" x="500" y="208" text-anchor="middle">M+ accounts</text>
+            </g>
+            <g>
+              <rect class="node-box" x="620" y="64" width="152" height="48" rx="8"/>
+              <text class="node-label" x="696" y="86" text-anchor="middle">Account2Vec</text>
+              <text class="node-label sub" x="696" y="102" text-anchor="middle">per storage account</text>
+            </g>
+            <g>
+              <rect class="node-box" x="620" y="144" width="152" height="48" rx="8"/>
+              <text class="node-label" x="696" y="166" text-anchor="middle">Subscription2Vec</text>
+              <text class="node-label sub" x="696" y="182" text-anchor="middle">per subscription</text>
+            </g>
+            <g>
+              <rect class="node-box" x="620" y="224" width="152" height="48" rx="8"/>
+              <text class="node-label" x="696" y="246" text-anchor="middle">Customer2Vec</text>
+              <text class="node-label sub" x="696" y="262" text-anchor="middle">per TPID</text>
+            </g>
+            <g><rect class="node-box" x="814" y="58"  width="126" height="38" rx="6"/><text class="node-label" x="877" y="82"  text-anchor="middle">Similarity</text></g>
+            <g><rect class="node-box" x="814" y="108" width="126" height="38" rx="6"/><text class="node-label" x="877" y="132" text-anchor="middle">Anomaly</text></g>
+            <g><rect class="node-box" x="814" y="158" width="126" height="38" rx="6"/><text class="node-label" x="877" y="182" text-anchor="middle">Forecasting</text></g>
+            <g><rect class="node-box" x="814" y="208" width="126" height="38" rx="6"/><text class="node-label" x="877" y="232" text-anchor="middle">LLM reasoning</text></g>
+            <g><rect class="node-box" x="814" y="258" width="126" height="38" rx="6"/><text class="node-label" x="877" y="282" text-anchor="middle">MCC agents</text></g>
 
-            <text class="wrap-label" x="20" y="306">DRIFT · COVERAGE · STALENESS MONITORING</text>
+            <path class="flow-line" d="M 176 168 H 212" marker-end="url(#b1m)"/>
+            <path class="flow-line" d="M 380 168 H 416" marker-end="url(#b1m)"/>
+            <path class="flow-line accent" d="M 580 142 H 600 V 88 H 616" marker-end="url(#b1)"/>
+            <path class="flow-line accent" d="M 580 168 H 616" marker-end="url(#b1)"/>
+            <path class="flow-line accent" d="M 580 194 H 600 V 248 H 616" marker-end="url(#b1)"/>
+            <path class="flow-line" d="M 772 88 H 792"/>
+            <path class="flow-line" d="M 772 168 H 792"/>
+            <path class="flow-line" d="M 772 248 H 792"/>
+            <path class="flow-line" d="M 792 77 V 277"/>
+            <path class="flow-line" d="M 792 77 H 810" marker-end="url(#b1m)"/>
+            <path class="flow-line" d="M 792 127 H 810" marker-end="url(#b1m)"/>
+            <path class="flow-line" d="M 792 177 H 810" marker-end="url(#b1m)"/>
+            <path class="flow-line" d="M 792 227 H 810" marker-end="url(#b1m)"/>
+            <path class="flow-line" d="M 792 277 H 810" marker-end="url(#b1m)"/>
           </svg>
         </div>
 
@@ -547,7 +556,7 @@ neighbors = a2v.knn(
 
         <p style="margin-top:2rem">
           More on the mental model behind treating this as a platform rather than a model:
-          <a href="/writing/account2vec-platform.html" style="color:var(--accent);border-bottom:1px solid rgba(245,166,35,0.35);">Why we built Account2Vec as a platform, not a model</a>.
+          <a href="/writing/account2vec-platform.html" style="color:var(--accent);border-bottom:1px solid rgba(98,233,166,0.35);">Why we built Account2Vec as a platform, not a model</a>.
         </p>
 
         <div class="author-card">
