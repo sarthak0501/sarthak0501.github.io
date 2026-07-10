@@ -181,6 +181,8 @@ nav.topnav.scrolled {
   transition: background 0.2s var(--ease), transform 0.2s var(--ease);
 }
 .nav-cta:hover { background: var(--accent-bright); transform: translateY(-1px); }
+/* .nav-links a outranks .nav-cta on specificity — keep the pill's dark label */
+.nav-links a.nav-cta, .nav-links a.nav-cta:hover { color: #07120c; }
 .nav-cta.active::after { display: none; }
 
 .nav-toggle {

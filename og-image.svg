@@ -22,7 +22,7 @@
 
   <!-- tape bar -->
   <line x1="0" y1="64" x2="1200" y2="64" stroke="#eeebde" stroke-opacity="0.14" stroke-width="1"/>
-  <text x="64" y="42" font-family="Menlo, Consolas, monospace" font-size="17" letter-spacing="4" fill="#7f7d6f">HIRING BRIEF — DOC SB-26 · REV 03</text>
+  <text x="64" y="42" font-family="Menlo, Consolas, monospace" font-size="17" letter-spacing="4" fill="#7f7d6f">HIRING BRIEF — DOC SB-26 · REV 04</text>
   <circle cx="1010" cy="36" r="6" fill="#ff7a45"/>
   <text x="1028" y="42" font-family="Menlo, Consolas, monospace" font-size="17" letter-spacing="3" fill="#ff7a45">STATUS: OPEN</text>
 
