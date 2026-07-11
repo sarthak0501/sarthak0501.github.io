@@ -1,0 +1,36 @@
+---
+layout: layouts/base.njk
+permalink: /resume/
+title: Résumé — Sarthak Bichhawa
+desc: "The résumé, rendered from the same source of truth the site argues from — printable directly, with three PDF cuts attached."
+ogImage: /og/resume.png
+ogImageAlt: "Résumé — Sarthak Bichhawa, Sr. Data & Applied Scientist"
+---
+<section class="section-pad page-head resume-page">
+  <div class="wrap">
+    <nav class="crumb" aria-label="Breadcrumb">‹ <a href="/">The brief</a></nav>
+
+    <div class="reveal">
+      <div class="sec-mark">The résumé — rev {{ facts.meta.resume_rev }}</div>
+      <h1 class="sec-title">One record, <em>three cuts.</em></h1>
+      <p class="sec-sub">
+        This page renders from the same <a href="/colophon/">source of truth</a> as the
+        rest of the site, so the résumé and the brief cannot contradict each other.
+        Print it directly, or take the PDF cut that matches your screen.
+      </p>
+    </div>
+
+    <div class="resume-actions reveal">
+      {%- for r in facts.resumes %}
+      <a href="{{ r.file }}" target="_blank" rel="noopener" class="btn {{ 'btn-primary' if loop.first else 'btn-ghost' }}" data-goatcounter-click="resume-page-pdf-{{ loop.index }}">↓ {{ r.label }}</a>
+      {%- endfor %}
+      <button class="btn btn-mono" type="button" onclick="window.print()">⎙ print this page</button>
+    </div>
+
+    {% include "partials/resume-doc.njk" %}
+
+    <p class="mono-note strip-note" style="margin-top:1.4rem;">
+      // the tailored PDFs are printed from this page's variants at build time — <span class="g">they can't drift from the record.</span>
+    </p>
+  </div>
+</section>

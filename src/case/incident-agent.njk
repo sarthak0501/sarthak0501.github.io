@@ -1,0 +1,226 @@
+---
+layout: layouts/case.njk
+permalink: /case/incident-agent/
+title: The incident agent — autonomous Sev2 investigation
+desc: "Case file: an autonomous multi-agent planner/executor loop on Azure OpenAI that runs Sev2 triage — with the run trace, confidence rubric, and the eval harness that decides whether to trust it."
+ogImage: /og/case-incident-agent.png
+ogImageAlt: "Case file — the incident agent: autonomous Sev2 investigation, hours to minutes"
+tag: Exhibit A · agentic · flagship
+lede: "A Sev2 pages the on-call at 2am. Before a human finishes reading the bridge, an autonomous planner/executor loop has formed hypotheses, dispatched tools against live telemetry, killed the wrong theory on evidence, and posted a cited brief. Multi-hour investigations now take <strong>minutes</strong> — and this page shows the receipts: the run trace, the confidence rubric, and the evals that gate every change."
+role: Design & implementation lead
+stack: Azure OpenAI · FastAPI · MCP · Kusto (ADX)
+status: LIVE · in production
+headline: multi-hour investigations → minutes
+next:
+  url: /case/mcc-ai-agent.html
+  title: MCC AI agent
+---
+
+<section class="case-sec" id="problem">
+  <div class="reveal">
+    <div class="sec-mark">§A — The problem</div>
+    <div class="prose">
+      <p>
+        A Sev2 investigation is a join the on-call performs in their head at 2am:
+        error telemetry in Kusto, rollout state in the deployment system, traffic
+        history in another tool, prior incidents in a fourth. Each hop is cheap;
+        the join is not. Investigations ran <strong>multiple hours</strong>, and the
+        expensive part was rarely the fix — it was establishing <em>which of four
+        or five plausible stories was actually true</em>.
+      </p>
+      <p>
+        That's a planning-and-evidence problem, which is exactly the shape LLM
+        agents are good at — <strong>if</strong> you can trust what they conclude. So the
+        system was built backwards from trust: every claim cites a query, every
+        run is traced, and a confidence rubric decides what the agent is allowed
+        to assert.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="case-sec" id="architecture">
+  <div class="reveal">
+    <div class="sec-mark">§B — Architecture, as built</div>
+    <div class="prose">
+      <p>
+        A hand-rolled <strong>planner / executor loop</strong> on Azure OpenAI — no
+        LangChain, no framework. The planner owns the hypothesis register; the
+        executor dispatches <strong>10 MCP tools concurrently</strong> against live systems;
+        a compaction pass keeps the <strong>200K-token context</strong> from truncating its
+        own evidence; and every LLM call is traced to Kusto with tool decisions,
+        latencies, and retries — the agent is as observable as the systems it
+        investigates.
+      </p>
+    </div>
+  </div>
+  {% include "partials/diagram-incident.njk" %}
+  <div class="prose reveal">
+    <p>
+      The framework decision has its own entry in the <a href="/#judgment">judgment
+      calls</a>: the first build sat on LangChain/LangGraph, and debugging through
+      five layers of someone else's abstraction was slower than owning the loop.
+      Deleting it bought full tracing, 429-storm retry we control, and an agent
+      the on-call can actually reason about. The MCP tool layer shipped as
+      <strong>two reusable servers</strong> — one almost entirely AI-generated — now serving
+      governed query and telemetry tools to Copilot, VS Code, and other internal
+      agents.
+    </p>
+  </div>
+</section>
+
+<section class="case-sec" id="trace">
+  <div class="reveal">
+    <div class="sec-mark">§C — One run, step by step</div>
+    <div class="prose">
+      <p>
+        This is a production investigation replayed: an availability regression —
+        elevated 5xx and throttling on one cluster — with two deployments sitting
+        suspiciously inside the window. The interesting part is step 06, where the
+        agent <strong>kills the obvious story on evidence</strong> instead of pattern-matching
+        to it.
+      </p>
+    </div>
+  </div>
+
+  <div class="trace panel reveal" id="traceViewer" tabindex="0" aria-label="Run trace, step by step">
+    <div class="cp-head">
+      <span>// {{ trace_incident.meta.label }}</span>
+      <span class="trace-controls">
+        <button type="button" data-trace="prev" aria-label="Previous step">‹ prev</button>
+        <button type="button" data-trace="next" aria-label="Next step">next ›</button>
+        <button type="button" data-trace="all">expand all</button>
+      </span>
+    </div>
+    {%- for s in trace_incident.steps %}
+    <details class="trace-step">
+      <summary>
+        <span class="ts-n">{{ s.n }}</span>
+        <span class="ts-actor {{ s.kind }}">{{ s.actor }}</span>
+        <span class="ts-title">{{ s.title }}</span>
+        <span class="ts-ms">{{ s.ms }}</span>
+      </summary>
+      <div class="ts-body"><p>{{ s.body | safe }}</p></div>
+    </details>
+    {%- endfor %}
+    <div class="board-foot">// {{ trace_incident.meta.note }}. <span class="g">arrow keys step through the run.</span></div>
+  </div>
+</section>
+
+<section class="case-sec" id="rubric">
+  <div class="reveal">
+    <div class="sec-mark">§D — Trust is a number: the confidence rubric</div>
+    <div class="prose">
+      <p>
+        The agent is not allowed to sound more certain than its evidence. Every
+        finding is scored against a fixed rubric before it reaches the bridge —
+        and the score changes what the agent may say.
+      </p>
+    </div>
+  </div>
+  <div class="table-panel panel reveal">
+    <div class="cp-head"><span>// confidence rubric — enforced on every finding</span></div>
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr><th>Score</th><th>Evidence bar</th><th>What the agent may claim</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="num good">HIGH</td>
+            <td>≥2 independent tools agree · timelines align · row-count assertions passed</td>
+            <td>A probable cause, stated as such, with a recommended mitigation path</td>
+          </tr>
+          <tr>
+            <td class="num">MED</td>
+            <td>Single-source evidence, or agreeing sources with a timeline gap</td>
+            <td>A hypothesis worth a human's next 10 minutes — never a conclusion</td>
+          </tr>
+          <tr>
+            <td class="num warn">LOW</td>
+            <td>Inference without direct data, or tools returned zero rows</td>
+            <td>"Insufficient evidence" — plus exactly which query would resolve it</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="board-foot">// a zero-row query is reported as <span class="g">no data</span>, never as "no issues found."</div>
+  </div>
+</section>
+
+<section class="case-sec" id="evals">
+  <div class="reveal">
+    <div class="sec-mark">§E — Evals decide whether to trust it</div>
+    <div class="prose">
+      <p>
+        An agent that briefs incident bridges doesn't get to be evaluated on
+        vibes. The harness replays a golden set of <strong>historical incidents with
+        known root causes</strong> — investigations where the ground truth was
+        established the hard way — and scores every prompt, tool, and model
+        change before it ships, exactly like CI.
+      </p>
+    </div>
+  </div>
+  <div class="table-panel panel reveal">
+    <div class="cp-head"><span>// eval dimensions — replayed-incident golden set</span><span class="g">gates every change</span></div>
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr><th>Dimension</th><th>Question it answers</th><th>Failure it exists to catch</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">root-cause hit</td><td>Did the top-ranked hypothesis match the incident's established cause?</td><td>Confident, coherent, wrong</td></tr>
+          <tr><td class="mono">citation validity</td><td>Does every numeric claim resolve to a real query ID with matching rows?</td><td>Narratives that outrun their evidence</td></tr>
+          <tr><td class="mono">hypothesis discipline</td><td>Were wrong theories killed by a tool result, not silently dropped?</td><td>Anchoring on the first plausible story</td></tr>
+          <tr><td class="mono">tool budget</td><td>Did the run stay inside its call and token budgets?</td><td>Runaway loops that cost more than the incident</td></tr>
+          <tr><td class="mono">calibration</td><td>Do HIGH-confidence verdicts match ground truth more often than MED?</td><td>A rubric that's theater instead of a control</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="board-foot">// per-dimension scores are internal and stay internal — <span class="g">the gate, not the grade, is the point.</span></div>
+  </div>
+</section>
+
+<section class="case-sec" id="changed">
+  <div class="reveal">
+    <div class="sec-mark">§F — What it changed</div>
+  </div>
+  <div class="metric-row panel reveal">
+    <div class="m"><span class="v">hrs → min</span><span class="d">Sev2 investigation time, end to end</span></div>
+    <div class="m"><span class="v">10</span><span class="d">MCP tools dispatched concurrently against live systems</span></div>
+    <div class="m"><span class="v">2</span><span class="d">reusable MCP servers now serving other agents &amp; Copilot</span></div>
+    <div class="m"><span class="v">100%</span><span class="d">of runs traced — every claim resolves to a query ID</span></div>
+  </div>
+  <div class="prose reveal">
+    <p>
+      The quieter outcome is who acts on it: the agent's brief is the first
+      artifact on the bridge, and the on-call validates instead of hunts. During
+      a <strong>4-team cross-org Sev2</strong> that same discipline — hypotheses, evidence,
+      cited claims — is what let one person run the room.
+    </p>
+  </div>
+</section>
+
+<section class="case-sec" id="errata">
+  <div class="errata panel reveal">
+    <div class="er-head">Errata — corrections this page has shipped</div>
+    <ul>
+      <li>
+        <span class="ed">2026-07-10</span>
+        <span><strong>First publication of this case file.</strong> Earlier editions of this site showed the agent only as a homepage diagram; the trace, rubric, and eval design above are the full record.</span>
+      </li>
+      <li>
+        <span class="ed">2026-05</span>
+        <span><strong>The first confidence rubric was miscalibrated</strong> — early HIGH verdicts leaned on two tools that shared an upstream table, which is one source wearing two hats. "Independent" now means independent data paths, and calibration is an eval dimension so it can't silently regress.</span>
+      </li>
+      <li>
+        <span class="ed">2026-03</span>
+        <span><strong>Deleted the agent framework.</strong> The LangChain/LangGraph build worked in demos and failed on-call: failures weren't traceable through the abstraction. The hand-rolled loop is more code and less system.</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="redaction reveal">
+    <span class="rx-head">Redaction record</span>
+    Published against the written checklist: customer and account identifiers removed ·
+    cluster and incident IDs removed · absolute traffic volumes replaced with multiples of baseline ·
+    internal tool names generalized · elapsed times rounded.
+    <span class="g">Preserved: the step structure, tool sequence, and decision logic, as-run.</span>
+  </div>
+</section>

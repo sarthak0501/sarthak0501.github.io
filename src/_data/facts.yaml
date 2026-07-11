@@ -1,0 +1,264 @@
+# ============================================================
+# SINGLE SOURCE OF TRUTH — synced to BichhawaSarthakResume_Master_2026
+# (rewritten 2026-07-09). Every number, date, title, and link the site
+# renders comes from here. If a claim isn't in this file, it doesn't
+# ship. scripts/receipts-lint.mjs enforces this at build time.
+# ============================================================
+
+meta:
+  doc: SB-26
+  edition: 2
+  site_url: https://sarthak0501.github.io
+  resume_rev: "2026-07-09"
+  goatcounter: sarthak0501
+
+identity:
+  name: Sarthak Bichhawa
+  title: Sr. Data & Applied Scientist
+  org: Microsoft
+  team: Azure Storage
+  tenure_start: Nov 2020
+  location: Redmond, WA
+  email: sarthaksgsits@gmail.com
+  linkedin: https://www.linkedin.com/in/sarthak-bichhawa/
+  github: https://github.com/sarthak0501
+  years: 9+
+  open_to:
+    - Staff / Principal Applied Scientist
+    - ML Lead
+    - GenAI Eng Mgr
+  status: Open to offers
+
+summary:
+  hero: >-
+    Nine years of ML and AI in production — autonomous LLM agents, a
+    fleet-scale embedding platform, and the revenue systems Finance
+    reconciles against. This page argues like a hiring brief instead:
+    claims up front, receipts attached, architecture on request.
+  ats: >-
+    Sarthak Bichhawa — Sr. Data & Applied Scientist, Microsoft (Azure
+    Storage), Redmond WA. Targeting Staff / Principal Applied Scientist ·
+    ML Lead · GenAI Eng Mgr. 9+ yrs production ML/AI. Ships autonomous
+    multi-agent LLM systems (planner/executor on Azure OpenAI + MCP, Sev2
+    triage hrs to min), a fleet-scale behavioral embedding platform
+    (autoencoder + FAISS, millions of accounts), and revenue-critical data
+    systems (~$45M/mo partner attribution at <1% variance vs Finance).
+    Leadership: org-recognized AI Champion, led 4 DS + 2 interns (Walmart
+    Labs), 8+ teams aligned on one program, 4-team cross-org Sev2 command.
+
+# The four headline receipts. Each anchors to its on-page evidence.
+receipts:
+  - value: ~$45M/mo
+    label: influenced partner revenue recovered & sustained
+    sub: <1% variance vs Finance · ~4× partner coverage
+    anchor: "#record"
+  - value: hrs → min
+    label: Sev2 incident triage, autonomous multi-agent investigation
+    sub: planner/executor loop on Azure OpenAI
+    anchor: "#exhibit-incident"
+  - value: days → <2 min
+    label: customer-health time-to-insight across 13 metric domains
+    sub: NL → governed live Kusto/ADX queries
+    anchor: "#exhibit-mcc"
+  - value: ~88%
+    label: silent upstream row-collapse caught before Finance saw it
+    sub: self-service data-quality monitoring, 76 tests
+    anchor: "#ledger"
+
+# §01 Systems ledger — SYS-01..06. Every row ends in a hard number.
+systems:
+  - id: SYS-01
+    name: Incident-investigation agent
+    what: Autonomous multi-agent planner/executor loop that runs Sev2 triage — context compaction, confidence scoring, run tracing
+    proof: multi-hour investigations → minutes
+    status: LIVE
+    link: /case/incident-agent/
+  - id: SYS-02
+    name: MCC AI agent
+    what: NL questions → governed live Kusto/ADX queries + PM-ready narratives over 13 metric domains
+    proof: time-to-insight days → <2 min
+    status: LIVE
+    link: /case/mcc-ai-agent.html
+  - id: SYS-03
+    name: MCP tool servers ×2
+    what: Governed query + telemetry tools served to Copilot, VS Code, and internal agents (one server almost entirely AI-generated)
+    proof: 2 reusable servers in org use
+    status: PROD
+    link: /case/incident-agent/
+  - id: SYS-04
+    name: Account2Vec embedding platform
+    what: Autoencoder + FAISS behavioral fingerprints — similarity search, segmentation, embedding-drift anomaly detection
+    proof: millions of Azure Storage accounts
+    status: PROD
+    link: /case/account2vec.html
+  - id: SYS-05
+    name: Data-quality monitoring service
+    what: Self-service anomaly detection over pipelines (Python/FastAPI, 76 tests, Azure Container Apps) + hourly table-health profiling
+    proof: caught an ~88% row-collapse · 47 datasets profiled hourly
+    status: PROD
+    link: /case/account2vec.html#dq
+  - id: SYS-06
+    name: Azure Advisor recommendations
+    what: Cost & performance recommendations shipped in-product, built and validated with engineering and support
+    proof: 15+ recs adopted across hundreds of thousands of accounts
+    status: SHIPPED
+    link: /case/stress-lab/#advisor
+
+# §03 Judgment calls — five decisions I'd defend in the interview.
+judgment:
+  - title: Fired the framework
+    ask_me_about: the day I deleted the agent framework
+    numbers: []
+  - title: Evals before demos
+    ask_me_about: what the eval harness blocked from shipping
+    numbers: []
+  - title: A model is not a platform
+    ask_me_about: why the embedding model is the least interesting part of Account2Vec
+    numbers: []
+  - title: Trust is a number
+    ask_me_about: replacing last-writer-wins with multi-partner credit
+    numbers: ["<1% variance vs Finance", "~$45M/mo", "~4× coverage", ">10% MoM", "~88%", "76 tests"]
+  - title: Let bandits decide what we test next
+    ask_me_about: letting a bandit overrule the test plan
+    numbers: ["60%", "20 workload types", "~500 failure signals", "15 recurring failure modes"]
+
+# §04 Career ledger — one row per era, every row ends in a hard number.
+career_ledger:
+  - years: 2020–now
+    role: Sr. Data & Applied Scientist · Microsoft, Azure Storage
+    number: ~$45M/mo revenue recovered · Sev2 triage hrs → min
+    ref: "#record-microsoft"
+  - years: 2019–20
+    role: Senior Data Scientist · Walmart Labs
+    number: ~7% category revenue lift across 50 stores
+    ref: "#record-walmart"
+  - years: "2018"
+    role: Data Scientist Intern · Integral Ad Science
+    number: ~1M URLs/day classified across 846 categories
+    ref: "#record-ias"
+  - years: 2015–17
+    role: Data Scientist · Mu Sigma
+    number: CLTV models informing competitive strategy
+    ref: "#record-musigma"
+
+record:
+  - id: record-microsoft
+    company: Microsoft
+    location: Redmond, WA
+    role: Sr. Data & Applied Scientist
+    dates: Nov 2020 – present
+    leadership_band:
+      - org-recognized AI Champion — drove AI adoption across the team
+      - co-led a 90-minute internal AI Day-of-Learning
+      - sustained code-review mentoring + onboarded a new hire
+      - led 4-team cross-org Sev2 incident response
+      - 8+ engineering/support teams aligned on one health program
+    workstreams:
+      - name: AI & agentic systems
+        bullets:
+          - Cut customer-health time-to-insight from days to <2 minutes with an enterprise LLM agent for Mission-Critical Customers — natural-language questions become governed live Kusto/ADX queries with PM-ready narratives, grounded on a curated catalog of 13 metric domains.
+          - Reduced multi-hour on-call incident investigations to minutes with an autonomous multi-agent investigation agent — planner/executor LLM loop on Azure OpenAI with context compaction, confidence scoring, and run tracing (FastAPI on Azure).
+          - Shipped two reusable Model Context Protocol (MCP) tool servers — one almost entirely AI-generated — serving governed query and telemetry tools to Copilot, VS Code, and internal agents.
+      - name: Applied ML & data-quality platform
+        bullets:
+          - Enabled fleet-scale similarity search, segmentation, and embedding-drift anomaly detection across millions of accounts by designing an account-behavior embedding model (autoencoder + FAISS) that compresses each Azure Storage account into a vector fingerprint.
+          - Caught silent upstream data regressions — including an ~88% row-collapse — before they reached dashboards or Finance, with a self-service data-quality monitoring service (Python/FastAPI, anomaly detection, 76 tests, Azure Container Apps) adopted across teams, plus hourly table-health profiling over 47 datasets.
+      - name: Partner revenue & business reporting
+        bullets:
+          - Recovered and sustained ~$45M/month in influenced partner revenue (<1% variance vs Finance, ~4× partner coverage) by rebuilding a 20+ component attribution pipeline with multi-partner credit replacing last-writer-wins — lifting partner-attributed influenced revenue >10% month-over-month.
+          - Collapsed monthly business-review reporting from a multi-day manual process to a governed ~5-minute pipeline (>95% effort reduction), now in regular leadership use.
+      - name: Reliability & experimentation
+        bullets:
+          - Built an adaptive pre-release stress-testing program for Azure Storage informing per-build ship/hold decisions; helped prevent 10+ Sev1/Sev2 customer incidents by catching top-severity regressions before rollout.
+          - Ran thousands of controlled simulations per build across 20 workload types, distilling ~500 failure signals into 15 recurring failure modes and confirming 50+ issues with reproduction steps and quantified impact.
+          - Prioritized high-yield test scenarios with online learning (multi-armed bandits) and tuned scoring thresholds on outcomes, cutting false positives 60%; led a 2-person effort and authored the design doc + internal white paper.
+      - name: Mission-critical customer health
+        bullets:
+          - Drove the MCC health program and a unified customer-health view across 8+ engineering/support teams, cutting executive/customer readiness insight from 3–5 days to near real-time — with ~50% fewer >10-day aging issues and ~16% faster time-to-mitigate.
+          - Helped reverse churn risk for 10+ critical customers — each representing multi-millions in monthly Azure Storage revenue — by accelerating early detection and action on customer-impacting issues.
+          - Shipped 15+ Azure Advisor recommendations adopted across hundreds of thousands of customer accounts to improve cost and performance.
+  - id: record-walmart
+    company: Walmart Labs
+    location: Bentonville, AR
+    role: Senior Data Scientist
+    dates: Feb 2019 – Nov 2020
+    bullets:
+      - Delivered ~7% category revenue lift across 50 stores with an end-to-end planogram optimization system, cutting planning cycles from weeks to hours.
+      - Built product association + substitution analytics (behavior tree + demand-transfer "universes") to support assortment and replenishment decisions.
+      - Led 4 DS/analysts + 2 interns to productionize a repeatable item-level placement workflow; earned a Spot Award.
+  - id: record-ias
+    company: Integral Ad Science
+    location: New York, NY
+    role: Data Scientist Intern
+    dates: Jun – Aug 2018
+    bullets:
+      - Built a PySpark contextual text-classification pipeline processing ~1M URLs/day across 846 categories at 88% accuracy; improved label quality via correlation analysis.
+  - id: record-musigma
+    company: Mu Sigma
+    location: Bengaluru, India
+    role: Data Scientist
+    dates: Oct 2015 – Jul 2017
+    bullets:
+      - Estimated customer lifetime value with probabilistic and regression models; improved competitive reporting by unifying product IDs via fuzzy matching.
+
+education:
+  - school: University of Illinois at Chicago
+    degree: MS, Business Analytics
+    dates: 2017–2018
+  - school: SGSITS, Indore
+    degree: B.E., Computer Engineering
+    dates: 2011–2015
+
+skills:
+  ai_ml: Generative & agentic AI · multi-agent orchestration (planner/executor, tool-calling, RAG/grounding) · MCP servers & clients · Azure OpenAI · LLM observability, tracing & evals · vector embeddings & autoencoders · FAISS · anomaly detection · multi-armed bandits · NLP classification · production ML
+  tools: Python · SQL · Kusto (ADX) · PySpark · R · FastAPI · Power BI · Tableau · Azure DevOps · Git
+  platforms: Azure (App Service, Container Apps, Data Factory) · large-scale telemetry & data-quality pipelines · experimentation & causal measurement · revenue attribution & business reporting
+
+# Public resume dossier — three documents, one story.
+resumes:
+  - file: /resumes/SarthakBichhawa_Resume_2026.pdf
+    label: Master résumé — 2026
+    note: the full record, July 2026 revision
+  - file: /resumes/SeniorDS_ML_AppliedScience.pdf
+    label: ML & Applied Science
+    note: tuned for Staff/Principal AS screens
+  - file: /resumes/MLManager_TechnicalLead.pdf
+    label: ML Manager / Technical Lead
+    note: tuned for ML Lead & GenAI EM screens
+
+cases:
+  - slug: /case/incident-agent/
+    id: exhibit-incident
+    tag: Exhibit A · agentic · flagship
+    title: The incident agent
+    tease: An autonomous multi-agent loop that runs Sev2 triage — and the eval harness that decides whether to trust it.
+    scent: Full case file — planner design, run trace, confidence rubric, eval table
+  - slug: /case/mcc-ai-agent.html
+    id: exhibit-mcc
+    tag: Exhibit B · GenAI
+    title: MCC AI agent
+    tease: Natural-language questions become governed live Kusto/ADX queries with PM-ready narratives — days to under two minutes.
+    scent: Full case file — system prompt, eval harness output, agent-generated KQL
+  - slug: /case/account2vec.html
+    id: exhibit-a2v
+    tag: Exhibit C · applied ML
+    title: Account2Vec
+    tease: Every storage account compressed to a vector fingerprint — similarity, segmentation, and drift-based anomaly detection at fleet scale.
+    scent: Full case file — architecture, embedding design, drift detection
+  - slug: /case/stress-lab/
+    id: exhibit-stress
+    tag: Exhibit D · experimentation
+    title: The stress lab
+    tease: An adaptive pre-release testing program where multi-armed bandits pick the next experiment — ship/hold calls per build.
+    scent: Full case file — bandit design, failure taxonomy, ship/hold ledger
+
+writing:
+  - url: /writing/shipping-genai-enterprise.html
+    title: "Shipping GenAI in enterprise: what actually breaks"
+    date: 2026-04-20
+  - url: /writing/account2vec-platform.html
+    title: Why we built Account2Vec as a platform, not a model
+    date: 2026-04-20
+  - title: Evaluating autonomous investigation agents
+    status: in progress · Jul 2026
+    date: 2026-07

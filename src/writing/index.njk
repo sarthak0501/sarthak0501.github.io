@@ -1,0 +1,41 @@
+---
+layout: layouts/base.njk
+permalink: /writing/
+title: Field notes — Sarthak Bichhawa
+desc: "Notes from production: shipping GenAI in enterprise, building ML platforms other teams stand on, and evaluating autonomous agents."
+ogImage: /og/writing.png
+ogImageAlt: "Field notes — notes from production, where the demos go to die"
+---
+<section class="section-pad page-head">
+  <div class="wrap">
+    <nav class="crumb" aria-label="Breadcrumb">‹ <a href="/">The brief</a></nav>
+    <div class="reveal">
+      <div class="sec-mark">§05 — Field notes</div>
+      <h1 class="sec-title">Notes from production, <em>where the demos go to die.</em></h1>
+      <p class="sec-sub">
+        The gap between the prototype that wows a leadership review and the
+        system that survives real engineers trying to break it.
+      </p>
+    </div>
+
+    <div class="writing-list">
+      {%- for w in facts.writing %}
+      {%- if w.url %}
+      <a href="{{ w.url }}" class="write-row panel reveal">
+        <div class="write-when">{{ w.date | humanDate }}</div>
+        <div class="write-title">{{ w.title }}</div>
+        <span class="write-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
+      </a>
+      {%- else %}
+      <div class="write-row pending panel reveal">
+        <div class="write-when">in queue</div>
+        <div class="write-title">{{ w.title }}</div>
+        <span class="write-status">{{ w.status }}</span>
+      </div>
+      {%- endif %}
+      {%- endfor %}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,98 @@
+# Redacted run trace for /case/incident-agent/ — reconstructed from a
+# production Sev2 investigation. Customer, cluster, and incident
+# identifiers removed per the published redaction checklist; the step
+# structure, tool sequence, and decision logic are as-run.
+meta:
+  label: trace/sev2-throttling — redacted · reconstructed from a production run
+  note: identifiers, clusters, and customer fields removed · elapsed times rounded
+steps:
+  - n: "01"
+    actor: trigger
+    kind: tool
+    title: Sev2 bridge opens — agent invoked with the incident payload
+    ms: "t+0s"
+    body: >-
+      An availability regression pages the on-call: elevated 5xx and
+      throttling on one storage cluster. The bridge posts the incident ID to
+      the agent endpoint (<code>POST /agent</code>). The agent starts with
+      exactly what the human has — the incident title, severity, and the
+      impacted resource — nothing pre-fetched.
+  - n: "02"
+    actor: planner
+    kind: planner
+    title: Planner decomposes the incident into four testable hypotheses
+    ms: "t+4s"
+    body: >-
+      The planning turn produces a hypothesis register — <em>recent
+      deployment, traffic shift, hardware/dependency fault, throttling-policy
+      change</em> — each with the tool calls that would confirm or kill it.
+      The register is the working memory the rest of the run reports back
+      into; every later finding must attach to a hypothesis or open a new
+      one.
+  - n: "03"
+    actor: executor
+    kind: tool
+    title: "Executor dispatches three tools concurrently: deployments, error breakdown, traffic profile"
+    ms: "t+6s"
+    body: >-
+      Concurrent dispatch, not a chain — the three cheapest discriminating
+      queries run at once. <code>recent_deployments()</code> returns two
+      rollouts inside the regression window. The error-breakdown KQL comes
+      back with 5xx concentrated on a single API family rather than spread
+      across operations. Every result is logged with a query ID the final
+      narrative must cite.
+  - n: "04"
+    actor: executor
+    kind: tool
+    title: Traffic profile — one account ramping far above baseline
+    ms: "t+41s"
+    body: >-
+      The traffic tool surfaces a single account [redacted] whose request
+      rate has ramped to tens of times its 30-day baseline, aligned to the
+      minute with the first 5xx spike. The planner marks the traffic-shift
+      hypothesis <strong>supported</strong> and demotes the rollout
+      hypothesis to <em>possible interaction</em> — two rollouts in-window
+      is circumstantial until correlated per-node.
+  - n: "05"
+    actor: planner
+    kind: planner
+    title: Context at threshold — compaction pass folds raw rows into findings
+    ms: "t+63s"
+    body: >-
+      Tool outputs have pushed the context near its budget. The compaction
+      pass rewrites raw result tables into the findings register — claim,
+      evidence pointer, confidence — and drops the rows. This is the step
+      that lets a long investigation stay coherent instead of truncating
+      its own earlier evidence.
+  - n: "06"
+    actor: executor
+    kind: tool
+    title: Kill-shot query — per-node correlation of rollout vs. throttling
+    ms: "t+78s"
+    body: >-
+      One targeted KQL joins rollout state against throttling rate per node.
+      Nodes on the old build throttle at the same rate as upgraded ones —
+      the rollout hypothesis dies on evidence, not on intuition. A row-count
+      assertion guards the query: zero rows would be reported as
+      <em>no data</em>, never as <em>no correlation</em>.
+  - n: "07"
+    actor: verdict
+    kind: verdict
+    title: "Verdict: traffic-driven throttling — HIGH confidence, every claim cited"
+    ms: "t+96s"
+    body: >-
+      The rubric scores the finding HIGH — two independent tools agree and
+      the timeline aligns to the minute. The agent posts a structured
+      narrative to the bridge: probable cause, the evidence for it, the
+      hypothesis it killed and why, and the recommended mitigation path,
+      each line citing its query ID.
+  - n: "08"
+    actor: handoff
+    kind: verdict
+    title: On-call validates and mitigates — investigation time measured in minutes
+    ms: "t+~2m"
+    body: >-
+      The human stays in charge of the action: the on-call spot-checks the
+      cited queries and applies the mitigation. What used to be a multi-hour
+      hunt across telemetry, deployment history, and traffic dashboards is a
+      reviewable brief in about two minutes — which is the entire point.

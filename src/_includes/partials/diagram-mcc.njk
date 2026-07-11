@@ -1,0 +1,71 @@
+<div class="diagram-wrap panel reveal">
+  <div class="dw-label">// architecture — as built</div>
+  <svg class="diagram" viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MCC AI Agent architecture">
+    <defs>
+      <marker id="arr1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#62e9a6"/>
+      </marker>
+      <marker id="arr1-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(238,235,222,0.5)"/>
+      </marker>
+    </defs>
+
+    <rect class="wrap-rect" x="20" y="32" width="860" height="280" rx="10"/>
+    <text class="wrap-label" x="36" y="24">EVAL HARNESS · GUARDRAILS · GROUNDEDNESS</text>
+
+    <g>
+      <rect class="node-box" x="40" y="146" width="140" height="60" rx="8"/>
+      <text class="node-label" x="110" y="171" text-anchor="middle">User query</text>
+      <text class="node-label sub" x="110" y="189" text-anchor="middle">exec · on-call · PM</text>
+    </g>
+
+    <g>
+      <rect class="node-box" x="267" y="52" width="170" height="44" rx="8"/>
+      <text class="node-label" x="352" y="72" text-anchor="middle">RAG + Tools</text>
+      <text class="node-label sub" x="352" y="87" text-anchor="middle">vector search · KQL exec</text>
+    </g>
+
+    <g>
+      <rect class="node-box primary" x="252" y="126" width="200" height="100" rx="10"/>
+      <text class="node-label tag" x="352" y="148" text-anchor="middle">LLM AGENT</text>
+      <text class="node-label" x="352" y="168" text-anchor="middle" style="font-size:13px;">Azure OpenAI</text>
+      <text class="node-label sub" x="352" y="186" text-anchor="middle">GPT-4 · function calling</text>
+      <text class="node-label sub" x="352" y="202" text-anchor="middle">grounded · schema-valid</text>
+    </g>
+
+    <g>
+      <rect class="node-box" x="560" y="64" width="160" height="48" rx="8"/>
+      <text class="node-label" x="640" y="86" text-anchor="middle">ADX / KQL</text>
+      <text class="node-label sub" x="640" y="102" text-anchor="middle">telemetry</text>
+    </g>
+    <g>
+      <rect class="node-box" x="560" y="150" width="160" height="48" rx="8"/>
+      <text class="node-label" x="640" y="172" text-anchor="middle">Tickets · CRIs</text>
+      <text class="node-label sub" x="640" y="188" text-anchor="middle">ICM · support</text>
+    </g>
+    <g>
+      <rect class="node-box" x="560" y="236" width="160" height="48" rx="8"/>
+      <text class="node-label" x="640" y="258" text-anchor="middle">Ownership graph</text>
+      <text class="node-label sub" x="640" y="274" text-anchor="middle">accounts · subs · TPIDs</text>
+    </g>
+
+    <g>
+      <rect class="node-box primary" x="768" y="146" width="112" height="60" rx="8"/>
+      <text class="node-label" x="824" y="171" text-anchor="middle" fill="#62e9a6">Answer</text>
+      <text class="node-label sub" x="824" y="189" text-anchor="middle">grounded · cited</text>
+    </g>
+
+    <!-- query in -->
+    <path class="flow-line accent" d="M 180 176 H 248" marker-end="url(#arr1)"/>
+    <!-- agent ⇄ retrieval -->
+    <path class="flow-line accent" d="M 352 122 V 100" marker-start="url(#arr1)" marker-end="url(#arr1)"/>
+    <!-- tool calls, request/response -->
+    <path class="flow-line" d="M 456 150 H 506 V 88 H 556" marker-start="url(#arr1-muted)" marker-end="url(#arr1-muted)"/>
+    <path class="flow-line" d="M 456 174 H 556" marker-start="url(#arr1-muted)" marker-end="url(#arr1-muted)"/>
+    <path class="flow-line" d="M 456 202 H 506 V 260 H 556" marker-start="url(#arr1-muted)" marker-end="url(#arr1-muted)"/>
+    <text class="diag-note" x="504" y="166" text-anchor="middle">governed KQL</text>
+    <!-- answer out, routed above the data column -->
+    <path class="flow-line accent" d="M 452 138 H 530 V 44 H 824 V 142" marker-end="url(#arr1)"/>
+    <text class="diag-note g" x="676" y="56" text-anchor="middle">narrative + citations</text>
+  </svg>
+</div>

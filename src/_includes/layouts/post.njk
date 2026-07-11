@@ -1,0 +1,31 @@
+---
+layout: layouts/base.njk
+---
+<article class="section-pad page-head post-page">
+  <div class="wrap-narrow">
+    <nav class="crumb" aria-label="Breadcrumb">‹ <a href="/writing/">All field notes</a></nav>
+
+    <header class="reveal" style="margin-bottom:2.2rem;">
+      <p class="post-date">{{ page.date | humanDate }}</p>
+      <h1 class="case-title">{{ title }}</h1>
+      {% if lede %}<p class="case-lede">{{ lede | safe }}</p>{% endif %}
+    </header>
+
+    <div class="prose">
+      {{ content | safe }}
+    </div>
+  </div>
+</article>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": {{ title | dump | safe }},
+  "description": {{ desc | dump | safe }},
+  "url": "{{ facts.meta.site_url }}{{ page.url }}",
+  "datePublished": "{{ page.date | isoDate }}",
+  "dateModified": "{{ build.updatedISO }}",
+  "author": { "@type": "Person", "name": "{{ facts.identity.name }}", "url": "{{ facts.meta.site_url }}/" }
+}
+</script>

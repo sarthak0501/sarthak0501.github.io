@@ -1,0 +1,37 @@
+---
+layout: layouts/base.njk
+permalink: /case/
+title: Case files — Sarthak Bichhawa
+desc: "Four case files with architecture attached: an autonomous incident-investigation agent, a customer-health LLM agent, a fleet-scale embedding platform, and an adaptive stress-testing program."
+ogImage: /og/case-index.png
+ogImageAlt: "The case files — four production systems, architecture attached"
+---
+<section class="section-pad page-head">
+  <div class="wrap">
+    <nav class="crumb" aria-label="Breadcrumb">‹ <a href="/">The brief</a></nav>
+    <div class="reveal">
+      <div class="sec-mark">The case files</div>
+      <h1 class="sec-title flip">The work, <em>architecture attached.</em></h1>
+      <p class="sec-sub">
+        Each file carries what a hiring loop actually wants to inspect — planner
+        design, prompts, run traces, eval output — published against a written
+        redaction checklist, with errata when the record changes.
+      </p>
+    </div>
+
+    <div class="filecards">
+      {%- for c in facts.cases %}
+      <a class="filecard panel reveal" href="{{ c.slug }}">
+        <div class="exhibit-tag">{{ c.tag }}</div>
+        <h2>{{ c.title }}</h2>
+        <p>{{ c.tease }}</p>
+        <span class="fc-foot">{{ c.scent }} →</span>
+      </a>
+      {%- endfor %}
+    </div>
+
+    <p class="mono-note strip-note" style="margin-top:1.6rem;">
+      // every number in these files traces to <a href="/receipts/" class="g">the receipts ledger</a>.
+    </p>
+  </div>
+</section>

@@ -1,0 +1,405 @@
+---
+layout: layouts/base.njk
+tape: true
+title: Sarthak Bichhawa — Sr. Data & Applied Scientist · Microsoft
+desc: "The case for hiring Sarthak Bichhawa: nine years of production ML and AI — autonomous multi-agent LLM systems, a fleet-scale embedding platform, and revenue-critical data systems. Claims up front, receipts attached."
+---
+
+<!-- ============================================================
+     HERO — the claim
+     ============================================================ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="reveal">
+      <p class="hero-no"><span class="no">Passionate about data.</span></p>
+      <h1>The case for<br>hiring <em>Sarthak.</em></h1>
+      <p class="hero-lead">{{ facts.summary.hero }}</p>
+      <p class="hero-meta">
+        <b class="seg">{{ facts.identity.title }}</b> <span class="sep">·</span> <span class="seg">{{ facts.identity.org }}, {{ facts.identity.team }}</span>
+        <span class="sep">·</span> <span class="seg">since {{ facts.identity.tenure_start }}</span> <span class="sep">·</span> <span class="seg">{{ facts.identity.location }}</span><br>
+        <span class="open">OPEN TO: {{ facts.identity.open_to | join(" · ") }}</span>
+      </p>
+      <div class="hero-ctas">
+        <a href="mailto:{{ facts.identity.email }}" class="btn btn-primary" data-goatcounter-click="hero-email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Email me
+        </a>
+        <a href="/resume/" class="text-link" data-goatcounter-click="hero-resume">Résumé →</a>
+        <button class="btn btn-mono copy-btn" type="button" data-goatcounter-click="hero-copy-summary">⧉ copy candidate summary</button>
+      </div>
+    </div>
+
+    <!-- reader lanes -->
+    <div class="lanes panel reveal">
+      <div class="lanes-head">
+        <span>Reader lanes — pick your depth</span>
+        <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+      <div class="lanes-tabs" role="tablist" aria-label="Reader lanes">
+        <button role="tab" id="tab-recruiter" aria-controls="lane-recruiter" aria-selected="true">recruiter · 30s</button>
+        <button role="tab" id="tab-hm" aria-controls="lane-hm" aria-selected="false" tabindex="-1">hiring mgr · 5 min</button>
+        <button role="tab" id="tab-eng" aria-controls="lane-eng" aria-selected="false" tabindex="-1">engineer · deep</button>
+      </div>
+      <div class="lanes-body">
+        <div class="lane" id="lane-recruiter" role="tabpanel" aria-labelledby="tab-recruiter">
+          <p class="lane-label">Recruiter · 30 seconds</p>
+          <ul>
+            <li><strong>Level &amp; track:</strong> senior IC at {{ facts.identity.org }} ({{ facts.identity.team }}), {{ facts.identity.years }} yrs total — targeting {{ facts.identity.open_to | join(" · ") }}.</li>
+            <li><strong>Location:</strong> {{ facts.identity.location }} · <a href="{{ facts.identity.linkedin }}" target="_blank" rel="noopener">LinkedIn profile</a>.</li>
+            <li><strong>Fastest path:</strong> grab the <a href="/resume/">résumé</a>, or copy a paste-ready summary for your ATS / intro email.</li>
+          </ul>
+          <div class="lane-actions">
+            <a href="/resume/" class="btn btn-primary" data-goatcounter-click="lane-resume">Résumé</a>
+            <button class="btn btn-mono copy-btn" type="button" data-goatcounter-click="lane-copy-summary">⧉ copy summary</button>
+          </div>
+        </div>
+
+        <div class="lane" id="lane-hm" role="tabpanel" aria-labelledby="tab-hm" hidden>
+          <p class="lane-label">Hiring manager · 5 minutes</p>
+          <ul>
+            <li><strong>What you get:</strong> someone who ships agents with evals <em>before</em> demos, builds platforms other teams adopt, and holds the room at GM / CVP readouts.</li>
+            <li><strong>How he decides:</strong> five <a href="#judgment">judgment calls</a> below — each with the trade-off, the outcome, and the question to grill him on.</li>
+            <li><strong>Scope signals:</strong> led 4 DS + 2 interns at Walmart Labs · 8+ teams aligned on one program · 4-team cross-org Sev2 command.</li>
+          </ul>
+          <div class="lane-actions">
+            <a href="#receipts" class="btn btn-primary">Start with the receipts</a>
+            <a href="/case/incident-agent/" class="btn btn-ghost">Exhibit A</a>
+          </div>
+        </div>
+
+        <div class="lane" id="lane-eng" role="tabpanel" aria-labelledby="tab-eng" hidden>
+          <p class="lane-label">Engineer · go deep</p>
+          <ul>
+            <li><strong>Agent internals:</strong> hand-rolled planner / executor on Azure OpenAI — no LangChain — 10 MCP tools, concurrent dispatch, self-compacting 200K context, full LLM tracing.</li>
+            <li><strong>ML internals:</strong> unsupervised autoencoder + FAISS over ~100 behavioral features per account, pooled hierarchically account → subscription → customer.</li>
+            <li><strong>Receipts in code:</strong> the <a href="/case/incident-agent/">incident-agent case file</a> carries the run trace, confidence rubric, and eval table.</li>
+          </ul>
+          <div class="lane-actions">
+            <a href="/case/incident-agent/" class="btn btn-primary">Read the run trace</a>
+            <a href="{{ facts.identity.github }}" target="_blank" rel="noopener" class="btn btn-ghost">GitHub</a>
+            <a href="/writing/" class="btn btn-ghost">Field notes</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- the headline receipts -->
+    <div class="reveal" id="receipts">
+      <div class="receipts panel">
+        {%- for r in facts.receipts %}
+        <a class="receipt" href="{{ r.anchor }}">
+          <span class="r-ref">receipt → {{ r.anchor }}</span>
+          <span class="r-val">{{ r.value }}</span>
+          <span class="r-lbl">{{ r.label }}</span>
+          <span class="r-sub">{{ r.sub }}</span>
+        </a>
+        {%- endfor %}
+      </div>
+      <p class="mono-note strip-note">// every number on this page links to its receipt. <span class="g">click through.</span></p>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     §01 — SYSTEMS LEDGER
+     ============================================================ -->
+<section class="section-pad" id="ledger" style="padding-top:3.25rem;">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-mark">§01 — Systems on the record</div>
+      <h2 class="sec-title">What runs in production, with proof.</h2>
+      <p class="sec-sub">
+        Not prototypes, not weekend demos — systems running inside Microsoft Azure Storage with users, on-call rotations, and numbers attached.
+      </p>
+    </div>
+
+    <div class="board panel reveal">
+      <div class="board-head">
+        <span>ID</span><span>System</span><span>What it does</span><span>Proof</span><span>Status</span>
+      </div>
+      {%- for row in facts.systems %}
+      <div class="board-row">
+        <span class="b-id">{{ row.id }}</span>
+        <span class="b-name"><a href="{{ row.link }}">{{ row.name }}</a></span>
+        <span class="b-desc">{{ row.what }}</span>
+        <span class="b-proof">{{ row.proof }}</span>
+        <span class="b-status {{ 'live' if row.status == 'LIVE' else 'prod' }}"><i aria-hidden="true"></i>{{ row.status }}</span>
+      </div>
+      {%- endfor %}
+      <div class="board-foot">// side projects don't get a row. <span class="g">everything above ran in production with users who could file incidents.</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule"/>
+
+<!-- ============================================================
+     §02 — THE EXHIBITS
+     ============================================================ -->
+<section class="section-pad" id="exhibits">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-mark">§02 — The exhibits</div>
+      <h2 class="sec-title flip">The work, <em>architecture attached.</em></h2>
+      <p class="sec-sub">
+        Each exhibit opens into a full case file — planner design, prompts, eval output, the parts a hiring loop actually wants to inspect.
+      </p>
+    </div>
+
+    {%- for c in facts.cases %}
+    <article class="exhibit" id="{{ c.id }}">
+      <div class="reveal">
+        <div class="exhibit-tag">{{ c.tag }}</div>
+        <h3 class="case-title">{{ c.title }}</h3>
+        <p class="case-lede">{{ c.tease }}</p>
+      </div>
+      {%- if c.id == "exhibit-incident" %}{% include "partials/diagram-incident.njk" %}{% endif %}
+      {%- if c.id == "exhibit-mcc" %}{% include "partials/diagram-mcc.njk" %}{% endif %}
+      {%- if c.id == "exhibit-a2v" %}{% include "partials/diagram-a2v.njk" %}{% endif %}
+      {%- if c.id == "exhibit-stress" %}
+      <div class="metric-row panel reveal">
+        <div class="m"><span class="v">20</span><span class="d">workload types stress-tested per build</span></div>
+        <div class="m"><span class="v">~500</span><span class="d">failure signals distilled</span></div>
+        <div class="m"><span class="v">15</span><span class="d">recurring failure modes named</span></div>
+        <div class="m"><span class="v">−60%</span><span class="d">false positives after bandit-tuned scoring</span></div>
+      </div>
+      {%- endif %}
+      <a href="{{ c.slug }}" class="case-cta panel reveal">
+        <span>{{ c.scent }}</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </article>
+    {%- endfor %}
+  </div>
+</section>
+
+<hr class="rule"/>
+
+<!-- ============================================================
+     §03 — JUDGMENT CALLS
+     ============================================================ -->
+<section class="section-pad" id="judgment">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-mark">§03 — Judgment</div>
+      <h2 class="sec-title">Five calls I'd defend <em>in the interview.</em></h2>
+      <p class="sec-sub">
+        Senior hires aren't judged on tools — they're judged on decisions under ambiguity. Here are five of mine, with the trade-off and the outcome. Each comes with the question you should grill me on.
+      </p>
+    </div>
+
+    <div class="calls-grid">
+      <article class="call panel reveal">
+        <div class="call-kicker"><span>Call 01</span><span class="dom">architecture</span></div>
+        <h3 class="call-title">{{ facts.judgment[0].title }}.</h3>
+        <p class="call-body">
+          The incident agent started on LangChain / LangGraph. Debugging through five layers of someone else's abstraction was slower than owning the loop — so I <strong>replaced it with a hand-rolled planner / executor</strong>: full LLM tracing to Kusto, 429-storm retry, context compaction we control, concurrent tool dispatch.
+        </p>
+        <p class="call-out">→ faster iteration, traceable failures, an agent on-call actually trusts</p>
+        <p class="call-ask"><b>ASK ME ABOUT:</b> {{ facts.judgment[0].ask_me_about }}</p>
+      </article>
+
+      <article class="call panel reveal">
+        <div class="call-kicker"><span>Call 02</span><span class="dom">quality</span></div>
+        <h3 class="call-title">{{ facts.judgment[1].title }}.</h3>
+        <p class="call-body">
+          The MCC copilot didn't meet a single real user until a <strong>golden-set eval harness, guardrails, and PII-aware prompts</strong> existed. Demos earn applause; evals earn production. The harness now gates every prompt and model change like CI.
+        </p>
+        <p class="call-out">→ 8+ teams on one surface, leadership quoting its numbers unprompted</p>
+        <p class="call-ask"><b>ASK ME ABOUT:</b> {{ facts.judgment[1].ask_me_about }}</p>
+      </article>
+
+      <article class="call panel reveal">
+        <div class="call-kicker"><span>Call 03</span><span class="dom">platform</span></div>
+        <h3 class="call-title">{{ facts.judgment[2].title }}.</h3>
+        <p class="call-body">
+          Account2Vec could have shipped as one team's similarity model. Instead I <strong>named the abstraction, wrote the design doc, and built the drift / coverage / staleness plumbing</strong> that makes other teams safe to depend on it — account, subscription, and customer tiers included.
+        </p>
+        <p class="call-out">→ 5+ downstream consumers building on one representation</p>
+        <p class="call-ask"><b>ASK ME ABOUT:</b> {{ facts.judgment[2].ask_me_about }}</p>
+      </article>
+
+      <article class="call panel reveal">
+        <div class="call-kicker"><span>Call 04</span><span class="dom">trust</span></div>
+        <h3 class="call-title">{{ facts.judgment[3].title }}.</h3>
+        <p class="call-body">
+          Revenue data is only useful if Finance can't break it. I rebuilt partner attribution to <strong>&lt;1% variance vs. Finance</strong> (~$45M/mo, ~4× coverage), then shipped the data-quality service — 76 tests, 4 security gates — that <strong>caught an ~88% upstream row collapse</strong> before a single dashboard went wrong.
+        </p>
+        <p class="call-out">→ GM / CVP-level reliance; PMs accept the dashboards as governed source</p>
+        <p class="call-ask"><b>ASK ME ABOUT:</b> {{ facts.judgment[3].ask_me_about }}</p>
+      </article>
+
+      <article class="call call-wide panel reveal">
+        <div class="call-kicker"><span>Call 05</span><span class="dom">experimentation</span></div>
+        <h3 class="call-title">{{ facts.judgment[4].title }}.</h3>
+        <p class="call-body">
+          The pre-release stress lab ran thousands of simulations per build across <strong>20 workload types</strong>, throwing off ~500 failure signals — far more than a static test plan could triage. The roadmap argued for coverage; the data argued for yield — so I <strong>put multi-armed bandits in charge of picking the next scenario</strong> and tuned scoring thresholds on outcomes, cutting false positives 60%. The program came to inform per-build ship / hold calls and helped prevent 10+ Sev1/Sev2 incidents; I led the 2-person effort and wrote the design doc and internal white paper.
+        </p>
+        <p class="call-out">→ per-build ship / hold calls; 10+ Sev1/Sev2 incidents prevented before rollout</p>
+        <p class="call-ask"><b>ASK ME ABOUT:</b> {{ facts.judgment[4].ask_me_about }}</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<hr class="rule"/>
+
+<!-- ============================================================
+     §04 — THE RECORD
+     ============================================================ -->
+<section class="section-pad" id="record">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-mark">§04 — The record</div>
+      <h2 class="sec-title">Nine years of ML that had to <em>earn its keep.</em></h2>
+      <p class="sec-sub">
+        Mu Sigma → IAS → Walmart Labs → Microsoft. The thread: turn ambiguity into a system, then verify the system actually moved the number it claimed it would.
+      </p>
+    </div>
+
+    <div class="panel ledger-wrap reveal">
+      <div class="lt-head">Career ledger — one row per era, one number each</div>
+      <table class="ledger-table">
+        <thead>
+          <tr><th scope="col">Years</th><th scope="col">Role / system</th><th scope="col">One number</th><th scope="col"><span aria-hidden="true">§</span><span class="sr-only">Reference</span></th></tr>
+        </thead>
+        <tbody>
+          {%- for row in facts.career_ledger %}
+          <tr>
+            <td class="lt-years">{{ row.years }}</td>
+            <td class="lt-role">{{ row.role }}</td>
+            <td class="lt-num">{{ row.number }}</td>
+            <td class="lt-ref"><a href="{{ row.ref }}" aria-label="Jump to {{ row.role }}">§</a></td>
+          </tr>
+          {%- endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rec-list">
+      {%- for r in facts.record %}
+      <article class="rec panel reveal{{ ' rec-compact' if not r.workstreams }}" id="{{ r.id }}">
+        <div class="rec-head">
+          <h3 class="rec-role">{{ r.role }}</h3>
+          <span class="rec-co">{{ r.company }} · {{ r.location }}</span>
+          <span class="rec-dates">{{ r.dates }}</span>
+        </div>
+        {%- if r.leadership_band %}
+        <div class="rec-band">
+          <span class="band-k">Leadership band</span>
+          <ul>
+            {%- for item in r.leadership_band %}<li>{{ item }}</li>{% endfor %}
+          </ul>
+        </div>
+        {%- endif %}
+        {%- if r.workstreams %}
+        {%- for ws in r.workstreams %}
+        <div class="rec-ws">
+          <h4>{{ ws.name }}</h4>
+          <ul class="rec-points">
+            {%- for b in ws.bullets %}<li>{{ b }}</li>{% endfor %}
+          </ul>
+        </div>
+        {%- endfor %}
+        {%- else %}
+        <ul class="rec-points">
+          {%- for b in r.bullets %}<li>{{ b }}</li>{% endfor %}
+        </ul>
+        {%- endif %}
+      </article>
+      {%- endfor %}
+    </div>
+
+    <p class="edu-line">
+      {%- for e in facts.education %}<b>{{ e.degree }}</b> — {{ e.school }} ({{ e.dates }}){% if not loop.last %}<span class="sep">·</span>{% endif %}{% endfor %}
+    </p>
+
+    <div class="skills-table panel reveal">
+      <div class="skills-row"><span class="k">AI / ML</span><span class="v">{{ facts.skills.ai_ml }}</span></div>
+      <div class="skills-row"><span class="k">Tools</span><span class="v">{{ facts.skills.tools }}</span></div>
+      <div class="skills-row"><span class="k">Platforms</span><span class="v">{{ facts.skills.platforms }}</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule"/>
+
+<!-- ============================================================
+     §05 — FIELD NOTES
+     ============================================================ -->
+<section class="section-pad" id="writing">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-mark">§05 — Field notes</div>
+      <h2 class="sec-title">Notes from production, <em>where the demos go to die.</em></h2>
+      <p class="sec-sub">
+        The gap between the prototype that wows a leadership review and the system that survives real engineers trying to break it.
+      </p>
+    </div>
+
+    <div class="writing-list">
+      {%- for w in facts.writing %}
+      {%- if w.url %}
+      <a href="{{ w.url }}" class="write-row panel reveal">
+        <div class="write-when">{{ w.date | humanDate }}</div>
+        <div class="write-title">{{ w.title }}</div>
+        <span class="write-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
+      </a>
+      {%- else %}
+      <div class="write-row pending panel reveal">
+        <div class="write-when">in queue</div>
+        <div class="write-title">{{ w.title }}</div>
+        <span class="write-status">{{ w.status }}</span>
+      </div>
+      {%- endif %}
+      {%- endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     §06 — THE ASK
+     ============================================================ -->
+<section class="ask" id="ask">
+  <div class="wrap-narrow">
+    <div class="reveal">
+      <div class="sec-mark">§06 — The ask</div>
+      <h2 class="ask-title">The evidence rests.<br><em>Your move.</em></h2>
+    </div>
+
+    <div class="ask-person reveal">
+      <img class="ask-photo" src="/assets/sarthak.jpg" alt="Sarthak Bichhawa" width="116" height="116" loading="lazy" />
+      <p>
+        Hi, I'm <strong>Sarthak</strong>. I lead the design and delivery of the systems this page just walked you through — the agents, the embeddings, the attribution layers Finance reconciles against.
+        I'm drawn to problems where the data is ambiguous and the stakes are real, and nine years in the thread is consistent: turn ambiguity into a system, then verify it moved the number it claimed it would.
+        Hiring for a <strong>{{ facts.identity.open_to | join(", ") }}</strong>? Email me — I respond fast, and I'll bring the architecture diagrams.
+      </p>
+    </div>
+
+    <div class="ask-ctas reveal">
+      <a href="mailto:{{ facts.identity.email }}" class="btn btn-primary" data-goatcounter-click="ask-email">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        {{ facts.identity.email }}
+      </a>
+      <a href="{{ facts.identity.linkedin }}" target="_blank" rel="noopener" class="btn btn-ghost" data-goatcounter-click="ask-linkedin">LinkedIn</a>
+      <a href="{{ facts.identity.github }}" target="_blank" rel="noopener" class="btn btn-ghost" data-goatcounter-click="ask-github">GitHub</a>
+      <button class="btn btn-mono copy-btn" type="button" data-goatcounter-click="ask-copy-summary">⧉ copy candidate summary</button>
+    </div>
+
+    <div class="resume-dossier panel reveal">
+      <div class="rd-head">The résumé dossier — three documents, one story</div>
+      <div class="rd-list">
+        {%- for r in facts.resumes %}
+        <a href="{{ r.file }}" target="_blank" rel="noopener" data-goatcounter-click="resume-{{ loop.index }}">
+          <b>{{ r.label }}</b><span class="rd-note">{{ r.note }}</span>
+        </a>
+        {%- endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script type="text/plain" id="ats-summary">{{ facts.summary.ats | safe }}
+Site: {{ facts.meta.site_url }} · Résumé: {{ facts.meta.site_url }}/resumes/SarthakBichhawa_Resume_2026.pdf · LinkedIn: {{ facts.identity.linkedin }} · Email: {{ facts.identity.email }}</script>

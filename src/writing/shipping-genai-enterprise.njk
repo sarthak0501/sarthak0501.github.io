@@ -1,0 +1,157 @@
+---
+layout: layouts/post.njk
+permalink: /writing/shipping-genai-enterprise.html
+title: "Shipping GenAI in enterprise: what actually breaks"
+desc: "Five lessons from building a production LLM agent on Azure OpenAI — the gap between the prototype that wowed the leadership review and the thing that held up when real engineers tried to break it."
+ogImage: /og/writing-genai.png
+ogImageAlt: "Field note — shipping GenAI in enterprise: what actually breaks"
+date: 2026-04-20
+lede: "Five lessons from building a production LLM agent on Azure OpenAI — the gap between the prototype that wowed the leadership review and the thing that held up when real engineers tried to break it."
+---
+<p>
+  <strong>TL;DR</strong> — Demos lie. Grounding is the product, not the model. Build evals
+  before you expose users. PII is 30% of the work nobody budgets for. The LLM
+  call is 10% of the system. The interesting engineering lives in the last 10%
+  nobody demos.
+</p>
+<p>
+  An exec opens the customer-health copilot and asks, "how is Contoso doing?"
+  Six seconds later: three bullet points, grounded in eight live data sources,
+  every claim linking back to the ICM, the ADX query, the raw row. Six months
+  earlier that same question took three days and a deck.
+</p>
+<p>
+  The delta between those two worlds — demo script versus real prod — is where
+  most GenAI projects die. Here's what actually broke along the way.
+</p>
+
+<h2>Demos lie.</h2>
+<p>
+  The prototype that wowed the leadership review was a forty-line script with a
+  clever prompt and three curated questions. It answered them beautifully.
+  Everyone nodded.
+</p>
+<p>
+  Then engineers started using it. One of the first real questions was:
+  <em>"Which APAC customers with &gt;10TB capacity have both ticket volume trending
+  up and MAL regressions this quarter?"</em> The prompt melted. The agent
+  confidently cited three customer names. Two didn't exist. One did, but the
+  MAL claim was hallucinated.
+</p>
+<p>
+  The gap between "it works in a demo" and "it holds up in prod" is the gap
+  between a one-hop query over pre-fetched data and a multi-step reasoning
+  problem where the model has to choose tools, compose filters, and stay honest
+  about what it can't see. You won't know your prototype is a toy until someone
+  tries to break it with a real question. That's the point at which you start
+  building the actual system.
+</p>
+
+<h2>Grounding is the product.</h2>
+<p>
+  Nobody in the org cared whether we used GPT-4 or Claude Opus. They cared that
+  when the agent said "Contoso had three MAL regressions last week," they could
+  click through to the ICMs, the KQL, the raw rows. One hallucinated customer
+  name and the whole tool loses trust — permanently.
+</p>
+<p>
+  That's the asymmetric risk of GenAI in enterprise: a thousand correct answers
+  buy you one user; one confident wrong answer loses you ten. <strong>Trust is spent,
+  not earned.</strong>
+</p>
+<p>Specific things that moved the number:</p>
+<ul>
+  <li><strong>Chunking telemetry metadata at the metric level</strong>, not the document level — the model needed to reason about individual signals, not prose paragraphs</li>
+  <li><strong>Schema-valid outputs</strong> for every tool call; reject and retry on malformed JSON rather than letting the model improvise its way out</li>
+  <li><strong>Row-count assertions</strong> on every KQL the agent generated — a query returning zero rows would never be surfaced as "I found no regressions"</li>
+  <li><strong>Explicit refusal paths</strong> for "I don't have enough context to answer this" — measurably better than confident wrong answers</li>
+</ul>
+<p>
+  None of these are exotic. All of them are boring. All of them were the
+  difference between a demo and a tool people actually used.
+</p>
+
+<h2>Evals before users.</h2>
+<p>
+  We built the eval harness before we exposed the agent to anyone. This was the
+  single highest-leverage decision of the project.
+</p>
+<p>
+  Why: once real users interact, every prompt tweak becomes political. "It was
+  better yesterday" becomes the loudest signal in the room, and the loudest
+  signal is rarely the most important one. You need an objective thing to point
+  at. The harness was straightforward:
+</p>
+<pre><code># golden set: ~180 questions drawn from historical exec queries
+# each labeled with the grounded answer + expected citations
+for case in golden_set:
+    answer = agent.run(case.question)
+    scores = {
+        "groundedness": grounded_score(answer, case.sources),
+        "correctness":  correctness_score(answer, case.expected),
+        "citations":    citation_validity(answer.citations),
+    }
+    harness.log(case.id, prompt_version, scores)</code></pre>
+<p>
+  It caught a regression I would never have seen otherwise: a prompt tweak that
+  improved tone but dropped citations in 12% of answers. In a one-off
+  qualitative review nobody would have noticed. The eval flagged it in eight
+  minutes.
+</p>
+<p>
+  A golden set of 180 cases is small enough that a product team can actually
+  maintain it, and large enough to catch real regressions. Start there. Not a
+  thousand synthetic questions — a hundred and eighty real ones.
+</p>
+
+<h2>PII is 30% of the work.</h2>
+<p>
+  Nobody budgets for this. Everyone gets surprised by it.
+</p>
+<p>
+  Customer names. Ticket contents. Internal ownership. Every data source has
+  its own sensitivity rules, its own approval workflow, its own audit
+  expectations. Getting the right masking in the RAG store, the right redaction
+  in responses, the right logging for who asked what about whom — this was as
+  much code as the agent itself.
+</p>
+<p>
+  The pattern that worked: a middleware layer between the LLM and every tool
+  call that ran PII scrubbing on outputs before they hit the prompt context.
+  Imperfect — regex-based scrubbers always are — but <strong>auditable</strong>, which is
+  what compliance actually cares about.
+</p>
+<p>Adjacent, underbudgeted work in the same category:</p>
+<ul>
+  <li>Per-user authorization scoping on tool calls — the agent inherits the user's read perms, not the service account's</li>
+  <li>Prompt logging with retention policy — you need the logs to debug, but not forever</li>
+  <li>Refusal for out-of-scope requests — someone always tries to ask your customer-health agent about HR</li>
+  <li>Entra / managed-identity plumbing for every downstream service</li>
+</ul>
+
+<h2>The LLM call is 10% of the system.</h2>
+<p>The model call is the cheap part. What took real engineering:</p>
+<ul>
+  <li><strong>Retrieval</strong> — hybrid BM25 + embeddings over telemetry metadata, with different chunking strategies per source (a ticket is not a metric definition is not an ownership record)</li>
+  <li><strong>Tool registry</strong> — a dozen tools, each with schemas, timeouts, retry policies, cost accounting, and per-tool eval cases</li>
+  <li><strong>Guardrails</strong> — input scope classification, output validation, refusal routing, confidence thresholds</li>
+  <li><strong>Observability</strong> — every agent trace logged with tool decisions, retries, groundedness scores, latency breakdown</li>
+  <li><strong>Cost controls</strong> — token budgets per session, fallback to smaller models for low-stakes paths</li>
+</ul>
+<p>
+  If you're scoping a GenAI project around "prompt engineering and maybe some
+  fine-tuning," you are off by 10x. The prompt is the tip of the iceberg. The
+  iceberg is a distributed system with a language model somewhere in the
+  middle.
+</p>
+<p>
+  The interesting engineering lives in the last 10% that nobody puts in a
+  conference talk. The first 90% — frameworks, fine-tuning, the latest
+  retrieval pattern — is mostly a solved problem, or at least a problem the
+  ecosystem is happily solving for you. The last 10% is where your agent earns
+  its place in production, or loses it.
+</p>
+<p>
+  If you're building in this space and want to compare notes —
+  <a href="mailto:{{ facts.identity.email }}">I'd love to hear what you're running into</a>.
+</p>

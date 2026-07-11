@@ -1,0 +1,90 @@
+---
+layout: layouts/base.njk
+permalink: /colophon/
+title: Colophon — how this site is built
+desc: "How the hiring brief is built: Eleventy, one facts.yaml source of truth, a receipts linter that fails the deploy on unsourced claims, self-hosted type, and PDFs printed from the site itself."
+ogImage: /og/colophon.png
+ogImageAlt: "Colophon — how the hiring brief is built and enforced"
+---
+<section class="section-pad page-head">
+  <div class="wrap-narrow">
+    <nav class="crumb" aria-label="Breadcrumb">‹ <a href="/">The brief</a></nav>
+
+    <div class="reveal">
+      <div class="sec-mark">Colophon</div>
+      <h1 class="sec-title">Built like the systems <em>it describes.</em></h1>
+      <p class="sec-sub">
+        A site that argues "claims up front, receipts attached" should hold
+        itself to the same contract. This page is how it does.
+      </p>
+    </div>
+
+    <div class="prose reveal">
+      <h2>One source of truth</h2>
+      <p>
+        Every number, date, title, and link on this site renders from a single
+        file — <code>src/_data/facts.yaml</code> — synced to résumé revision
+        <strong>{{ facts.meta.resume_rev }}</strong>. Pages are <a href="https://www.11ty.dev/" target="_blank" rel="noopener">Eleventy&nbsp;3</a>
+        + Nunjucks templates that interpolate from it; if a claim isn't in the
+        file, it doesn't ship.
+      </p>
+
+      <h2>The linter that fails the deploy</h2>
+      <p>
+        <code>scripts/receipts-lint.mjs</code> runs in CI on every push. It scans the
+        built HTML for two kinds of problems: <strong>required claims that went
+        missing</strong> (the headline receipts must appear on the homepage, verbatim)
+        and <strong>superseded claims that crept back in</strong> — figures from older résumé
+        revisions are hard-forbidden by pattern. A contradiction between this
+        site and the résumé is a broken build, not an embarrassment someone
+        eventually notices. The audit trail lives on
+        <a href="/receipts/">the receipts ledger</a>.
+      </p>
+
+      <h2>PDFs that can't drift</h2>
+      <p>
+        The tailored résumé PDFs are printed from this site's own
+        <a href="/resume/">/resume/</a> print variants — headless Chromium,
+        print stylesheet, at build time — so the documents recruiters download
+        and the record this site argues from are the same artifact. The master
+        PDF is the canonical authored document, hosted at the same revision.
+      </p>
+
+      <h2>Freshness is emitted, not maintained</h2>
+      <p>
+        The revision stamp and date in the footer — <strong>rev {{ build.rev }} ·
+        {{ build.updated }}</strong> — derive from git at build time. They cannot go
+        stale, because nobody types them.
+      </p>
+
+      <h2>The stack, deliberately small</h2>
+      <ul>
+        <li><strong>Eleventy 3 + Nunjucks</strong>, built and deployed by GitHub Actions to GitHub Pages.</li>
+        <li><strong>Self-hosted type</strong>, latin subsets only: <a href="https://fonts.google.com/specimen/Fraunces" target="_blank" rel="noopener">Fraunces</a> for display, Inter for body, IBM Plex Mono for the chrome. No font CDN, no third-party requests on the critical path.</li>
+        <li><strong>Vanilla JavaScript</strong> — one small file: mobile nav, reader lanes, reveal-on-scroll, copy-summary, and the run-trace viewer. Every page works with JavaScript disabled.</li>
+        <li><strong>Motion contract:</strong> nothing over 200ms, and <code>prefers-reduced-motion</code> disables all of it.</li>
+        <li><strong>Analytics:</strong> <a href="https://www.goatcounter.com/" target="_blank" rel="noopener">GoatCounter</a> — no cookies, no fingerprinting, counts only.</li>
+        <li><strong>Per-page OG images</strong> rendered from SVG templates by a build script, committed with the site.</li>
+      </ul>
+
+      <h2>What gets redacted, and how</h2>
+      <p>
+        Every case file is published against a written redaction checklist:
+        customer and account identifiers removed, internal system names
+        generalized, absolute volumes stated as orders of magnitude or
+        multiples of baseline — while preserving the decision structure, the
+        trade-offs, and the numbers already on the public record. Each case
+        file carries its own redaction record and an <strong>errata section</strong>: when
+        this site corrects itself, the correction is dated and left visible.
+      </p>
+
+      <h2>Lineage</h2>
+      <p>
+        This is the second edition of "The Hiring Brief" — same thesis, quieter
+        evidence. Three earlier designs shipped and were retired for arguing
+        louder than they proved. The repo history keeps them honest:
+        <a href="{{ facts.identity.github }}/sarthak0501.github.io" target="_blank" rel="noopener">github.com/sarthak0501/sarthak0501.github.io</a>.
+      </p>
+    </div>
+  </div>
+</section>

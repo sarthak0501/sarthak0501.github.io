@@ -1,0 +1,163 @@
+---
+layout: layouts/case.njk
+permalink: /case/stress-lab/
+title: The stress lab — bandits decide what we test next
+desc: "Case file: an adaptive pre-release stress-testing program for Azure Storage — thousands of controlled simulations per build, multi-armed bandits picking the next scenario, and per-build ship/hold calls that prevented 10+ Sev1/Sev2 incidents."
+ogImage: /og/case-stress-lab.png
+ogImageAlt: "Case file — the stress lab: adaptive pre-release testing, ship/hold calls per build"
+tag: Exhibit D · experimentation
+lede: "An adaptive pre-release stress-testing program for Azure Storage: <strong>thousands of controlled simulations per build</strong> across 20 workload types, with multi-armed bandits deciding which scenario to run next. It came to inform per-build <strong>ship / hold</strong> decisions — and helped prevent 10+ Sev1/Sev2 customer incidents by catching top-severity regressions before rollout."
+role: Program lead — 2-person effort, design doc & internal white paper
+stack: Python · multi-armed bandits · large-scale simulation
+status: PROD · per-build
+headline: 10+ Sev1/Sev2 incidents prevented
+next:
+  url: /case/incident-agent/
+  title: The incident agent
+---
+
+<section class="case-sec" id="problem">
+  <div class="reveal">
+    <div class="sec-mark">§A — The problem: regressions found by customers</div>
+    <div class="prose">
+      <p>
+        The worst place to discover a performance regression is in a customer's
+        Sev1. The second worst is in a static test plan that ran the same suite
+        against every build, regardless of what that build changed — full
+        coverage on paper, thin evidence where it mattered.
+      </p>
+      <p>
+        The lab replaced that with an adaptive program: run <strong>thousands of
+        controlled simulations per build</strong> across <strong>20 workload types</strong>, treat
+        every run as data, and make the next scheduling decision based on what
+        the last one found. Before rollout, not after.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="case-sec" id="taxonomy">
+  <div class="reveal">
+    <div class="sec-mark">§B — From noise to a named taxonomy</div>
+    <div class="prose">
+      <p>
+        The raw output was unmanageable by design — roughly <strong>500 distinct
+        failure signals</strong> thrown off across builds. The analytical work was
+        distilling them into <strong>15 recurring failure modes</strong>: named, documented,
+        with detection signatures and severity weights. A signal that maps to a
+        named mode is a diagnosis; one that doesn't is a discovery, and both are
+        useful.
+      </p>
+      <p>
+        Against that taxonomy the program confirmed <strong>50+ real issues</strong> — each
+        with reproduction steps and quantified impact, which is the difference
+        between a bug report engineering acts on and a graph someone argues
+        with.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="case-sec" id="bandits">
+  <div class="reveal">
+    <div class="sec-mark">§C — Letting bandits overrule the test plan</div>
+    <div class="prose">
+      <p>
+        With ~500 signals and finite lab hours, the scheduling question — <em>which
+        scenario do we run next?</em> — matters more than any single test. The
+        roadmap argued for coverage; the data argued for yield. So scenario
+        selection went to <strong>multi-armed bandits</strong>: scenarios that keep finding
+        regressions earn more runs, scenarios that stay quiet decay toward a
+        baseline exploration rate, and a build that touches a risky subsystem
+        re-inflates the arms that historically catch its failure modes.
+      </p>
+      <p>
+        The same outcome data tuned the scoring thresholds that decide when a
+        signal is worth a human's attention — cutting <strong>false positives by
+        60%</strong>. A lab that cries wolf gets ignored by exactly the engineers who
+        need to trust its holds.
+      </p>
+    </div>
+  </div>
+  <div class="metric-row panel reveal">
+    <div class="m"><span class="v">20</span><span class="d">workload types stress-tested per build</span></div>
+    <div class="m"><span class="v">~500</span><span class="d">failure signals distilled into the taxonomy</span></div>
+    <div class="m"><span class="v">15</span><span class="d">recurring failure modes, named and documented</span></div>
+    <div class="m"><span class="v">−60%</span><span class="d">false positives after bandit-tuned scoring</span></div>
+  </div>
+</section>
+
+<section class="case-sec" id="shiphold">
+  <div class="reveal">
+    <div class="sec-mark">§D — The ship / hold call</div>
+    <div class="prose">
+      <p>
+        The program's output isn't a dashboard — it's a <strong>decision</strong>. Each build
+        gets a verdict assembled from the taxonomy: which failure modes fired,
+        at what severity, against which workloads, with what confidence.
+      </p>
+    </div>
+  </div>
+  <div class="table-panel panel reveal">
+    <div class="cp-head"><span>// ship-hold ledger — shape of the verdict</span><span class="g">illustrative · identifiers removed</span></div>
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr><th>Build</th><th>Modes fired</th><th>Worst severity</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td class="mono dim">build N−2</td><td>none above threshold</td><td class="num">—</td><td><span class="chip pass"><i></i>SHIP</span></td></tr>
+          <tr><td class="mono dim">build N−1</td><td>latency-degradation under mixed r/w burst</td><td class="num warn">Sev2-class</td><td><span class="chip warn"><i></i>HOLD</span></td></tr>
+          <tr><td class="mono dim">build N</td><td>same mode, post-fix — regression cleared</td><td class="num">—</td><td><span class="chip pass"><i></i>SHIP</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="board-foot">// a HOLD is a claim with evidence attached: <span class="g">mode, repro steps, quantified impact.</span> that's why holds held.</div>
+  </div>
+  <div class="prose reveal">
+    <p>
+      Cumulative effect: <strong>10+ Sev1/Sev2 customer incidents prevented</strong> —
+      top-severity regressions caught in the lab instead of in production. I led
+      the two-person effort and wrote the design doc and the internal white
+      paper that let the program outlive its authors.
+    </p>
+  </div>
+</section>
+
+<section class="case-sec" id="advisor">
+  <div class="reveal">
+    <div class="sec-mark">§E — Shipped in-product: Azure Advisor recommendations</div>
+    <div class="prose">
+      <p>
+        The same evidence-first muscle shipped customer-facing:
+        <strong>15+ Azure Advisor cost and performance recommendations</strong>, built and
+        validated with engineering and support, now adopted across
+        <strong>hundreds of thousands of customer accounts</strong>. Each recommendation is
+        the same artifact as a HOLD verdict — a claim about behavior, backed by
+        fleet evidence, precise enough that a customer acts on it.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="case-sec" id="errata">
+  <div class="errata panel reveal">
+    <div class="er-head">Errata — corrections this page has shipped</div>
+    <ul>
+      <li>
+        <span class="ed">2026-07-10</span>
+        <span><strong>First publication of this case file.</strong> Earlier editions of this site compressed the program to half a bullet under "experimentation." A system that made per-build ship/hold calls deserved its own record.</span>
+      </li>
+      <li>
+        <span class="ed">2026-02</span>
+        <span><strong>The static-plan phase ran too long.</strong> The first two quarters scheduled scenarios by roadmap, and quiet arms burned lab hours while risky subsystems went under-tested. The bandit scheduler should have shipped a quarter earlier than it did.</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="redaction reveal">
+    <span class="rx-head">Redaction record</span>
+    Published against the written checklist: build identifiers and internal system
+    names removed · per-build volumes stated as orders of magnitude · the ship/hold
+    ledger shown as shape, not as specific builds.
+    <span class="g">Preserved: the counts on the record — 20 workloads, ~500 signals, 15 modes, −60% false positives.</span>
+  </div>
+</section>

@@ -1,0 +1,241 @@
+---
+layout: layouts/case.njk
+permalink: /case/mcc-ai-agent.html
+title: MCC AI agent — customer health in under two minutes
+desc: "Case file: a grounded, tool-using LLM agent on Azure OpenAI that turns natural-language questions into governed live Kusto/ADX queries — cutting customer-health time-to-insight from days to under two minutes."
+ogImage: /og/case-mcc-ai-agent.png
+ogImageAlt: "Case file — MCC AI agent: customer-health time-to-insight, days to under two minutes"
+tag: Exhibit B · GenAI
+lede: "A grounded, tool-using agent on Azure OpenAI that turns plain-English questions about Mission-Critical Customers into <strong>governed live Kusto/ADX queries</strong> with PM-ready narratives — grounded on a curated catalog of 13 metric domains. Time-to-insight went from days to <strong>under two minutes</strong>, and it shipped with the eval harness, guardrails, and PII-aware prompts it needed to survive real enterprise load."
+role: Technical lead, design & implementation
+stack: Azure OpenAI · ADX / KQL · Python
+status: LIVE · in production
+headline: time-to-insight days → <2 min
+next:
+  url: /case/account2vec.html
+  title: Account2Vec
+---
+
+<section class="case-sec" id="gap">
+  <div class="reveal">
+    <div class="sec-mark">§A — The gap the agent was built to close</div>
+    <div class="prose">
+      <p>
+        Customer health inside Azure Storage lived across at least eight
+        disconnected tools — telemetry in ADX, tickets in ICM, customer-reported
+        issues in a separate tracker, ownership graphs in yet another service.
+        Every exec readout was a <strong>three-to-five day manual hunt</strong>: an analyst
+        joined tables in their head, pieced together a narrative, and shipped a
+        deck. By the time the story was told, the window to act on it was often
+        closed.
+      </p>
+      <p>
+        The ask from leadership wasn't "build us a chatbot." It was: <em>can anyone
+        in this org, at any hour, ask a plain-English question about a customer
+        and get a trustworthy answer?</em> The operative word is trustworthy.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="case-sec" id="architecture">
+  <div class="reveal">
+    <div class="sec-mark">§B — How the system is wired</div>
+    <div class="prose">
+      <p>
+        At the center: an agent on Azure OpenAI with function calling. Around it:
+        a retrieval layer for metric definitions, ticket excerpts, and ownership
+        records; a tool registry that executes live KQL against Azure Data
+        Explorer; and an evaluation-and-guardrails layer that runs on every
+        response before it ships.
+      </p>
+    </div>
+  </div>
+  {% include "partials/diagram-mcc.njk" %}
+  <div class="prose reveal">
+    <p>
+      The non-obvious design choice was to treat <strong>retrieval as a tool, not a
+      preprocessing step</strong>. The agent decides when it needs metric definitions
+      versus raw rows versus ownership lookups, rather than receiving a
+      pre-stuffed context window. That single decision is what lets it answer
+      multi-hop questions like <em>"which APAC customers with &gt;10TB capacity have
+      both ticket volume trending up and MAL regressions this quarter?"</em>
+    </p>
+  </div>
+</section>
+
+<section class="case-sec" id="prompt">
+  <div class="reveal">
+    <div class="sec-mark">§C — The system prompt</div>
+    <div class="prose">
+      <p>
+        Every grounded behavior starts here. The shape of this prompt went
+        through roughly forty revisions — every one scored by the eval harness
+        before it shipped.
+      </p>
+    </div>
+  </div>
+  <div class="code-panel panel reveal">
+    <div class="cp-head"><span>// system-prompt.v7</span><span class="g">redacted · representative</span></div>
+    <pre><code><span class="cm"># role</span>
+You are a customer-health analyst for Azure Storage. You answer
+questions by calling tools against live data. <span class="hl">You do not guess.</span>
+
+<span class="cm"># grounding rules</span>
+- Every numeric claim MUST cite the source (tool + query id).
+- <span class="hl">If a tool returns zero rows, report that. Do not interpolate.</span>
+- If you lack a needed tool or permission, say so and stop.
+- <span class="hl">Never combine values from different time windows</span> without saying so.
+
+<span class="cm"># tool selection policy</span>
+1. Look up the customer by TPID before any other call.
+2. Prefer aggregated tools (MAL, CRI summaries) over raw KQL.
+3. Only write KQL when no aggregated tool can answer the question.
+4. Budget: at most 6 tool calls per answer.
+
+<span class="cm"># output schema</span>
+Return a JSON object with: summary, findings[] (claim, evidence),
+confidence (low|med|high), refusal (bool, reason).</code></pre>
+  </div>
+  <div class="prose reveal">
+    <p>
+      Two lines did disproportionate work. <em>"If a tool returns zero rows, report
+      that"</em> killed a whole class of "I found no issues" hallucinations.
+      <em>"Never combine values from different time windows"</em> killed a subtler one,
+      where the model would happily mix last week's MAL with last quarter's
+      ticket volume.
+    </p>
+  </div>
+</section>
+
+<section class="case-sec" id="kql">
+  <div class="reveal">
+    <div class="sec-mark">§D — A query the agent wrote</div>
+    <div class="prose">
+      <p>
+        For the long tail of questions no pre-built tool covered, the agent could
+        write KQL. Every generated query passed a row-count assertion and a
+        syntax check before its results were surfaced.
+      </p>
+    </div>
+  </div>
+  <div class="code-panel panel reveal">
+    <div class="cp-head"><span>// agent-generated KQL</span><span class="g">after grounding &amp; validation</span></div>
+    <pre><code><span class="cm">// resolved from: "APAC customers >10TB w/ MAL regressions this Q"</span>
+<span class="cm">// agent call: exec_kql(cluster="xstore-analytics", db="…")</span>
+StorageAccountMetrics
+| <span class="kw">where</span> TimeGenerated <span class="kw">between</span> (startofquarter(now()) .. now())
+| <span class="kw">where</span> GeoRegion == "APAC"
+| <span class="kw">summarize</span> CapacityTB = avg(CapacityBytes) / 1e12,
+            WowMAL = sum(MALMinutes) <span class="kw">by</span> TPID, AccountName
+| <span class="kw">where</span> CapacityTB > 10
+| <span class="kw">where</span> WowMAL > tolong(prev(WowMAL, 1, 0)) * 1.25
+| <span class="kw">join</span> kind=inner TicketTrends <span class="kw">on</span> TPID
+| <span class="kw">where</span> TicketsWoWDelta > 0
+| <span class="kw">project</span> TPID, AccountName, CapacityTB, WowMAL, TicketsWoWDelta
+| <span class="kw">order by</span> WowMAL desc
+| <span class="kw">take</span> 25</code></pre>
+  </div>
+  <div class="prose reveal">
+    <p>
+      The user never saw the query first — they saw a paragraph with five
+      customer names, then a link to the query, the row count, and the raw
+      table. <strong>The query is the receipt.</strong> That's what turned "an LLM answered
+      my question" into "a trustworthy signal I can act on."
+    </p>
+  </div>
+</section>
+
+<section class="case-sec" id="evals">
+  <div class="reveal">
+    <div class="sec-mark">§E — The eval harness came before the users</div>
+    <div class="prose">
+      <p>
+        A golden set of ~180 historical exec questions, each labeled with its
+        grounded answer and expected citations. Every prompt change ran the full
+        set before ship — the harness gates changes the way CI gates merges.
+      </p>
+    </div>
+  </div>
+  <div class="table-panel panel reveal">
+    <div class="cp-head"><span>// eval run — prompt v6 → v7</span><span class="g">180 cases · abridged</span></div>
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr><th>Dimension</th><th>v6</th><th>v7</th><th>Delta</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">groundedness (mean)</td><td class="num">0.841</td><td class="num">0.902</td><td class="num good">+0.061</td></tr>
+          <tr><td class="mono">correctness (mean)</td><td class="num">0.793</td><td class="num">0.821</td><td class="num good">+0.028</td></tr>
+          <tr><td class="mono">citation validity</td><td class="num">0.941</td><td class="num">0.827</td><td class="num warn">−0.114 ← regression</td></tr>
+          <tr><td class="mono">refusal (appropriate)</td><td class="num">0.876</td><td class="num">0.902</td><td class="num good">+0.026</td></tr>
+          <tr><td class="mono">refusal (over-refused)</td><td class="num">0.042</td><td class="num">0.058</td><td class="num warn">+0.016</td></tr>
+          <tr><td class="mono">tool-budget exceeded</td><td class="num">0.033</td><td class="num">0.011</td><td class="num good">−0.022</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="board-foot">// VERDICT: <span class="g">block ship</span> — citation validity regressed on 12% of cases. investigate tone-tweak before merge.</div>
+  </div>
+  <div class="prose reveal">
+    <p>
+      That regression is real: a prompt tweak that improved tone silently
+      dropped citations on 12% of cases — the kind of thing no qualitative
+      review would catch, and exactly the kind of thing that destroys user
+      trust in production. The harness flagged it in under ten minutes.
+    </p>
+  </div>
+</section>
+
+<section class="case-sec" id="changed">
+  <div class="reveal">
+    <div class="sec-mark">§F — What it changed</div>
+    <div class="prose">
+      <p>
+        The agent's own number is <strong>speed to trustworthy insight</strong>: questions
+        that took a three-to-five day manual hunt now come back grounded in
+        under two minutes, and <strong>8+ engineering and support teams</strong> converged on
+        it as the single conversational surface for customer health.
+      </p>
+    </div>
+  </div>
+  <div class="metric-row panel reveal">
+    <div class="m"><span class="v">days → &lt;2 min</span><span class="d">customer-health time-to-insight — the agent's headline</span></div>
+    <div class="m"><span class="v">13</span><span class="d">metric domains in the curated, governed catalog</span></div>
+    <div class="m"><span class="v">8+</span><span class="d">teams unified on one conversational surface</span></div>
+    <div class="m"><span class="v">~180</span><span class="d">golden-set cases gating every prompt &amp; model change</span></div>
+  </div>
+  <div class="prose reveal">
+    <p>
+      The agent serves a broader <strong>MCC health program</strong> I drove across those
+      same teams — a unified customer-health view that cut executive readiness
+      insight from 3–5 days to near real-time. On the program's watch,
+      <strong>&gt;10-day aging issues fell ~50%</strong> and <strong>time-to-mitigate improved
+      ~16%</strong>; those are program outcomes with many hands on them, and the agent
+      is the reason the insight arrived in time to matter. Churn risk was
+      reversed for 10+ critical customers, each representing multi-millions in
+      monthly Azure Storage revenue.
+    </p>
+  </div>
+</section>
+
+<section class="case-sec" id="errata">
+  <div class="errata panel reveal">
+    <div class="er-head">Errata — corrections this page has shipped</div>
+    <ul>
+      <li>
+        <span class="ed">2026-07-10</span>
+        <span><strong>Attribution corrected.</strong> An earlier revision of this page headlined the ~50% aging-issue reduction and ~16% time-to-mitigate improvement as the agent's outcomes. They belong to the MCC health program the agent serves. The agent's own number — days to under two minutes — was always the honest headline; now it's the one on the page.</span>
+      </li>
+      <li>
+        <span class="ed">2026-06</span>
+        <span><strong>PII and authorization were underscoped by at least 2×.</strong> Scrubbing middleware, per-user permission scoping, and the audit trail were specced in week six; they belonged in week one. The longer argument is in <a href="/writing/shipping-genai-enterprise.html">the field note</a>.</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="redaction reveal">
+    <span class="rx-head">Redaction record</span>
+    Published against the written checklist: system prompt reduced to representative
+    structure · customer names and TPIDs removed · cluster and database names
+    generalized · eval dimensions and deltas preserved as-run.
+    <span class="g">Preserved: the design decisions, the regression, and the verdict.</span>
+  </div>
+</section>

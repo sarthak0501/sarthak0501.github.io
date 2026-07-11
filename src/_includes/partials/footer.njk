@@ -1,0 +1,22 @@
+<div class="ecg-wrap" aria-hidden="true">
+  <svg class="ecg" viewBox="0 0 1200 40" preserveAspectRatio="none">
+    <path class="base" d="M0 20 H170 L186 20 194 7 202 32 210 20 H400 L416 20 424 5 432 34 440 20 H660 L676 20 684 8 692 31 700 20 H910 L926 20 934 6 942 33 950 20 H1200"/>
+    <path class="pulse" pathLength="1200" d="M0 20 H170 L186 20 194 7 202 32 210 20 H400 L416 20 424 5 432 34 440 20 H660 L676 20 684 8 692 31 700 20 H910 L926 20 934 6 942 33 950 20 H1200"/>
+  </svg>
+</div>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-inner">
+      <div class="foot-meta">
+        DOC {{ facts.meta.doc }} · ED. {{ facts.meta.edition }} · REV {{ build.rev }} · {{ build.updated }} · © {{ build.year }} · <a href="/colophon/">hand-built</a>, no template
+      </div>
+      <div class="foot-links">
+        <a href="mailto:{{ facts.identity.email }}">email</a>
+        <a href="{{ facts.identity.linkedin }}" target="_blank" rel="noopener">linkedin</a>
+        <a href="{{ facts.identity.github }}" target="_blank" rel="noopener">github</a>
+        <a href="/receipts/"><span class="g">§</span> receipts</a>
+      </div>
+    </div>
+  </div>
+</footer>

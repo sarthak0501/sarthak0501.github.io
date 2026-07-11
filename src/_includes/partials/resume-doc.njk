@@ -1,0 +1,93 @@
+{#
+  The résumé document, rendered from facts.yaml — the same source the site
+  argues from, so the PDF and the page cannot drift apart.
+  Callers may set `rvariant` first: { summary, order[], hoist_band } —
+  order filters/reorders the Microsoft workstreams; hoist_band leads with
+  leadership scope (the ML-lead cut). No rvariant = the master ordering.
+#}
+{% set ms = facts.record[0] %}
+<div class="resume-doc panel reveal">
+  <header>
+    <div class="r-name">{{ facts.identity.name }}</div>
+    <p class="r-title">{{ facts.identity.title }} · {{ facts.identity.org }}, {{ facts.identity.team }}{% if rvariant and rvariant.target %} — {{ rvariant.target }}{% endif %}</p>
+    <p class="r-contact">
+      {{ facts.identity.location }} · <a href="mailto:{{ facts.identity.email }}">{{ facts.identity.email }}</a> ·
+      <a href="{{ facts.identity.linkedin }}">linkedin.com/in/sarthak-bichhawa</a> ·
+      <a href="{{ facts.identity.github }}">github.com/sarthak0501</a> ·
+      <a href="{{ facts.meta.site_url }}/">{{ facts.meta.site_url | replace("https://", "") }}</a>
+    </p>
+    <p class="r-summary">{{ rvariant.summary if rvariant and rvariant.summary else facts.summary.ats }}</p>
+  </header>
+
+  <section class="r-sec">
+    <h2>Experience</h2>
+
+    <div class="r-item">
+      <div class="r-row">
+        <h3>{{ ms.role }}</h3>
+        <span class="r-co">{{ ms.company }} · {{ ms.location }}</span>
+        <span class="r-dates">{{ ms.dates }}</span>
+      </div>
+      {% if rvariant and rvariant.hoist_band %}
+      <div class="r-ws">Leadership scope</div>
+      <ul>
+        {%- for item in ms.leadership_band %}<li>{{ item }}</li>{% endfor %}
+      </ul>
+      {% endif %}
+      {%- if rvariant and rvariant.order %}
+      {%- for name in rvariant.order %}
+      {%- for ws in ms.workstreams %}{% if ws.name == name %}
+      <div class="r-ws">{{ ws.name }}</div>
+      <ul>
+        {%- for b in ws.bullets %}<li>{{ b }}</li>{% endfor %}
+      </ul>
+      {%- endif %}{% endfor %}
+      {%- endfor %}
+      {%- else %}
+      {%- for ws in ms.workstreams %}
+      <div class="r-ws">{{ ws.name }}</div>
+      <ul>
+        {%- for b in ws.bullets %}<li>{{ b }}</li>{% endfor %}
+      </ul>
+      {%- endfor %}
+      {%- endif %}
+      {% if not (rvariant and rvariant.hoist_band) %}
+      <div class="r-ws">Leadership</div>
+      <ul>
+        {%- for item in ms.leadership_band %}<li>{{ item }}</li>{% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+
+    {%- for r in facts.record %}{% if not loop.first %}
+    <div class="r-item">
+      <div class="r-row">
+        <h3>{{ r.role }}</h3>
+        <span class="r-co">{{ r.company }} · {{ r.location }}</span>
+        <span class="r-dates">{{ r.dates }}</span>
+      </div>
+      <ul>
+        {%- for b in r.bullets %}<li>{{ b }}</li>{% endfor %}
+      </ul>
+    </div>
+    {%- endif %}{% endfor %}
+  </section>
+
+  <section class="r-sec">
+    <h2>Skills</h2>
+    <div class="r-skills">
+      <div><b>AI / ML</b> {{ facts.skills.ai_ml }}</div>
+      <div><b>Tools</b> {{ facts.skills.tools }}</div>
+      <div><b>Platforms</b> {{ facts.skills.platforms }}</div>
+    </div>
+  </section>
+
+  <section class="r-sec">
+    <h2>Education</h2>
+    <div class="r-skills">
+      {%- for e in facts.education %}
+      <div><b>{{ e.school }}</b> {{ e.degree }} · {{ e.dates }}</div>
+      {%- endfor %}
+    </div>
+  </section>
+</div>
