@@ -6,8 +6,7 @@
     "build": "eleventy",
     "serve": "eleventy --serve",
     "lint:receipts": "node scripts/receipts-lint.mjs",
-    "og": "node scripts/og-gen.mjs",
-    "pdf": "node scripts/pdf-gen.mjs"
+    "og": "node scripts/og-gen.mjs"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.1.2",

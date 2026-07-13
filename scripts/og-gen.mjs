@@ -4,15 +4,21 @@
 import sharp from "sharp";
 import { mkdirSync } from "node:fs";
 
-const G = "#62e9a6"; // green
-const P = "#f2efe3"; // paper
-const P2 = "#b8b5a6";
-const P3 = "#8e8c7d";
-const BG = "#0a0e0c";
-const ORANGE = "#ff7a45";
+const G = "#23744d"; // green
+const P = "#232d27"; // ink text
+const P2 = "#4d5850";
+const P3 = "#75806f";
+const BG = "#f7f4ec";
+const ORANGE = "#bc5b2e";
 
 // title lines: arrays of {t, g?} runs — g renders italic green.
 const PAGES = [
+  {
+    slug: "home",
+    kicker: "SR. DATA & APPLIED SCIENTIST · MICROSOFT",
+    lines: [[{ t: "The case for" }], [{ t: "hiring " }, { t: "Sarthak", g: true }, { t: "." }]],
+    sub: "9+ yrs production ML/AI · agents · platforms · revenue systems",
+  },
   {
     slug: "case-index",
     kicker: "THE CASE FILES · 4 EXHIBITS",
@@ -46,8 +52,8 @@ const PAGES = [
   {
     slug: "resume",
     kicker: "THE RÉSUMÉ · REV 2026-07-09",
-    lines: [[{ t: "One record," }], [{ t: "three cuts", g: true }, { t: "." }]],
-    sub: "rendered from the same source of truth as the site — PDFs can't drift",
+    lines: [[{ t: "One record," }], [{ t: "one document", g: true }, { t: "." }]],
+    sub: "rendered from the same source of truth as the site — it can't drift",
   },
   {
     slug: "receipts",
@@ -100,19 +106,19 @@ function svg({ kicker, lines, sub }) {
   return `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
   <rect width="1200" height="630" fill="${BG}"/>
   <radialGradient id="glow" cx="0.12" cy="-0.1" r="1.0">
-    <stop offset="0" stop-color="${G}" stop-opacity="0.14"/>
+    <stop offset="0" stop-color="${G}" stop-opacity="0.08"/>
     <stop offset="0.6" stop-color="${G}" stop-opacity="0"/>
   </radialGradient>
   <rect width="1200" height="630" fill="url(#glow)"/>
-  <rect x="28" y="28" width="1144" height="574" fill="none" stroke="rgba(238,235,222,0.16)" stroke-width="1.5" rx="14"/>
-  <line x1="28" y1="96" x2="1172" y2="96" stroke="rgba(238,235,222,0.14)" stroke-width="1.5"/>
+  <rect x="28" y="28" width="1144" height="574" fill="none" stroke="rgba(35,45,39,0.22)" stroke-width="1.5" rx="14"/>
+  <line x1="28" y1="96" x2="1172" y2="96" stroke="rgba(35,45,39,0.16)" stroke-width="1.5"/>
   <text x="84" y="70" font-family="'Courier New', monospace" font-size="21" font-weight="700" letter-spacing="3" fill="${P3}">HIRING BRIEF · DOC SB-26 · ED. 2</text>
   <circle cx="1074" cy="62" r="7" fill="${ORANGE}"/>
   <text x="1094" y="70" font-family="'Courier New', monospace" font-size="21" font-weight="700" letter-spacing="2" fill="${ORANGE}" text-anchor="start">OPEN</text>
   <text x="84" y="182" font-family="'Courier New', monospace" font-size="23" font-weight="700" letter-spacing="4" fill="${G}">${esc(kicker)}</text>
   ${title}
   <text x="84" y="${startY + lines.length * 84 + 20}" font-family="'Courier New', monospace" font-size="24" letter-spacing="0.5" fill="${P2}">${esc(sub)}</text>
-  <line x1="28" y1="534" x2="1172" y2="534" stroke="rgba(238,235,222,0.14)" stroke-width="1.5"/>
+  <line x1="28" y1="534" x2="1172" y2="534" stroke="rgba(35,45,39,0.16)" stroke-width="1.5"/>
   <text x="84" y="577" font-family="Georgia, serif" font-size="27" font-weight="600" fill="${P}">Sarthak Bichhawa</text>
   <text x="1116" y="577" font-family="'Courier New', monospace" font-size="21" letter-spacing="1.5" fill="${P3}" text-anchor="end">sarthak0501.github.io · evidence attached</text>
 </svg>`;

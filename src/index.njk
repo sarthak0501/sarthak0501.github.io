@@ -1,86 +1,34 @@
 ---
 layout: layouts/base.njk
-tape: true
 title: Sarthak Bichhawa — Sr. Data & Applied Scientist · Microsoft
 desc: "The case for hiring Sarthak Bichhawa: nine years of production ML and AI — autonomous multi-agent LLM systems, a fleet-scale embedding platform, and revenue-critical data systems. Claims up front, receipts attached."
 ---
 
 <!-- ============================================================
-     HERO — the claim
+     HERO — profile + impact, nothing between them
      ============================================================ -->
 <header class="hero">
   <div class="wrap">
-    <div class="reveal">
-      <p class="hero-no"><span class="no">Passionate about data.</span></p>
-      <h1>The case for<br>hiring <em>Sarthak.</em></h1>
-      <p class="hero-lead">{{ facts.summary.hero }}</p>
-      <p class="hero-meta">
-        <b class="seg">{{ facts.identity.title }}</b> <span class="sep">·</span> <span class="seg">{{ facts.identity.org }}, {{ facts.identity.team }}</span>
-        <span class="sep">·</span> <span class="seg">since {{ facts.identity.tenure_start }}</span> <span class="sep">·</span> <span class="seg">{{ facts.identity.location }}</span><br>
-        <span class="open">OPEN TO: {{ facts.identity.open_to | join(" · ") }}</span>
-      </p>
-      <div class="hero-ctas">
-        <a href="mailto:{{ facts.identity.email }}" class="btn btn-primary" data-goatcounter-click="hero-email">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          Email me
-        </a>
-        <a href="/resume/" class="text-link" data-goatcounter-click="hero-resume">Résumé →</a>
-        <button class="btn btn-mono copy-btn" type="button" data-goatcounter-click="hero-copy-summary">⧉ copy candidate summary</button>
-      </div>
-    </div>
-
-    <!-- reader lanes -->
-    <div class="lanes panel reveal">
-      <div class="lanes-head">
-        <span>Reader lanes — pick your depth</span>
-        <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
-      </div>
-      <div class="lanes-tabs" role="tablist" aria-label="Reader lanes">
-        <button role="tab" id="tab-recruiter" aria-controls="lane-recruiter" aria-selected="true">recruiter · 30s</button>
-        <button role="tab" id="tab-hm" aria-controls="lane-hm" aria-selected="false" tabindex="-1">hiring mgr · 5 min</button>
-        <button role="tab" id="tab-eng" aria-controls="lane-eng" aria-selected="false" tabindex="-1">engineer · deep</button>
-      </div>
-      <div class="lanes-body">
-        <div class="lane" id="lane-recruiter" role="tabpanel" aria-labelledby="tab-recruiter">
-          <p class="lane-label">Recruiter · 30 seconds</p>
-          <ul>
-            <li><strong>Level &amp; track:</strong> senior IC at {{ facts.identity.org }} ({{ facts.identity.team }}), {{ facts.identity.years }} yrs total — targeting {{ facts.identity.open_to | join(" · ") }}.</li>
-            <li><strong>Location:</strong> {{ facts.identity.location }} · <a href="{{ facts.identity.linkedin }}" target="_blank" rel="noopener">LinkedIn profile</a>.</li>
-            <li><strong>Fastest path:</strong> grab the <a href="/resume/">résumé</a>, or copy a paste-ready summary for your ATS / intro email.</li>
-          </ul>
-          <div class="lane-actions">
-            <a href="/resume/" class="btn btn-primary" data-goatcounter-click="lane-resume">Résumé</a>
-            <button class="btn btn-mono copy-btn" type="button" data-goatcounter-click="lane-copy-summary">⧉ copy summary</button>
-          </div>
-        </div>
-
-        <div class="lane" id="lane-hm" role="tabpanel" aria-labelledby="tab-hm" hidden>
-          <p class="lane-label">Hiring manager · 5 minutes</p>
-          <ul>
-            <li><strong>What you get:</strong> someone who ships agents with evals <em>before</em> demos, builds platforms other teams adopt, and holds the room at GM / CVP readouts.</li>
-            <li><strong>How he decides:</strong> five <a href="#judgment">judgment calls</a> below — each with the trade-off, the outcome, and the question to grill him on.</li>
-            <li><strong>Scope signals:</strong> led 4 DS + 2 interns at Walmart Labs · 8+ teams aligned on one program · 4-team cross-org Sev2 command.</li>
-          </ul>
-          <div class="lane-actions">
-            <a href="#receipts" class="btn btn-primary">Start with the receipts</a>
-            <a href="/case/incident-agent/" class="btn btn-ghost">Exhibit A</a>
-          </div>
-        </div>
-
-        <div class="lane" id="lane-eng" role="tabpanel" aria-labelledby="tab-eng" hidden>
-          <p class="lane-label">Engineer · go deep</p>
-          <ul>
-            <li><strong>Agent internals:</strong> hand-rolled planner / executor on Azure OpenAI — no LangChain — 10 MCP tools, concurrent dispatch, self-compacting 200K context, full LLM tracing.</li>
-            <li><strong>ML internals:</strong> unsupervised autoencoder + FAISS over ~100 behavioral features per account, pooled hierarchically account → subscription → customer.</li>
-            <li><strong>Receipts in code:</strong> the <a href="/case/incident-agent/">incident-agent case file</a> carries the run trace, confidence rubric, and eval table.</li>
-          </ul>
-          <div class="lane-actions">
-            <a href="/case/incident-agent/" class="btn btn-primary">Read the run trace</a>
-            <a href="{{ facts.identity.github }}" target="_blank" rel="noopener" class="btn btn-ghost">GitHub</a>
-            <a href="/writing/" class="btn btn-ghost">Field notes</a>
-          </div>
+    <div class="hero-grid reveal">
+      <div>
+        <p class="hero-no"><span class="no">Passionate about data.</span></p>
+        <h1>The case for<br>hiring <em>Sarthak.</em></h1>
+        <p class="hero-lead">{{ facts.summary.hero }}</p>
+        <p class="hero-meta">
+          <b class="seg">{{ facts.identity.title }}</b> <span class="sep">·</span> <span class="seg">{{ facts.identity.org }}, {{ facts.identity.team }}</span>
+          <span class="sep">·</span> <span class="seg">since {{ facts.identity.tenure_start }}</span> <span class="sep">·</span> <span class="seg">{{ facts.identity.location }}</span><br>
+          <span class="open"><span class="dot" aria-hidden="true"></span>OPEN TO: {{ facts.identity.open_to | join(" · ") }}</span>
+        </p>
+        <div class="hero-ctas">
+          <a href="mailto:{{ facts.identity.email }}" class="btn btn-primary" data-goatcounter-click="hero-email">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Email me
+          </a>
+          <a href="/resume/" class="btn btn-ghost" data-goatcounter-click="hero-resume">Résumé</a>
+          <button class="btn btn-mono copy-btn" type="button" data-goatcounter-click="hero-copy-summary">⧉ copy candidate summary</button>
         </div>
       </div>
+      <img class="hero-photo" src="/assets/sarthak.jpg" alt="Sarthak Bichhawa" width="232" height="232" fetchpriority="high" />
     </div>
 
     <!-- the headline receipts -->
@@ -370,7 +318,6 @@ desc: "The case for hiring Sarthak Bichhawa: nine years of production ML and AI 
     </div>
 
     <div class="ask-person reveal">
-      <img class="ask-photo" src="/assets/sarthak.jpg" alt="Sarthak Bichhawa" width="116" height="116" loading="lazy" />
       <p>
         Hi, I'm <strong>Sarthak</strong>. I lead the design and delivery of the systems this page just walked you through — the agents, the embeddings, the attribution layers Finance reconciles against.
         I'm drawn to problems where the data is ambiguous and the stakes are real, and nine years in the thread is consistent: turn ambiguity into a system, then verify it moved the number it claimed it would.
@@ -383,20 +330,10 @@ desc: "The case for hiring Sarthak Bichhawa: nine years of production ML and AI 
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         {{ facts.identity.email }}
       </a>
+      <a href="{{ facts.resume.file }}" target="_blank" rel="noopener" class="btn btn-ghost" data-goatcounter-click="ask-resume-pdf">↓ Résumé (PDF)</a>
       <a href="{{ facts.identity.linkedin }}" target="_blank" rel="noopener" class="btn btn-ghost" data-goatcounter-click="ask-linkedin">LinkedIn</a>
       <a href="{{ facts.identity.github }}" target="_blank" rel="noopener" class="btn btn-ghost" data-goatcounter-click="ask-github">GitHub</a>
       <button class="btn btn-mono copy-btn" type="button" data-goatcounter-click="ask-copy-summary">⧉ copy candidate summary</button>
-    </div>
-
-    <div class="resume-dossier panel reveal">
-      <div class="rd-head">The résumé dossier — three documents, one story</div>
-      <div class="rd-list">
-        {%- for r in facts.resumes %}
-        <a href="{{ r.file }}" target="_blank" rel="noopener" data-goatcounter-click="resume-{{ loop.index }}">
-          <b>{{ r.label }}</b><span class="rd-note">{{ r.note }}</span>
-        </a>
-        {%- endfor %}
-      </div>
     </div>
   </div>
 </section>

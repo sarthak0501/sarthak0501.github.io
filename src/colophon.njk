@@ -41,13 +41,13 @@ ogImageAlt: "Colophon — how the hiring brief is built and enforced"
         <a href="/receipts/">the receipts ledger</a>.
       </p>
 
-      <h2>PDFs that can't drift</h2>
+      <h2>One résumé</h2>
       <p>
-        The tailored résumé PDFs are printed from this site's own
-        <a href="/resume/">/resume/</a> print variants — headless Chromium,
-        print stylesheet, at build time — so the documents recruiters download
-        and the record this site argues from are the same artifact. The master
-        PDF is the canonical authored document, hosted at the same revision.
+        There is exactly one résumé — no dossier of tailored cuts to choose
+        from. The PDF is the canonical authored document, hosted at the same
+        revision this site renders from, and the
+        <a href="/resume/">/resume/</a> page is the same record with a print
+        stylesheet, so what you print and what you download can't disagree.
       </p>
 
       <h2>Freshness is emitted, not maintained</h2>
@@ -61,7 +61,7 @@ ogImageAlt: "Colophon — how the hiring brief is built and enforced"
       <ul>
         <li><strong>Eleventy 3 + Nunjucks</strong>, built and deployed by GitHub Actions to GitHub Pages.</li>
         <li><strong>Self-hosted type</strong>, latin subsets only: <a href="https://fonts.google.com/specimen/Fraunces" target="_blank" rel="noopener">Fraunces</a> for display, Inter for body, IBM Plex Mono for the chrome. No font CDN, no third-party requests on the critical path.</li>
-        <li><strong>Vanilla JavaScript</strong> — one small file: mobile nav, reader lanes, reveal-on-scroll, copy-summary, and the run-trace viewer. Every page works with JavaScript disabled.</li>
+        <li><strong>Vanilla JavaScript</strong> — one small file: mobile nav, reveal-on-scroll, copy-summary, and the run-trace viewer. Every page works with JavaScript disabled.</li>
         <li><strong>Motion contract:</strong> nothing over 200ms, and <code>prefers-reduced-motion</code> disables all of it.</li>
         <li><strong>Analytics:</strong> <a href="https://www.goatcounter.com/" target="_blank" rel="noopener">GoatCounter</a> — no cookies, no fingerprinting, counts only.</li>
         <li><strong>Per-page OG images</strong> rendered from SVG templates by a build script, committed with the site.</li>

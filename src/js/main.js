@@ -1,5 +1,5 @@
-/* The Hiring Brief · ed.2 — all client JS. Five jobs, nothing else:
-   mobile nav, reader-lane tabs, reveal-on-scroll, copy-summary,
+/* The Hiring Brief · ed.2 — all client JS. Four jobs, nothing else:
+   mobile nav, reveal-on-scroll, copy-summary,
    run-trace step-through (case/incident-agent). */
 (function () {
   'use strict';
@@ -16,34 +16,6 @@
       a.addEventListener('click', function () {
         nav.classList.remove('open');
         toggle.setAttribute('aria-expanded', 'false');
-      });
-    });
-  }
-
-  // ---- reader lanes: ARIA tablist (<980px), roving tabindex ----
-  var tabs = Array.prototype.slice.call(document.querySelectorAll('.lanes-tabs [role="tab"]'));
-  if (tabs.length) {
-    var select = function (tab) {
-      tabs.forEach(function (t) {
-        var on = t === tab;
-        t.setAttribute('aria-selected', on ? 'true' : 'false');
-        t.tabIndex = on ? 0 : -1;
-        var panel = document.getElementById(t.getAttribute('aria-controls'));
-        if (panel) panel.hidden = !on;
-      });
-    };
-    tabs.forEach(function (t, i) {
-      t.addEventListener('click', function () { select(t); });
-      t.addEventListener('keydown', function (e) {
-        var to = null;
-        if (e.key === 'ArrowRight') to = tabs[(i + 1) % tabs.length];
-        else if (e.key === 'ArrowLeft') to = tabs[(i + tabs.length - 1) % tabs.length];
-        else if (e.key === 'Home') to = tabs[0];
-        else if (e.key === 'End') to = tabs[tabs.length - 1];
-        if (!to) return;
-        e.preventDefault();
-        select(to);
-        to.focus();
       });
     });
   }
