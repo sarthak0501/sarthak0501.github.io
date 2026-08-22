@@ -41,7 +41,7 @@ ogImageAlt: "The receipts ledger — every claim checked against its source"
     </div>
 
     <div class="table-panel panel reveal">
-      <div class="cp-head"><span>// systems ledger proofs</span><span class="g">SYS-01 … SYS-06</span></div>
+      <div class="cp-head"><span>// systems ledger proofs</span><span class="g">SYS-01 … SYS-0{{ facts.systems.length }}</span></div>
       <div class="table-scroll">
         <table class="data-table">
           <thead><tr><th>ID</th><th>System</th><th>Proof on record</th><th>Status</th></tr></thead>
@@ -90,25 +90,49 @@ ogImageAlt: "The receipts ledger — every claim checked against its source"
             <tr>
               <td class="mono dim">"&#60;0.5&#37; variance vs Finance"</td>
               <td class="num">&lt;1% variance vs Finance</td>
-              <td class="mono dim">rev {{ facts.meta.resume_rev }}</td>
+              <td class="mono dim">rev 2026-07-09</td>
               <td><span class="chip warn"><i></i>FORBIDDEN</span></td>
             </tr>
             <tr>
-              <td class="mono dim">"4&#45;org Sev2 command"</td>
-              <td class="num">4-team cross-org Sev2 command</td>
-              <td class="mono dim">rev {{ facts.meta.resume_rev }}</td>
+              <td class="mono dim">"4&#45;org severity-2 command"</td>
+              <td class="num">4-team cross-org severity-2 command</td>
+              <td class="mono dim">rev 2026-07-09</td>
               <td><span class="chip warn"><i></i>FORBIDDEN</span></td>
             </tr>
             <tr>
-              <td class="mono dim">program outcomes credited to the MCC agent</td>
-              <td class="num">agent: days → &lt;2 min · program: ~50% aging, ~16% TTM</td>
+              <td class="mono dim">program outcomes credited to the customer-health agent</td>
+              <td class="num">agent: days → &lt;2 min · program: ~50% aging, ~16% mitigation</td>
               <td class="mono dim">2026-07-10</td>
               <td><span class="chip warn"><i></i>CORRECTED</span></td>
+            </tr>
+            <tr>
+              <td class="mono dim">"hourly profiling over 4&#55; datasets"</td>
+              <td class="num">400+ production datasets profiled hourly</td>
+              <td class="mono dim">rev {{ facts.meta.resume_rev }}</td>
+              <td><span class="chip warn"><i></i>CORRECTED</span></td>
+            </tr>
+            <tr>
+              <td class="mono dim">"MCP tool servers &#215;2"</td>
+              <td class="num">four reusable MCP tool servers</td>
+              <td class="mono dim">rev {{ facts.meta.resume_rev }}</td>
+              <td><span class="chip warn"><i></i>CORRECTED</span></td>
+            </tr>
+            <tr>
+              <td class="mono dim">"&#53;+ downstream consumers" (account embeddings)</td>
+              <td class="num">productionizing with a first consumer</td>
+              <td class="mono dim">rev {{ facts.meta.resume_rev }}</td>
+              <td><span class="chip warn"><i></i>CORRECTED DOWN</span></td>
+            </tr>
+            <tr>
+              <td class="mono dim">"7&#54; tests" · "1&#55; PRs" · "~4&#215; partner coverage"</td>
+              <td class="num">dropped — counts went stale; coverage restated as ~80–90% more partner accounts</td>
+              <td class="mono dim">rev {{ facts.meta.resume_rev }}</td>
+              <td><span class="chip warn"><i></i>FORBIDDEN</span></td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div class="board-foot">// stale claims aren't deleted — they're listed, dated, and <span class="g">made impossible to reintroduce.</span></div>
+      <div class="board-foot">// stale claims aren't deleted — they're listed, dated, and <span class="g">made impossible to reintroduce.</span> one of them was corrected <em>downward</em>. that's the point.</div>
     </div>
 
     <div class="prose reveal" style="margin-top:2rem;">

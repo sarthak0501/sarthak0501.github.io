@@ -84,15 +84,16 @@
   --hairline: #ddd8c9;
 
   --green: #23744d;
-  --green-dim: #4c8a6c;
+  --green-dim: #3d7659;
+  --green-hover: #1d6341;
   --green-soft: rgba(35, 116, 77, 0.08);
   --green-glow: rgba(35, 116, 77, 0.18);
-  --orange: #bc5b2e;
-  --orange-soft: rgba(188, 91, 46, 0.10);
+  --orange: #a8481f;
+  --orange-soft: rgba(168, 72, 31, 0.10);
 
   --paper: #232d27;
   --paper-2: #4d5850;
-  --paper-3: #75806f;
+  --paper-3: #616b5e;
 
   --font-display: 'Fraunces', Georgia, serif;
   --font-sans: 'Inter', -apple-system, "Segoe UI", sans-serif;
@@ -101,6 +102,12 @@
   --radius: 10px;
   --radius-sm: 6px;
 
+  /* nav ground is translucent over the page, so it needs its own token;
+     --on-green is the text colour that sits on a green fill. */
+  --nav-bg: rgba(247, 244, 236, 0.86);
+  --nav-bg-solid: rgba(247, 244, 236, 0.98);
+  --on-green: #f7f4ec;
+
   --maxw: 1140px;
   --maxw-narrow: 860px;
 
@@ -108,6 +115,47 @@
 }
 
 ::selection { background: var(--green); color: #f7f4ec; }
+
+/* ---------- dark edition ----------
+   The token vocabulary is semantic, so the whole site reskins from this
+   block alone. Roles are preserved: --bg is still the page ground,
+   --paper is still the primary text, --ink is still the one dark surface
+   (code panels), which is why it barely moves here. ---------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #171b18;
+    --bg-1: #1a1f1b;
+    --surface: #212722;
+
+    --ink: #101310;
+    --ink-2: #141814;
+
+    --panel: #1c211d;
+    --panel-2: #1f251f;
+    --border: rgba(234, 231, 220, 0.12);
+    --border-2: rgba(234, 231, 220, 0.26);
+    --hairline: #2c332d;
+
+    --green: #6cc295;
+    --green-dim: #57a67e;
+    --green-hover: #8ad3af;
+    --green-soft: rgba(108, 194, 149, 0.10);
+    --green-glow: rgba(108, 194, 149, 0.22);
+    --orange: #e8875a;
+    --orange-soft: rgba(232, 135, 90, 0.12);
+
+    --paper: #eae7dc;
+    --paper-2: #bcc3b8;
+    --paper-3: #98a094;
+
+    --nav-bg: rgba(23, 27, 24, 0.86);
+    --nav-bg-solid: rgba(23, 27, 24, 0.98);
+    /* the dark edition's green is light, so text on it must be dark */
+    --on-green: #101310;
+  }
+  ::selection { background: var(--green); color: #101310; }
+}
+
 
 /* ---------- cross-document view transitions (160ms) ---------- */
 @view-transition { navigation: auto; }

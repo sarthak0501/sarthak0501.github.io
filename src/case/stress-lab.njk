@@ -2,15 +2,15 @@
 layout: layouts/case.njk
 permalink: /case/stress-lab/
 title: The stress lab — bandits decide what we test next
-desc: "Case file: an adaptive pre-release stress-testing program for Azure Storage — thousands of controlled simulations per build, multi-armed bandits picking the next scenario, and per-build ship/hold calls that prevented 10+ Sev1/Sev2 incidents."
+desc: "Case file: an adaptive pre-release stress-testing program for Azure Storage — thousands of controlled simulations per build, multi-armed bandits picking the next scenario, and per-build ship/hold calls that prevented 10+ top-severity incidents."
 ogImage: /og/case-stress-lab.png
 ogImageAlt: "Case file — the stress lab: adaptive pre-release testing, ship/hold calls per build"
-tag: Exhibit D · experimentation
-lede: "An adaptive pre-release stress-testing program for Azure Storage: <strong>thousands of controlled simulations per build</strong> across 20 workload types, with multi-armed bandits deciding which scenario to run next. It came to inform per-build <strong>ship / hold</strong> decisions — and helped prevent 10+ Sev1/Sev2 customer incidents by catching top-severity regressions before rollout."
+tag: Exhibit F · experimentation
+lede: "An adaptive pre-release stress-testing program for Azure Storage: <strong>thousands of controlled simulations per build</strong> across 20 workload types, with multi-armed bandits deciding which scenario to run next. It came to inform per-build <strong>ship / hold</strong> decisions — and helped prevent 10+ top-severity customer incidents by catching top-severity regressions before rollout."
 role: Program lead — 2-person effort, design doc & internal white paper
 stack: Python · multi-armed bandits · large-scale simulation
 status: PROD · per-build
-headline: 10+ Sev1/Sev2 incidents prevented
+headline: 10+ top-severity incidents prevented
 next:
   url: /case/incident-agent/
   title: The incident agent
@@ -22,7 +22,7 @@ next:
     <div class="prose">
       <p>
         The worst place to discover a performance regression is in a customer's
-        Sev1. The second worst is in a static test plan that ran the same suite
+        severity-1. The second worst is in a static test plan that ran the same suite
         against every build, regardless of what that build changed — full
         coverage on paper, thin evidence where it mattered.
       </p>
@@ -105,7 +105,7 @@ next:
         <thead><tr><th>Build</th><th>Modes fired</th><th>Worst severity</th><th>Verdict</th></tr></thead>
         <tbody>
           <tr><td class="mono dim">build N−2</td><td>none above threshold</td><td class="num">—</td><td><span class="chip pass"><i></i>SHIP</span></td></tr>
-          <tr><td class="mono dim">build N−1</td><td>latency-degradation under mixed r/w burst</td><td class="num warn">Sev2-class</td><td><span class="chip warn"><i></i>HOLD</span></td></tr>
+          <tr><td class="mono dim">build N−1</td><td>latency-degradation under mixed r/w burst</td><td class="num warn">severity-2-class</td><td><span class="chip warn"><i></i>HOLD</span></td></tr>
           <tr><td class="mono dim">build N</td><td>same mode, post-fix — regression cleared</td><td class="num">—</td><td><span class="chip pass"><i></i>SHIP</span></td></tr>
         </tbody>
       </table>
@@ -114,7 +114,7 @@ next:
   </div>
   <div class="prose reveal">
     <p>
-      Cumulative effect: <strong>10+ Sev1/Sev2 customer incidents prevented</strong> —
+      Cumulative effect: <strong>10+ top-severity customer incidents prevented</strong>, and — because the bandit stopped paying for low-yield runs — <strong>40% lower test-infrastructure cost</strong> —
       top-severity regressions caught in the lab instead of in production. I led
       the two-person effort and wrote the design doc and the internal white
       paper that let the program outlive its authors.

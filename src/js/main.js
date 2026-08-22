@@ -1,5 +1,5 @@
-/* The Hiring Brief · ed.2 — all client JS. Four jobs, nothing else:
-   mobile nav, reveal-on-scroll, copy-summary,
+/* The Hiring Brief · ed.3 — all client JS. Five jobs, nothing else:
+   mobile nav, reveal-on-scroll, copy-summary, lane filter,
    run-trace step-through (case/incident-agent). */
 (function () {
   'use strict';
@@ -69,6 +69,45 @@
         }
       });
     });
+  }
+
+  // ---- lane filter (progressive: no JS = everything shown) ----
+  // ?lane=ai deep-links a cold outreach message straight to the right frame.
+  var laneUI = document.querySelector('[data-lanes-ui]');
+  if (laneUI) {
+    var laneBtns = Array.prototype.slice.call(laneUI.querySelectorAll('[data-lane]'));
+    var blurb = document.getElementById('laneBlurb');
+    var empty = document.getElementById('laneEmpty');
+    var targets = document.querySelectorAll('[data-lanes]');
+
+    var apply = function (lane, push) {
+      var shown = 0;
+      targets.forEach(function (el) {
+        var hit = lane === 'all' || (' ' + el.getAttribute('data-lanes') + ' ').indexOf(' ' + lane + ' ') > -1;
+        el.classList.toggle('lane-hidden', !hit);
+        if (hit && el.classList.contains('exhibit')) shown++;
+      });
+      laneBtns.forEach(function (b) {
+        var on = b.getAttribute('data-lane') === lane;
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        if (on && blurb) blurb.textContent = '// ' + (b.getAttribute('data-blurb') || '');
+      });
+      if (empty) empty.hidden = shown !== 0;
+      if (push && window.history && history.replaceState) {
+        var url = lane === 'all' ? location.pathname : location.pathname + '?lane=' + lane;
+        history.replaceState(null, '', url + location.hash);
+      }
+    };
+
+    laneBtns.forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.getAttribute('data-lane'), true); });
+    });
+
+    var initial = (location.search.match(/[?&]lane=([a-z]+)/) || [])[1];
+    if (initial && laneBtns.some(function (b) { return b.getAttribute('data-lane') === initial; })) {
+      apply(initial, false);
+    }
   }
 
   // ---- run-trace step-through (progressive: <details> works without JS) ----

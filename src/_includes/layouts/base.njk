@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#f7f4ec" />
+  <meta name="theme-color" content="#f7f4ec" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#171b18" media="(prefers-color-scheme: dark)" />
 
   <title>{{ title if title else facts.identity.name + " — " + facts.identity.title + " · " + facts.identity.org }}</title>
   <meta name="description" content="{{ desc if desc else facts.summary.hero }}" />
   <meta name="author" content="{{ facts.identity.name }}" />
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="alternate" type="application/atom+xml" title="{{ facts.identity.name }} — field notes" href="/feed.xml" />
   <link rel="canonical" href="{{ facts.meta.site_url }}{{ page.url }}" />
   {% if noindex %}<meta name="robots" content="noindex" />{% endif %}
 
@@ -32,6 +34,7 @@
   <!-- self-hosted fonts -->
   <link rel="preload" href="/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/plexmono-400.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="/css/tokens.css" />
   <link rel="stylesheet" href="/css/site.css" />
 

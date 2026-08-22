@@ -1,0 +1,231 @@
+---
+layout: layouts/case.njk
+permalink: /case/data-trust/
+title: The data-trust platform — checks, a portal, and an LLM that reads pipelines
+desc: "Case file: a self-service data-quality platform whose first named catch was an 88% silent row loss, grown into an org-wide discovery and governance portal with an LLM-powered lineage engine that reads pipeline code."
+ogImage: /og/case-data-trust.png
+ogImageAlt: "Case file — the data-trust platform: 400+ datasets profiled hourly, 88% row loss caught"
+tag: Exhibit D · data platform
+lede: "Every dashboard in an org is a claim about data somebody else owns. This is the case file on making that claim checkable: automated freshness, volume and schema checks with gates that can fail a run, hourly profiling across <strong>400+ production datasets</strong>, and the org-wide portal it grew into — including an <strong>LLM-powered lineage engine that reads pipeline code</strong> to map where production data actually comes from."
+role: Designer &amp; owner — platform, portal, and core services
+stack: Python · FastAPI · Azure Container Apps · Azure Data Explorer · Azure OpenAI
+status: PROD · launched org-wide
+headline: 400+ datasets profiled hourly
+next:
+  url: /case/account2vec/
+  title: Account behavior embeddings
+---
+
+<section class="case-sec" id="premise">
+  <div class="reveal">
+    <div class="sec-mark">§A — The question nobody could answer</div>
+    <div class="prose">
+      <p>
+        "Can I rely on this data right now?" Before this platform, answering that
+        meant finding the person who built the pipeline, and hoping they still
+        worked here. The org had plenty of dashboards and no way to establish
+        whether the tables underneath them were fresh, complete, or shaped the
+        way the consumer assumed.
+      </p>
+      <p>
+        The failure that motivated it is documented in its sibling case file: an
+        upstream change that <a href="/case/revenue-attribution/">silently broke
+        revenue attribution</a> while the pipeline kept happily producing rows.
+        A system that can't detect its own wrongness will eventually be wrong
+        expensively, and the interval before it is discovered is a function of
+        luck.
+      </p>
+    </div>
+  </div>
+  <div class="metric-row panel reveal">
+    <div class="m"><span class="v">400+</span><span class="d">production datasets profiled hourly</span></div>
+    <div class="m"><span class="v">~88%</span><span class="d">silent row loss caught before it reached financial reports</span></div>
+    <div class="m"><span class="v">org-wide</span><span class="d">discovery &amp; governance portal launch</span></div>
+    <div class="m"><span class="v">4</span><span class="d">core backing services designed</span></div>
+  </div>
+</section>
+
+<section class="case-sec" id="checks">
+  <div class="reveal">
+    <div class="sec-mark">§B — Checks that can fail a run, not a report that nobody opens</div>
+    <div class="prose">
+      <p>
+        The platform is self-service by design: a team registers a dataset and
+        gets automated <strong>freshness</strong>, <strong>volume</strong>, and
+        <strong>schema</strong> anomaly detection without writing monitoring code. The
+        distinction that makes it useful is that these are
+        <strong>quality gates</strong>, not notifications — a failing check can stop
+        the run rather than annotate the wreckage.
+      </p>
+      <p>
+        Underneath, <strong>hourly table-health profiling</strong> runs across
+        <strong>400+ production datasets</strong>, which is what makes anomaly
+        detection possible at all: you can't call a row count anomalous without a
+        distribution to compare it to.
+      </p>
+    </div>
+  </div>
+  <div class="table-panel panel reveal">
+    <div class="cp-head"><span>// check families</span><span class="g">what each one catches that the others miss</span></div>
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr><th>Family</th><th>Question it asks</th><th>Failure it catches</th></tr></thead>
+        <tbody>
+          <tr><td class="num">Freshness</td><td>did this land when it should have?</td><td class="mono dim">upstream stalled; consumers reading stale truth</td></tr>
+          <tr><td class="num">Volume</td><td>is the row count in its own distribution?</td><td class="mono dim">silent partial loads — the 88% case</td></tr>
+          <tr><td class="num">Schema</td><td>did the shape change underneath consumers?</td><td class="mono dim">columns dropped, retyped, or quietly renamed</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="board-foot">// volume is the boring one and it is the one that paid for the platform. <span class="g">a pipeline that returns 12% of its rows returns them successfully.</span></div>
+  </div>
+</section>
+
+<section class="case-sec" id="catch">
+  <div class="reveal">
+    <div class="sec-mark">§C — The first named catch</div>
+    <div class="prose">
+      <p>
+        An upstream change collapsed roughly <strong>88% of rows</strong> in a critical
+        source. Nothing errored. The job succeeded, the tables populated, the
+        refresh completed — and the numbers were heading for
+        <strong>financial reports</strong>.
+      </p>
+      <p>
+        The volume check fired on the distribution, not on a threshold somebody
+        had guessed at, and the gate held the data before a single dashboard —
+        or Finance — saw a wrong number. That's the catch the platform is named
+        by internally, and it's the reason adoption stopped needing to be sold.
+      </p>
+      <p class="mono-note">
+        // the argument for this kind of platform is never made in the abstract.
+        <span class="g">it's made once, by a catch nobody can argue with.</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="case-sec" id="portal">
+  <div class="reveal">
+    <div class="sec-mark">§D — From a checker to a portal: discovery, ownership, lineage</div>
+    <div class="prose">
+      <p>
+        Checks tell you a dataset is broken. They don't tell you what it is, who
+        owns it, what feeds it, or who breaks if you change it. So the quality
+        platform grew into an internal <strong>data discovery and governance
+        portal</strong>, launched <strong>org-wide</strong>: dataset search, ownership,
+        lineage visualization, quality signals, and usage insight in one surface,
+        so any engineer can answer "can I rely on this data right now?" without
+        finding a person.
+      </p>
+      <p>
+        I designed its <strong>four core backing services</strong>:
+      </p>
+    </div>
+  </div>
+  <div class="table-panel panel reveal">
+    <div class="cp-head"><span>// the four services behind the portal</span><span class="g">each answers a different half of "can I trust this?"</span></div>
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr><th>Service</th><th>What it derives</th><th>Derived from</th></tr></thead>
+        <tbody>
+          <tr><td class="num">Lineage</td><td>where a dataset actually comes from, and what breaks downstream</td><td class="mono dim">pipeline code + orchestration systems</td></tr>
+          <tr><td class="num">Ownership</td><td>who genuinely owns a dataset, not who is listed</td><td class="mono dim">access-pattern analysis</td></tr>
+          <tr><td class="num">Profiling</td><td>the hourly health baseline every check compares against</td><td class="mono dim">400+ production datasets</td></tr>
+          <tr><td class="num">Monitoring</td><td>freshness / volume / schema anomalies and gate verdicts</td><td class="mono dim">the check families in §B</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="case-sec" id="lineage">
+  <div class="reveal">
+    <div class="sec-mark">§E — The lineage engine: an LLM that reads pipeline code</div>
+    <div class="prose">
+      <p>
+        Lineage is normally harvested from an orchestrator's declared
+        dependencies — which is fine until the real logic lives inside the job
+        rather than in its configuration. In a 20+ component legacy estate, the
+        declared graph and the actual data flow are different objects, and the
+        difference is exactly where incidents hide.
+      </p>
+      <p>
+        So the lineage engine <strong>reads the pipeline code with an LLM</strong> and
+        maps the production data flow from what the code actually does — the
+        joins, the writes, the derived tables — rather than from what the
+        scheduler was told. This is the piece I'd most want to talk through in an
+        interview: it's the clearest case I have of using a language model for a
+        job that classical tooling had structurally failed at, rather than
+        bolting a chat box onto something that already worked.
+      </p>
+      <p class="mono-note">
+        // the honest caveat: code-derived lineage is <span class="g">high recall, imperfect precision.</span>
+        it earns trust as a map of where to look, and it is validated against
+        observed access patterns rather than believed on sight.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="case-sec" id="throttling">
+  <div class="reveal">
+    <div class="sec-mark">§F — The same discipline, pointed at customers: 99% of throttling incidents</div>
+    <div class="prose">
+      <p>
+        Data trust and customer trust are the same engineering problem viewed
+        from either end. Storage customers hitting performance throttling
+        experienced it as the platform failing them; internally it arrived as a
+        stream of individually-handled incidents with no fleet view.
+      </p>
+      <p>
+        Building <strong>fleet-wide telemetry pipelines</strong> and an
+        <strong>early-warning dashboard with automated triage</strong> turned that from
+        reactive incident handling into detection before impact —
+        <strong>eliminating 99% of performance-throttling incidents for the
+        platform's most critical customers</strong>, and <strong>92% across all paying
+        customers</strong>.
+      </p>
+      <p>
+        The gap between those two numbers is the interesting part, and I'll
+        defend it: the most critical customers got the deeper instrumentation
+        first because that's where a single incident is worth millions a month.
+        The 92% is what generalized once the fleet pipeline existed.
+      </p>
+    </div>
+  </div>
+  <div class="metric-row panel reveal">
+    <div class="m"><span class="v">99%</span><span class="d">throttling incidents eliminated, most critical customers</span></div>
+    <div class="m"><span class="v">92%</span><span class="d">across all paying customers</span></div>
+    <div class="m"><span class="v">10+</span><span class="d">at-risk accounts retained, each worth millions per month</span></div>
+    <div class="m"><span class="v">16%</span><span class="d">faster mitigation across 8+ engineering teams</span></div>
+  </div>
+</section>
+
+<section class="case-sec" id="governance">
+  <div class="reveal">
+    <div class="sec-mark">§G — Governance is the unglamorous half</div>
+    <div class="prose">
+      <p>
+        A trustworthy data estate also has to be a defensible one. I led
+        <strong>security and compliance modernization</strong> for the team's data
+        estate: a <strong>service-authentication overhaul</strong>, a
+        <strong>GDPR-driven data cleanup</strong> run with the security org, and
+        <strong>15+ pipeline migrations</strong> off a deprecated platform.
+      </p>
+      <p>
+        None of that produces a number anyone celebrates. It's on this page
+        because a candidate who only shows the interesting work is showing you an
+        incomplete engineer — and because "we can't move that pipeline, nobody
+        knows what depends on it" is precisely the problem the lineage engine
+        above was built to delete.
+      </p>
+    </div>
+  </div>
+  <div class="errata reveal">
+    <div class="er-head">// what this page deliberately omits</div>
+    <ul>
+      <li><span>Internal product names, cluster and dataset identifiers, and the specific upstream source behind the 88% catch are removed. Numbers and design decisions are unchanged.</span></li>
+    </ul>
+  </div>
+</section>

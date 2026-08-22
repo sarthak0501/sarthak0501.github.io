@@ -1,5 +1,5 @@
 # Redacted run trace for /case/incident-agent/ — reconstructed from a
-# production Sev2 investigation. Customer, cluster, and incident
+# production severity-2 investigation. Customer, cluster, and incident
 # identifiers removed per the published redaction checklist; the step
 # structure, tool sequence, and decision logic are as-run.
 meta:
@@ -9,7 +9,7 @@ steps:
   - n: "01"
     actor: trigger
     kind: tool
-    title: Sev2 bridge opens — agent invoked with the incident payload
+    title: severity-2 bridge opens — agent invoked with the incident payload
     ms: "t+0s"
     body: >-
       An availability regression pages the on-call: elevated 5xx and

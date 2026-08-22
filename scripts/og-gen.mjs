@@ -7,9 +7,9 @@ import { mkdirSync } from "node:fs";
 const G = "#23744d"; // green
 const P = "#232d27"; // ink text
 const P2 = "#4d5850";
-const P3 = "#75806f";
+const P3 = "#616b5e";
 const BG = "#f7f4ec";
-const ORANGE = "#bc5b2e";
+const ORANGE = "#a8481f";
 
 // title lines: arrays of {t, g?} runs — g renders italic green.
 const PAGES = [
@@ -17,13 +17,13 @@ const PAGES = [
     slug: "home",
     kicker: "SR. DATA & APPLIED SCIENTIST · MICROSOFT",
     lines: [[{ t: "The case for" }], [{ t: "hiring " }, { t: "Sarthak", g: true }, { t: "." }]],
-    sub: "9+ yrs production ML/AI · agents · platforms · revenue systems",
+    sub: "9+ yrs production ML/AI · agents · data platforms · $5B+/yr revenue systems",
   },
   {
     slug: "case-index",
-    kicker: "THE CASE FILES · 4 EXHIBITS",
+    kicker: "THE CASE FILES · 6 EXHIBITS",
     lines: [[{ t: "The work, " }, { t: "architecture", g: true }], [{ t: "attached", g: true }, { t: "." }]],
-    sub: "planner design · prompts · run traces · eval output",
+    sub: "planner design · prompts · run traces · eval output · one failure",
   },
   {
     slug: "case-incident-agent",
@@ -32,26 +32,38 @@ const PAGES = [
     sub: "planner/executor on Azure OpenAI · run trace · confidence rubric · evals",
   },
   {
-    slug: "case-mcc-ai-agent",
+    slug: "case-customer-health-agent",
     kicker: "EXHIBIT B · GENAI",
     lines: [[{ t: "Customer health," }], [{ t: "days → " }, { t: "under 2 minutes", g: true }, { t: "." }]],
-    sub: "NL → governed live Kusto/ADX · 13 metric domains · eval-gated",
+    sub: "plain English → governed live queries · 13 metric domains · eval-gated",
+  },
+  {
+    slug: "case-revenue-attribution",
+    kicker: "EXHIBIT C · JUDGMENT UNDER FIRE",
+    lines: [[{ t: "The pipeline kept" }], [{ t: "producing numbers", g: true }, { t: "." }]],
+    sub: "$5B+/yr broke silently · 20+ components · ~$45M/mo recovered",
+  },
+  {
+    slug: "case-data-trust",
+    kicker: "EXHIBIT D · DATA PLATFORM",
+    lines: [[{ t: "Can I rely on this" }], [{ t: "data right now?", g: true }]],
+    sub: "400+ datasets hourly · 88% row loss caught · LLM lineage engine",
   },
   {
     slug: "case-account2vec",
-    kicker: "EXHIBIT C · APPLIED ML",
-    lines: [[{ t: "Account2Vec", g: true }, { t: ": one vector" }], [{ t: "per storage account." }]],
+    kicker: "EXHIBIT E · APPLIED ML",
+    lines: [[{ t: "One vector", g: true }], [{ t: "per storage account." }]],
     sub: "autoencoder + FAISS · millions of accounts · 3 tiers",
   },
   {
     slug: "case-stress-lab",
-    kicker: "EXHIBIT D · EXPERIMENTATION",
+    kicker: "EXHIBIT F · EXPERIMENTATION",
     lines: [[{ t: "Bandits decide", g: true }], [{ t: "what we test next." }]],
-    sub: "ship/hold per build · 10+ Sev1/Sev2 prevented before rollout",
+    sub: "ship/hold per build · 10+ top-severity prevented · test cost −40%",
   },
   {
     slug: "resume",
-    kicker: "THE RÉSUMÉ · REV 2026-07-09",
+    kicker: "THE RÉSUMÉ · REV 2026-08-21",
     lines: [[{ t: "One record," }], [{ t: "one document", g: true }, { t: "." }]],
     sub: "rendered from the same source of truth as the site — it can't drift",
   },
@@ -112,7 +124,7 @@ function svg({ kicker, lines, sub }) {
   <rect width="1200" height="630" fill="url(#glow)"/>
   <rect x="28" y="28" width="1144" height="574" fill="none" stroke="rgba(35,45,39,0.22)" stroke-width="1.5" rx="14"/>
   <line x1="28" y1="96" x2="1172" y2="96" stroke="rgba(35,45,39,0.16)" stroke-width="1.5"/>
-  <text x="84" y="70" font-family="'Courier New', monospace" font-size="21" font-weight="700" letter-spacing="3" fill="${P3}">HIRING BRIEF · DOC SB-26 · ED. 2</text>
+  <text x="84" y="70" font-family="'Courier New', monospace" font-size="21" font-weight="700" letter-spacing="3" fill="${P3}">HIRING BRIEF · DOC SB-26 · ED. 3</text>
   <circle cx="1074" cy="62" r="7" fill="${ORANGE}"/>
   <text x="1094" y="70" font-family="'Courier New', monospace" font-size="21" font-weight="700" letter-spacing="2" fill="${ORANGE}" text-anchor="start">OPEN</text>
   <text x="84" y="182" font-family="'Courier New', monospace" font-size="23" font-weight="700" letter-spacing="4" fill="${G}">${esc(kicker)}</text>

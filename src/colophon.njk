@@ -32,13 +32,24 @@ ogImageAlt: "Colophon — how the hiring brief is built and enforced"
       <h2>The linter that fails the deploy</h2>
       <p>
         <code>scripts/receipts-lint.mjs</code> runs in CI on every push. It scans the
-        built HTML for two kinds of problems: <strong>required claims that went
-        missing</strong> (the headline receipts must appear on the homepage, verbatim)
-        and <strong>superseded claims that crept back in</strong> — figures from older résumé
-        revisions are hard-forbidden by pattern. A contradiction between this
+        built HTML for four kinds of problems: <strong>required claims that went
+        missing</strong> (the headline receipts must appear on the homepage, verbatim),
+        <strong>superseded claims that crept back in</strong> — figures from older résumé
+        revisions are hard-forbidden by pattern — <strong>internal jargon</strong> that an
+        external reader couldn't evaluate, and <strong>internal links that point at
+        pages the build never emitted</strong>. A contradiction between this
         site and the résumé is a broken build, not an embarrassment someone
         eventually notices. The audit trail lives on
         <a href="/receipts/">the receipts ledger</a>.
+      </p>
+
+      <h2>No internal jargon</h2>
+      <p>
+        Everything here is described by what it does, never by its internal
+        codename. A reader outside Microsoft can't evaluate an acronym, and a
+        résumé that needs a glossary isn't evidence — it's a membership test.
+        The translation table lives with the résumé source, and the linter
+        enforces it: an internal name in the built HTML fails the deploy.
       </p>
 
       <h2>One résumé</h2>
@@ -80,8 +91,9 @@ ogImageAlt: "Colophon — how the hiring brief is built and enforced"
 
       <h2>Lineage</h2>
       <p>
-        This is the second edition of "The Hiring Brief" — same thesis, quieter
-        evidence. Three earlier designs shipped and were retired for arguing
+        This is the third edition of "The Hiring Brief" — same thesis, quieter
+        evidence, now with a dark counterpart that reskins from the token file
+        alone. Three earlier designs shipped and were retired for arguing
         louder than they proved. The repo history keeps them honest:
         <a href="{{ facts.identity.github }}/sarthak0501.github.io" target="_blank" rel="noopener">github.com/sarthak0501/sarthak0501.github.io</a>.
       </p>

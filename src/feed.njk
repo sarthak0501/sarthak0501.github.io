@@ -1,0 +1,31 @@
+---
+permalink: /feed.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>{{ facts.identity.name }} — field notes</title>
+  <subtitle>Notes from production, where the demos go to die.</subtitle>
+  <link href="{{ facts.meta.site_url }}/feed.xml" rel="self" />
+  <link href="{{ facts.meta.site_url }}/" />
+  <updated>{{ build.updatedISO }}T00:00:00Z</updated>
+  <id>{{ facts.meta.site_url }}/</id>
+  <author><name>{{ facts.identity.name }}</name><email>{{ facts.identity.email }}</email></author>
+  {%- for w in facts.writing %}{% if w.url %}
+  <entry>
+    <title>{{ w.title }}</title>
+    <link href="{{ facts.meta.site_url }}{{ w.url }}" />
+    <id>{{ facts.meta.site_url }}{{ w.url }}</id>
+    <updated>{{ w.date | isoDate }}T00:00:00Z</updated>
+  </entry>
+  {%- endif %}{% endfor %}
+  {%- for c in facts.cases %}
+  <entry>
+    <title>Case file — {{ c.title }}</title>
+    <link href="{{ facts.meta.site_url }}{{ c.slug }}" />
+    <id>{{ facts.meta.site_url }}{{ c.slug }}</id>
+    <updated>{{ build.updatedISO }}T00:00:00Z</updated>
+    <summary>{{ c.tease }}</summary>
+  </entry>
+  {%- endfor %}
+</feed>

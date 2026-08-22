@@ -1,19 +1,19 @@
 ---
 layout: layouts/case.njk
-permalink: /case/mcc-ai-agent.html
-title: MCC AI agent — customer health in under two minutes
-desc: "Case file: a grounded, tool-using LLM agent on Azure OpenAI that turns natural-language questions into governed live Kusto/ADX queries — cutting customer-health time-to-insight from days to under two minutes."
-ogImage: /og/case-mcc-ai-agent.png
-ogImageAlt: "Case file — MCC AI agent: customer-health time-to-insight, days to under two minutes"
+permalink: /case/customer-health-agent/
+title: The customer-health agent — from days to under two minutes
+desc: "Case file: a grounded, tool-using LLM agent on Azure OpenAI that turns natural-language questions into governed live Azure Data Explorer queries — cutting customer-health time-to-insight from days to under two minutes."
+ogImage: /og/case-customer-health-agent.png
+ogImageAlt: "Case file — customer-health agent: customer-health time-to-insight, days to under two minutes"
 tag: Exhibit B · GenAI
-lede: "A grounded, tool-using agent on Azure OpenAI that turns plain-English questions about Mission-Critical Customers into <strong>governed live Kusto/ADX queries</strong> with PM-ready narratives — grounded on a curated catalog of 13 metric domains. Time-to-insight went from days to <strong>under two minutes</strong>, and it shipped with the eval harness, guardrails, and PII-aware prompts it needed to survive real enterprise load."
+lede: "A grounded, tool-using agent on Azure OpenAI that turns plain-English questions about the most critical customers into <strong>governed live Azure Data Explorer queries</strong> with PM-ready narratives — grounded on a curated catalog of 13 metric domains. Time-to-insight went from days to <strong>under two minutes</strong>, and it shipped with the eval harness, guardrails, and PII-aware prompts it needed to survive real enterprise load."
 role: Technical lead, design & implementation
-stack: Azure OpenAI · ADX / KQL · Python
+stack: Azure OpenAI · Azure Data Explorer · Python
 status: LIVE · in production
 headline: time-to-insight days → <2 min
 next:
-  url: /case/account2vec.html
-  title: Account2Vec
+  url: /case/revenue-attribution/
+  title: The attribution recovery
 ---
 
 <section class="case-sec" id="gap">
@@ -22,7 +22,7 @@ next:
     <div class="prose">
       <p>
         Customer health inside Azure Storage lived across at least eight
-        disconnected tools — telemetry in ADX, tickets in ICM, customer-reported
+        disconnected tools — telemetry in Azure Data Explorer, tickets in the incident system, customer-reported
         issues in a separate tracker, ownership graphs in yet another service.
         Every exec readout was a <strong>three-to-five day manual hunt</strong>: an analyst
         joined tables in their head, pieced together a narrative, and shipped a
@@ -88,7 +88,7 @@ questions by calling tools against live data. <span class="hl">You do not guess.
 - <span class="hl">Never combine values from different time windows</span> without saying so.
 
 <span class="cm"># tool selection policy</span>
-1. Look up the customer by TPID before any other call.
+1. Look up the customer by CustomerId before any other call.
 2. Prefer aggregated tools (MAL, CRI summaries) over raw KQL.
 3. Only write KQL when no aggregated tool can answer the question.
 4. Budget: at most 6 tool calls per answer.
@@ -127,12 +127,12 @@ StorageAccountMetrics
 | <span class="kw">where</span> TimeGenerated <span class="kw">between</span> (startofquarter(now()) .. now())
 | <span class="kw">where</span> GeoRegion == "APAC"
 | <span class="kw">summarize</span> CapacityTB = avg(CapacityBytes) / 1e12,
-            WowMAL = sum(MALMinutes) <span class="kw">by</span> TPID, AccountName
+            WowMAL = sum(MALMinutes) <span class="kw">by</span> CustomerId, AccountName
 | <span class="kw">where</span> CapacityTB > 10
 | <span class="kw">where</span> WowMAL > tolong(prev(WowMAL, 1, 0)) * 1.25
-| <span class="kw">join</span> kind=inner TicketTrends <span class="kw">on</span> TPID
+| <span class="kw">join</span> kind=inner TicketTrends <span class="kw">on</span> CustomerId
 | <span class="kw">where</span> TicketsWoWDelta > 0
-| <span class="kw">project</span> TPID, AccountName, CapacityTB, WowMAL, TicketsWoWDelta
+| <span class="kw">project</span> CustomerId, AccountName, CapacityTB, WowMAL, TicketsWoWDelta
 | <span class="kw">order by</span> WowMAL desc
 | <span class="kw">take</span> 25</code></pre>
   </div>
@@ -204,7 +204,7 @@ StorageAccountMetrics
   </div>
   <div class="prose reveal">
     <p>
-      The agent serves a broader <strong>MCC health program</strong> I drove across those
+      The agent serves a broader <strong>executive health-review program</strong> I drove across those
       same teams — a unified customer-health view that cut executive readiness
       insight from 3–5 days to near real-time. On the program's watch,
       <strong>&gt;10-day aging issues fell ~50%</strong> and <strong>time-to-mitigate improved
@@ -222,7 +222,7 @@ StorageAccountMetrics
     <ul>
       <li>
         <span class="ed">2026-07-10</span>
-        <span><strong>Attribution corrected.</strong> An earlier revision of this page headlined the ~50% aging-issue reduction and ~16% time-to-mitigate improvement as the agent's outcomes. They belong to the MCC health program the agent serves. The agent's own number — days to under two minutes — was always the honest headline; now it's the one on the page.</span>
+        <span><strong>Attribution corrected.</strong> An earlier revision of this page headlined the ~50% aging-issue reduction and ~16% time-to-mitigate improvement as the agent's outcomes. They belong to the executive health-review program the agent serves. The agent's own number — days to under two minutes — was always the honest headline; now it's the one on the page.</span>
       </li>
       <li>
         <span class="ed">2026-06</span>
@@ -234,7 +234,7 @@ StorageAccountMetrics
   <div class="redaction reveal">
     <span class="rx-head">Redaction record</span>
     Published against the written checklist: system prompt reduced to representative
-    structure · customer names and TPIDs removed · cluster and database names
+    structure · customer names and customer IDs removed · cluster and database names
     generalized · eval dimensions and deltas preserved as-run.
     <span class="g">Preserved: the design decisions, the regression, and the verdict.</span>
   </div>

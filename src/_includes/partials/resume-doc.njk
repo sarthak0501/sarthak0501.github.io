@@ -12,7 +12,7 @@
     <p class="r-title">{{ facts.identity.title }} · {{ facts.identity.org }}, {{ facts.identity.team }}{% if rvariant and rvariant.target %} — {{ rvariant.target }}{% endif %}</p>
     <p class="r-contact">
       {{ facts.identity.location }} · <a href="mailto:{{ facts.identity.email }}">{{ facts.identity.email }}</a> ·
-      <a href="{{ facts.identity.linkedin }}">linkedin.com/in/sarthak-bichhawa</a> ·
+      <a href="{{ facts.identity.linkedin }}">{{ facts.identity.linkedin_label }}</a> ·
       <a href="{{ facts.identity.github }}">github.com/sarthak0501</a> ·
       <a href="{{ facts.meta.site_url }}/">{{ facts.meta.site_url | replace("https://", "") }}</a>
     </p>
@@ -22,12 +22,13 @@
   <section class="r-sec">
     <h2>Experience</h2>
 
-    <div class="r-item">
+    <div class="r-item" id="{{ ms.id }}">
       <div class="r-row">
         <h3>{{ ms.role }}</h3>
         <span class="r-co">{{ ms.company }} · {{ ms.location }}</span>
         <span class="r-dates">{{ ms.dates }}</span>
       </div>
+      {% if ms.scope %}<p class="r-scope">{{ ms.scope }}</p>{% endif %}
       {% if rvariant and rvariant.hoist_band %}
       <div class="r-ws">Leadership scope</div>
       <ul>
@@ -60,7 +61,7 @@
     </div>
 
     {%- for r in facts.record %}{% if not loop.first %}
-    <div class="r-item">
+    <div class="r-item" id="{{ r.id }}">
       <div class="r-row">
         <h3>{{ r.role }}</h3>
         <span class="r-co">{{ r.company }} · {{ r.location }}</span>

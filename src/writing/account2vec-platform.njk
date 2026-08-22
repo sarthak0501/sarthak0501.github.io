@@ -49,7 +49,7 @@ lede: "A lot of ML work inside big orgs stays trapped in one team's notebook. Th
 <p>
   The single highest-leverage decision on this project was naming the thing.
   <strong>Account2Vec</strong> is a per-storage-account embedding. <strong>Subscription2Vec</strong>
-  pools it to the subscription level. <strong>Customer2Vec</strong> (or TPID2Vec
+  pools it to the subscription level. <strong>Customer2Vec</strong>
   internally) pools to the paying customer. Three tiers, three names, one doc
   that explains when to use which.
 </p>
@@ -118,7 +118,7 @@ for check in checks:
 <h2>The hierarchy is load-bearing.</h2>
 <p>
   Most orgs need embeddings at multiple granularities: account for reliability
-  work, subscription for billing, customer (TPID) for exec reporting. The
+  work, subscription for billing, customer for exec reporting. The
   naive move is to train three separate autoencoders. Don't. We trained one
   encoder on accounts and pooled up — not a naive average, an
   attention-weighted pool, so a noisy subscription with one very anomalous

@@ -1,14 +1,14 @@
 ---
 layout: layouts/case.njk
-permalink: /case/account2vec.html
-title: Account2Vec — fleet telemetry as a reusable ML primitive
+permalink: /case/account2vec/
+title: Account behavior embeddings — fleet telemetry as a reusable ML primitive
 desc: "Case file: an unsupervised autoencoder that compresses each Azure Storage account's behavior into a vector fingerprint — similarity, segmentation, and drift-based anomaly detection across millions of accounts."
 ogImage: /og/case-account2vec.png
 ogImageAlt: "Case file — Account2Vec: every storage account compressed to a vector fingerprint"
-tag: Exhibit C · applied ML
+tag: Exhibit E · applied ML
 lede: "An unsupervised autoencoder that compresses ~100 behavioral metrics per Azure Storage account into a dense embedding — then extends hierarchically to subscriptions and customers. One shared representation powering similarity, anomaly detection, forecasting, and LLM reasoning, at the scale of <strong>millions of accounts</strong>."
 role: Designer, model & pipeline owner
-stack: PyTorch · Azure Synapse · ADX / KQL
+stack: PyTorch · Azure Synapse · Azure Data Explorer
 status: PROD · fleet scale
 headline: millions of accounts, one representation
 next:
@@ -23,7 +23,7 @@ next:
       <p>
         Every ML effort in Azure Storage — customer similarity, anomaly
         detection, forecasting, workload segmentation, LLM-based reasoning for
-        the MCC agent — was rebuilding its own feature set from the same raw
+        the customer-health agent — was rebuilding its own feature set from the same raw
         telemetry. There was no shared representation of what an "account"
         actually looked like at scale.
       </p>
@@ -46,7 +46,7 @@ next:
     <div class="sec-mark">§B — Pipeline shape</div>
     <div class="prose">
       <p>
-        Four stages: raw XStore telemetry aggregates into the
+        Four stages: raw storage-service telemetry aggregates into the
         <strong>AccountFeatureMatrix</strong> — a stable, versioned view of ~40–50 rolling
         per-account features; the autoencoder compresses those into a dense
         embedding; embeddings pool hierarchically into subscription and
@@ -175,7 +175,7 @@ neighbors = a2v.knn(
     print(n.account_id, n.cosine, n.top_drivers)
 
 <span class="cm"># → nearest accounts share workload shape even if sized differently</span>
-<span class="cm"># → used by MCC to surface "similar at-risk customers"</span>
+<span class="cm"># → used by the customer-health agent to surface "similar at-risk customers"</span>
 <span class="cm"># → used by forecasting to borrow seasonality from peers</span>
 <span class="cm"># → used by anomaly to calibrate expected ranges per cohort</span></code></pre>
   </div>
@@ -183,7 +183,7 @@ neighbors = a2v.knn(
     <p>
       Downstream teams don't always reason at the account level, so the platform
       exposes pooled embeddings at two higher tiers — <strong>account → subscription →
-      customer (TPID)</strong>. The pooling is a weighted mean with per-axis attention
+      customer</strong>. The pooling is a weighted mean with per-axis attention
       learned against a small set of aggregation tasks, not a plain average:
       naive averaging collapses bimodal customers — two very different
       subscriptions — into a meaningless middle point.
@@ -191,30 +191,20 @@ neighbors = a2v.knn(
   </div>
 </section>
 
-<section class="case-sec" id="dq">
+<section class="case-sec" id="siblings">
   <div class="reveal">
-    <div class="sec-mark">§F — The guardrail sibling: data-quality monitoring</div>
+    <div class="sec-mark">§F — The guardrail sibling</div>
     <div class="prose">
       <p>
-        A platform other teams depend on needs to know it's wrong before they
-        do. The same discipline shipped as a <strong>self-service data-quality
-        monitoring service</strong> — Python/FastAPI on Azure Container Apps, anomaly
-        detection over pipeline health, <strong>76 tests</strong> — adopted across teams,
-        plus hourly table-health profiling over <strong>47 datasets</strong>.
-      </p>
-      <p>
-        Its defining catch: an upstream change silently collapsed <strong>~88% of
-        rows</strong> in a critical source. The service flagged it before a single
-        dashboard — or Finance — saw a wrong number. That catch is one of the
-        four receipts on the <a href="/#receipts">front page</a>.
+        A representation other teams are meant to depend on needs to know it's
+        wrong before they do. The drift, coverage, and staleness plumbing here is
+        the same discipline that shipped separately as the
+        <a href="/case/data-trust/">data-trust platform</a> — freshness, volume
+        and schema checks with quality gates, hourly profiling of
+        <strong>400+ production datasets</strong>, and the lineage engine that
+        maps where any of it actually came from.
       </p>
     </div>
-  </div>
-  <div class="metric-row panel reveal">
-    <div class="m"><span class="v">millions</span><span class="d">of Azure Storage accounts embedded, fleet-wide</span></div>
-    <div class="m"><span class="v">3 tiers</span><span class="d">account · subscription · customer (TPID)</span></div>
-    <div class="m"><span class="v">5+</span><span class="d">downstream uses: similarity, anomaly, forecasting, LLM reasoning, MCC</span></div>
-    <div class="m"><span class="v">~88%</span><span class="d">row-collapse caught by the DQ service before Finance saw it</span></div>
   </div>
 </section>
 

@@ -1,0 +1,204 @@
+---
+layout: layouts/case.njk
+permalink: /case/revenue-attribution/
+title: The attribution recovery — $45M/mo, seven incidents, six months of backfills
+desc: "Case file: an upstream data loss silently broke partner revenue attribution for a $5B+/yr platform. The trace through 20+ components, the recovery through quarter close, and the redesign that made the failure un-repeatable."
+ogImage: /og/case-revenue-attribution.png
+ogImageAlt: "Case file — the attribution recovery: ~$45M/mo recovered on a $5B+/yr platform"
+tag: Exhibit C · judgment under fire
+lede: "Revenue attribution is invisible until it's wrong. An upstream data loss silently broke the pipeline that credits partners for <strong>$5B+/year</strong> of cloud-storage revenue — and nothing alerted, because the pipeline was still producing numbers. This is the case file on finding it, defending it through quarter close, and rebuilding it so the same failure can't hide again."
+role: Owner — investigation, recovery, and redesign
+stack: Azure Data Factory · Azure Data Explorer · Python · SQL
+status: PROD · reconciled monthly
+headline: ~$45M/mo recovered
+next:
+  url: /case/data-trust/
+  title: The data-trust platform
+---
+
+<section class="case-sec" id="stakes">
+  <div class="reveal">
+    <div class="sec-mark">§A — What attribution actually is, and why it breaks quietly</div>
+    <div class="prose">
+      <p>
+        Finance owns the totals. They know, to the dollar, what the platform
+        earned. What they don't own is <em>who influenced it</em> — which partner
+        drove which account to which workload. That's attribution, and it's the
+        number that decides partner investment, co-sell incentives, and which
+        relationships leadership defends in a planning cycle.
+      </p>
+      <p>
+        The failure mode that matters here isn't a crash. A crashed pipeline
+        pages someone. This pipeline kept running, kept writing rows, and kept
+        producing a revenue picture that looked entirely plausible — while an
+        upstream source had silently stopped delivering the signal that made
+        attribution possible. <strong>Plausible is the dangerous state.</strong> Nobody
+        disputes a number that looks about right.
+      </p>
+    </div>
+  </div>
+  <div class="metric-row panel reveal">
+    <div class="m"><span class="v">$5B+/yr</span><span class="d">platform revenue the attribution picture covers</span></div>
+    <div class="m"><span class="v">~$45M/mo</span><span class="d">partner-attributed revenue recovered &amp; sustained</span></div>
+    <div class="m"><span class="v">20+</span><span class="d">components in the legacy pipeline the failure hid inside</span></div>
+    <div class="m"><span class="v">7</span><span class="d">incidents worked, including a severity-2 led across 4 teams</span></div>
+  </div>
+</section>
+
+<section class="case-sec" id="trace">
+  <div class="reveal">
+    <div class="sec-mark">§B — The trace: 20+ components, no map</div>
+    <div class="prose">
+      <p>
+        The pipeline had been built up over years by people who had since moved
+        on: <strong>20+ components</strong> of ingestion, joins, enrichment, and
+        roll-up, with the business logic distributed across all of them rather
+        than living anywhere you could read it. There was no lineage view. The
+        only way to find where the signal died was to walk it.
+      </p>
+      <p>
+        That walk is the unglamorous core of this case file. Component by
+        component: what does this stage assume about its input, what does it
+        emit, and at which hop does the population of attributable accounts
+        drop? The answer was an upstream source that had changed underneath
+        us — still delivering data, no longer delivering <em>this</em> data.
+      </p>
+      <p class="mono-note">
+        // the lesson I took from this is the whole reason the
+        <a href="/case/data-trust/" class="g">data-trust platform</a> exists.
+        a pipeline that cannot tell you it's wrong is a pipeline you are
+        eventually going to be wrong with.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="case-sec" id="recovery">
+  <div class="reveal">
+    <div class="sec-mark">§C — The recovery: an alternate feed, and six months nobody wanted</div>
+    <div class="prose">
+      <p>
+        Finding the break doesn't restore the number. The original signal wasn't
+        coming back, so recovery meant <strong>sourcing an alternate telemetry
+        feed</strong> that could reconstruct the same attribution facts, proving it
+        agreed with history where history was still trustworthy, and then
+        replaying it.
+      </p>
+      <p>
+        Then the part that doesn't fit on a résumé line: <strong>six months of
+        backfills, driven through quarter close.</strong> Every restated month is a
+        month where someone's reported number changes, which means every batch
+        needed a reconciliation story before it landed, not after. The work ran
+        as <strong>7 incidents</strong> — including a <strong>severity-2 I led across 4
+        teams</strong>, because by then the blast radius crossed data engineering,
+        finance reporting, and two partner-facing surfaces.
+      </p>
+      <p>
+        Net effect: <strong>~$45M/month of partner-attributed revenue recovered</strong>
+        and, more to the point, <em>sustained</em> — a recovered number that
+        re-breaks in two quarters is a rounding error with extra steps.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="case-sec" id="redesign">
+  <div class="reveal">
+    <div class="sec-mark">§D — The redesign: last-writer-wins was the real bug</div>
+    <div class="prose">
+      <p>
+        The data loss was the trigger. The design flaw underneath it was
+        <strong>last-writer-wins</strong>: when several partners touched an account, the
+        pipeline credited whichever record arrived last. That's not an
+        approximation of reality, it's an arbitrary function of arrival order —
+        and it silently discarded most of the partner relationships the business
+        was trying to measure.
+      </p>
+      <p>
+        Rebuilt end-to-end as <strong>multi-partner credit</strong>: an account can carry
+        several attributable relationships, each with its own basis, rather than
+        one winner. Coverage moved accordingly — <strong>~80–90% more partner
+        accounts tracked</strong> — and partner-attributed influenced revenue lifted
+        <strong>&gt;10% month-over-month</strong>, not because anything about the business
+        changed, but because the measurement stopped throwing away truth.
+      </p>
+    </div>
+  </div>
+  <div class="table-panel panel reveal">
+    <div class="cp-head"><span>// what changed in the attribution model</span><span class="g">shape only · identifiers removed</span></div>
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead><tr><th>Dimension</th><th>Before</th><th>After</th></tr></thead>
+        <tbody>
+          <tr><td>Credit rule</td><td class="mono dim">last writer wins</td><td class="num">multi-partner credit, per relationship</td></tr>
+          <tr><td>Partner accounts tracked</td><td class="mono dim">baseline</td><td class="num">~80–90% more</td></tr>
+          <tr><td>Correctness check</td><td class="mono dim">none that could fail the run</td><td class="num">validation gates + automated backfill</td></tr>
+          <tr><td>Relationship to Finance</td><td class="mono dim">assumed to agree</td><td class="num">independently reconciled, &lt;1% variance</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="board-foot">// the point of the right-hand column: <span class="g">every row is a way the pipeline can now tell you it's wrong.</span></div>
+  </div>
+</section>
+
+<section class="case-sec" id="guardrails">
+  <div class="reveal">
+    <div class="sec-mark">§E — Reconciliation as a feature, not a report</div>
+    <div class="prose">
+      <p>
+        The claim I'll defend in an interview is this one: <strong>Finance is not a
+        source to copy, it's an oracle to disagree with.</strong> The pipeline
+        attributes revenue independently, then reconciles its own total against
+        Finance actuals — and holds <strong>&lt;1% variance</strong>. Because the two are
+        derived separately, agreement is evidence rather than tautology. When
+        they diverge, that's a signal with a real cause, and it fires before a
+        leadership deck is built on it.
+      </p>
+      <p>
+        <strong>Validation gates with automated backfills</strong> made the recovery
+        self-service instead of heroic: when a gate fails, the affected window is
+        re-derived and re-reconciled without a person driving it through a
+        quarter close.
+      </p>
+      <p>
+        The same governed foundation collapsed the <strong>monthly business
+        review</strong> from a multi-day manual assembly into a
+        <strong>~5-minute pipeline</strong> (<strong>&gt;95% less effort</strong>) that reconciles
+        automatically and is now consumed directly by leadership — the reporting
+        layer stopped being a person's week.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="case-sec" id="ask">
+  <div class="reveal">
+    <div class="sec-mark">§F — What I'd grill me on</div>
+    <div class="prose">
+      <p>
+        <strong>Why not rebuild first and backfill later?</strong> Because the restated
+        history is what earns the right to the new design. Shipping multi-partner
+        credit on top of a broken corpus would have produced a better model of
+        worse data, and nobody downstream would have been able to tell which
+        change moved their number.
+      </p>
+      <p>
+        <strong>Why six months and not a weekend?</strong> Quarter close. Restating a
+        closed month is a governance event, not a job run — the constraint was
+        never compute.
+      </p>
+      <p>
+        <strong>What's still weak?</strong> The pipeline's ancestry is still 20+
+        components. The gates and reconciliation mean it now fails loudly, but a
+        rewrite onto a smaller surface is the honest next move, and it hasn't
+        happened yet.
+      </p>
+    </div>
+  </div>
+  <div class="errata reveal">
+    <div class="er-head">// what this page deliberately omits</div>
+    <ul>
+      <li><span>Internal system names, partner names, customer identifiers, and the specific upstream source are removed. The numbers, the sequence, and the design change are exactly as they happened.</span></li>
+    </ul>
+  </div>
+</section>
