@@ -59,7 +59,7 @@ next:
       versus raw rows versus ownership lookups, rather than receiving a
       pre-stuffed context window. That single decision is what lets it answer
       multi-hop questions like <em>"which APAC customers with &gt;10TB capacity have
-      both ticket volume trending up and MAL regressions this quarter?"</em>
+      both ticket volume trending up and availability-loss regressions this quarter?"</em>
     </p>
   </div>
 </section>
@@ -89,7 +89,7 @@ questions by calling tools against live data. <span class="hl">You do not guess.
 
 <span class="cm"># tool selection policy</span>
 1. Look up the customer by CustomerId before any other call.
-2. Prefer aggregated tools (MAL, CRI summaries) over raw KQL.
+2. Prefer aggregated tools (availability-loss and reliability summaries) over raw KQL.
 3. Only write KQL when no aggregated tool can answer the question.
 4. Budget: at most 6 tool calls per answer.
 
@@ -102,7 +102,7 @@ confidence (low|med|high), refusal (bool, reason).</code></pre>
       Two lines did disproportionate work. <em>"If a tool returns zero rows, report
       that"</em> killed a whole class of "I found no issues" hallucinations.
       <em>"Never combine values from different time windows"</em> killed a subtler one,
-      where the model would happily mix last week's MAL with last quarter's
+      where the model would happily mix last week's availability loss with last quarter's
       ticket volume.
     </p>
   </div>
@@ -121,19 +121,19 @@ confidence (low|med|high), refusal (bool, reason).</code></pre>
   </div>
   <div class="code-panel panel reveal">
     <div class="cp-head"><span>// agent-generated KQL</span><span class="g">after grounding &amp; validation</span></div>
-    <pre><code><span class="cm">// resolved from: "APAC customers >10TB w/ MAL regressions this Q"</span>
-<span class="cm">// agent call: exec_kql(cluster="xstore-analytics", db="…")</span>
+    <pre><code><span class="cm">// resolved from: "APAC customers >10TB w/ availability-loss regressions this Q"</span>
+<span class="cm">// agent call: exec_kql(cluster="[analytics-cluster]", db="…")</span>
 StorageAccountMetrics
 | <span class="kw">where</span> TimeGenerated <span class="kw">between</span> (startofquarter(now()) .. now())
 | <span class="kw">where</span> GeoRegion == "APAC"
 | <span class="kw">summarize</span> CapacityTB = avg(CapacityBytes) / 1e12,
-            WowMAL = sum(MALMinutes) <span class="kw">by</span> CustomerId, AccountName
+            WowLossMin = sum(AvailabilityLossMinutes) <span class="kw">by</span> CustomerId, AccountName
 | <span class="kw">where</span> CapacityTB > 10
-| <span class="kw">where</span> WowMAL > tolong(prev(WowMAL, 1, 0)) * 1.25
+| <span class="kw">where</span> WowLossMin > tolong(prev(WowLossMin, 1, 0)) * 1.25
 | <span class="kw">join</span> kind=inner TicketTrends <span class="kw">on</span> CustomerId
 | <span class="kw">where</span> TicketsWoWDelta > 0
-| <span class="kw">project</span> CustomerId, AccountName, CapacityTB, WowMAL, TicketsWoWDelta
-| <span class="kw">order by</span> WowMAL desc
+| <span class="kw">project</span> CustomerId, AccountName, CapacityTB, WowLossMin, TicketsWoWDelta
+| <span class="kw">order by</span> WowLossMin desc
 | <span class="kw">take</span> 25</code></pre>
   </div>
   <div class="prose reveal">

@@ -34,9 +34,9 @@ lede: "Five lessons from building a production LLM agent on Azure OpenAI — the
 <p>
   Then engineers started using it. One of the first real questions was:
   <em>"Which APAC customers with &gt;10TB capacity have both ticket volume trending
-  up and MAL regressions this quarter?"</em> The prompt melted. The agent
+  up and availability loss regressions this quarter?"</em> The prompt melted. The agent
   confidently cited three customer names. Two didn't exist. One did, but the
-  MAL claim was hallucinated.
+  availability loss claim was hallucinated.
 </p>
 <p>
   The gap between "it works in a demo" and "it holds up in prod" is the gap
@@ -50,7 +50,7 @@ lede: "Five lessons from building a production LLM agent on Azure OpenAI — the
 <h2>Grounding is the product.</h2>
 <p>
   Nobody in the org cared whether we used GPT-4 or Claude Opus. They cared that
-  when the agent said "Contoso had three MAL regressions last week," they could
+  when the agent said "Contoso had three availability loss regressions last week," they could
   click through to the incident records, the query, the raw rows. One hallucinated customer
   name and the whole tool loses trust — permanently.
 </p>

@@ -77,7 +77,7 @@ desc: "The case for hiring Sarthak Bichhawa: nine years of production ML and AI 
       <span class="lane-label">Hiring for</span>
       <div class="lane-btns" role="group" aria-label="Filter the record by discipline">
         {%- for l in facts.lanes %}
-        <button type="button" class="lane-btn{{ ' on' if loop.first }}" data-lane="{{ l.id }}" data-blurb="{{ l.blurb }}" aria-pressed="{{ 'true' if loop.first else 'false' }}" data-goatcounter-click="lane-{{ l.id }}">{{ l.label | safe }}</button>
+        <button type="button" class="lane-btn{{ ' on' if loop.first }}" data-lane="{{ l.id }}" data-blurb="{{ l.blurb }}" aria-pressed="{{ 'true' if loop.first else 'false' }}" data-goatcounter-click="lane-{{ l.id }}">{{ l.label }}</button>
         {%- endfor %}
       </div>
       <p class="lane-blurb mono-note" id="laneBlurb" aria-live="polite">// {{ facts.lanes[0].blurb }}</p>
@@ -90,8 +90,8 @@ desc: "The case for hiring Sarthak Bichhawa: nine years of production ML and AI 
       {%- for row in facts.systems %}
       <div class="board-row" data-lanes="{{ row.lanes | join(' ') }}">
         <span class="b-id">{{ row.id }}</span>
-        <span class="b-name"><a href="{{ row.link }}">{{ row.name | safe }}</a></span>
-        <span class="b-desc">{{ row.what | safe }}</span>
+        <span class="b-name"><a href="{{ row.link }}">{{ row.name }}</a></span>
+        <span class="b-desc">{{ row.what }}</span>
         <span class="b-proof">{{ row.proof }}</span>
         <span class="b-status {{ 'live' if row.status == 'LIVE' else 'prod' }}"><i aria-hidden="true"></i>{{ row.status }}</span>
       </div>
@@ -289,9 +289,9 @@ desc: "The case for hiring Sarthak Bichhawa: nine years of production ML and AI 
     </p>
 
     <div class="skills-table panel reveal">
-      <div class="skills-row"><span class="k">AI / ML</span><span class="v">{{ facts.skills.ai_ml | safe }}</span></div>
-      <div class="skills-row"><span class="k">Tools</span><span class="v">{{ facts.skills.tools | safe }}</span></div>
-      <div class="skills-row"><span class="k">Platforms</span><span class="v">{{ facts.skills.platforms | safe }}</span></div>
+      <div class="skills-row"><span class="k">AI / ML</span><span class="v">{{ facts.skills.ai_ml }}</span></div>
+      <div class="skills-row"><span class="k">Tools</span><span class="v">{{ facts.skills.tools }}</span></div>
+      <div class="skills-row"><span class="k">Platforms</span><span class="v">{{ facts.skills.platforms }}</span></div>
     </div>
 
     <div class="record-cta reveal">

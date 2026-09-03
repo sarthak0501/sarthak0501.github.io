@@ -89,13 +89,13 @@ lanes:
     label: Everything
     blurb: The full record, in the order I'd argue it.
   - id: ai
-    label: AI &amp; agents
+    label: AI & agents
     blurb: Autonomous agents, MCP servers, LLM-powered tooling, embeddings.
   - id: platform
     label: Data platform
     blurb: Quality, observability, lineage, governance, reliability at fleet scale.
   - id: analytics
-    label: Analytics &amp; metrics
+    label: Analytics & metrics
     blurb: Revenue attribution, executive reporting, customer-health programs.
   - id: experimentation
     label: Experimentation
@@ -132,7 +132,7 @@ systems:
     link: /case/revenue-attribution/
     lanes: [analytics, platform]
   - id: SYS-05
-    name: Data-trust platform &amp; discovery portal
+    name: Data-trust platform & discovery portal
     what: Freshness, volume, and schema anomaly checks with quality gates and hourly profiling — grown into an org-wide discovery, ownership, and lineage portal
     proof: 400+ datasets profiled hourly · caught an 88% silent row loss
     status: PROD
@@ -278,9 +278,9 @@ education:
     dates: 2011–2015
 
 skills:
-  ai_ml: Generative &amp; agentic AI · multi-agent orchestration (planner/executor, tool-calling) · retrieval-augmented generation (RAG) · Model Context Protocol (MCP) · Azure OpenAI &amp; AI Foundry · LLM observability, tracing &amp; evals · vector embeddings &amp; autoencoders · FAISS · anomaly detection · multi-armed bandits · A/B testing &amp; causal inference · production ML
+  ai_ml: Generative & agentic AI · multi-agent orchestration (planner/executor, tool-calling) · retrieval-augmented generation (RAG) · Model Context Protocol (MCP) · Azure OpenAI & AI Foundry · LLM observability, tracing & evals · vector embeddings & autoencoders · FAISS · anomaly detection · multi-armed bandits · A/B testing & causal inference · production ML
   tools: Python (pandas, scikit-learn, PyTorch, XGBoost) · SQL · Spark/PySpark · FastAPI · Azure Data Explorer · Azure Data Factory · Power BI · Tableau · Azure DevOps · Git
-  platforms: Azure (App Service, Container Apps, Data Factory) · data quality, observability &amp; lineage · data contracts &amp; governance · large-scale telemetry pipelines · experimentation &amp; causal measurement · revenue attribution &amp; business reporting
+  platforms: Azure (App Service, Container Apps, Data Factory) · data quality, observability & lineage · data contracts & governance · large-scale telemetry pipelines · experimentation & causal measurement · revenue attribution & business reporting
 
 # The one résumé — a single document, same revision as this site.
 resume:

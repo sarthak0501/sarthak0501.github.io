@@ -30,6 +30,11 @@ const FORBIDDEN = [
   /\bXStore\b/,
   /\bSev[12]\b/,
   /\bIcM\b/,
+  /\bMAL\b|MALMinutes/, //        availability-loss minutes, spelled out
+  /\bCRI\b/, //                customer-reliability summaries, spelled out
+  /xstore/i, //                 internal cluster name, any case
+  // the flagship case page once drifted to "two" while facts said four
+  /\b(two|2) reusable( MCP)?( tool)? servers\b/i,
 ];
 
 // 2. Headline claims that must appear on the homepage, verbatim.
