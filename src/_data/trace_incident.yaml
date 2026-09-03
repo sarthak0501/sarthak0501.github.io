@@ -3,7 +3,7 @@
 # identifiers removed per the published redaction checklist; the step
 # structure, tool sequence, and decision logic are as-run.
 meta:
-  label: trace/sev2-throttling — redacted · reconstructed from a production run
+  label: trace/severity-2-throttling — redacted · reconstructed from a production run
   note: identifiers, clusters, and customer fields removed · elapsed times rounded
 steps:
   - n: "01"

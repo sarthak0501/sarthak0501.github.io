@@ -3,57 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
   <meta name="theme-color" content="#f7f4ec" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#171b18" media="(prefers-color-scheme: dark)" />
-
-  <title>{{ title if title else facts.identity.name + " — " + facts.identity.title + " · " + facts.identity.org }}</title>
-  <meta name="description" content="{{ desc if desc else facts.summary.hero }}" />
+  <meta name="theme-color" content="#151917" media="(prefers-color-scheme: dark)" />
+  {%- set pageTitle = title if title else facts.identity.name + " — " + facts.identity.title + ", " + facts.identity.org %}
+  {%- set pageDesc = desc if desc else facts.summary.hero %}
+  {%- set shareTitle = ogTitle if ogTitle else pageTitle %}
+  <title>{{ pageTitle }}</title>
+  <meta name="description" content="{{ pageDesc }}" />
   <meta name="author" content="{{ facts.identity.name }}" />
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="alternate" type="application/atom+xml" title="{{ facts.identity.name }} — field notes" href="/feed.xml" />
   <link rel="canonical" href="{{ facts.meta.site_url }}{{ page.url }}" />
+  <link rel="alternate" type="application/atom+xml" title="{{ facts.identity.name }} — writing" href="/feed.xml" />
   {% if noindex %}<meta name="robots" content="noindex" />{% endif %}
 
-  <!-- Open Graph -->
-  <meta property="og:type" content="{{ 'article' if layout == 'layouts/post.njk' else 'website' }}" />
+  <meta property="og:type" content="{{ 'article' if layout == 'layouts/post.njk' or layout == 'layouts/case.njk' else 'website' }}" />
   <meta property="og:url" content="{{ facts.meta.site_url }}{{ page.url }}" />
-  <meta property="og:title" content="{{ title if title else 'The case for hiring ' + facts.identity.name }}" />
-  <meta property="og:description" content="{{ desc if desc else facts.summary.hero }}" />
+  <meta property="og:title" content="{{ shareTitle }}" />
+  <meta property="og:description" content="{{ pageDesc }}" />
   <meta property="og:image" content="{{ facts.meta.site_url }}{{ ogImage if ogImage else '/og/home.png' }}" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="{{ ogImageAlt if ogImageAlt else 'The case for hiring Sarthak Bichhawa — a hiring brief with receipts attached' }}" />
-
-  <!-- Twitter -->
+  <meta property="og:image:alt" content="{{ ogImageAlt if ogImageAlt else facts.identity.name + ' — ' + facts.identity.title + ', ' + facts.identity.org }}" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="{{ title if title else 'The case for hiring ' + facts.identity.name }}" />
-  <meta name="twitter:description" content="{{ desc if desc else facts.summary.hero }}" />
+  <meta name="twitter:title" content="{{ shareTitle }}" />
+  <meta name="twitter:description" content="{{ pageDesc }}" />
   <meta name="twitter:image" content="{{ facts.meta.site_url }}{{ ogImage if ogImage else '/og/home.png' }}" />
 
-  <!-- self-hosted fonts -->
-  <link rel="preload" href="/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="preload" href="/fonts/plexmono-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="/css/tokens.css" />
   <link rel="stylesheet" href="/css/site.css" />
+  <script>document.documentElement.classList.add('js');</script>
 
   {% if page.url == "/" %}
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Person",
-    "name": "Sarthak Bichhawa",
-    "url": "https://sarthak0501.github.io/",
+    "name": "{{ facts.identity.name }}",
+    "url": "{{ facts.meta.site_url }}/",
+    "image": "{{ facts.meta.site_url }}/assets/sarthak.jpg",
     "jobTitle": "Senior Data & Applied Scientist",
-    "worksFor": { "@type": "Organization", "name": "Microsoft" },
-    "email": "mailto:sarthaksgsits@gmail.com",
+    "worksFor": { "@type": "Organization", "name": "{{ facts.identity.org }}" },
+    "email": "mailto:{{ facts.identity.email }}",
     "address": { "@type": "PostalAddress", "addressLocality": "Redmond", "addressRegion": "WA", "addressCountry": "US" },
     "knowsAbout": ["LLM agents", "Azure OpenAI", "Machine learning", "Embeddings", "Representation learning", "MLOps", "Data platforms", "Model Context Protocol"],
-    "sameAs": [
-      "https://www.linkedin.com/in/sarthak-bichhawa/",
-      "https://github.com/sarthak0501"
-    ],
+    "sameAs": ["{{ facts.identity.linkedin }}", "{{ facts.identity.github }}"],
     "alumniOf": [
       { "@type": "CollegeOrUniversity", "name": "University of Illinois at Chicago" },
       { "@type": "CollegeOrUniversity", "name": "SGSITS, Indore" }
@@ -63,7 +60,6 @@
   {% endif %}
 
   <script src="/js/main.js" defer></script>
-  <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 </head>
 <body>
 

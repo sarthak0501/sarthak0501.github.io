@@ -40,12 +40,19 @@ const FORBIDDEN = [
 // 2. Headline claims that must appear on the homepage, verbatim.
 const HOMEPAGE_MUST = [
   ...facts.receipts.map((r) => r.value),
-  "$5B+/yr",
+  "$5B+",
   "<1% variance",
   "4-team",
   "13 metric domains",
+];
+
+// 2b. Résumé claims that must appear somewhere on the site, verbatim.
+const SITE_MUST = [
   "400+",
+  "99%",
+  "four reusable",
   "hundreds of thousands",
+  "first consumer",
 ];
 
 // 3. Internal links must resolve to something the build actually emitted.
@@ -71,6 +78,24 @@ for (const file of files) {
 const home = decode(readFileSync("_site/index.html", "utf8"));
 for (const claim of HOMEPAGE_MUST) {
   if (!home.includes(claim)) errors.push(`_site/index.html: missing required claim "${claim}"`);
+}
+
+// résumé claims that must appear somewhere on the site
+const everything = files.map((f) => decode(readFileSync(f, "utf8"))).join("\n");
+for (const claim of SITE_MUST) {
+  if (!everything.includes(claim)) errors.push(`site: missing required claim "${claim}" on every page`);
+}
+
+// every receipt anchor must resolve to a real id on the page it points at
+for (const r of facts.receipts) {
+  const [path, id] = r.anchor.split("#");
+  const file = join("_site", path, "index.html");
+  try {
+    const html = readFileSync(file, "utf8");
+    if (id && !new RegExp(`id="${id}"`).test(html)) errors.push(`facts.yaml: receipt anchor "${r.anchor}" has no id="${id}" on ${path}`);
+  } catch {
+    errors.push(`facts.yaml: receipt anchor "${r.anchor}" points at a page that was not emitted`);
+  }
 }
 
 // every /case/ and /resume/ URL facts.yaml points at must exist on disk

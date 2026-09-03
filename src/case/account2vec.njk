@@ -1,24 +1,38 @@
 ---
 layout: layouts/case.njk
 permalink: /case/account2vec/
-title: Account behavior embeddings — fleet telemetry as a reusable ML primitive
-desc: "Case file: an unsupervised autoencoder that compresses each Azure Storage account's behavior into a vector fingerprint — similarity, segmentation, and drift-based anomaly detection across millions of accounts."
+title: Account behavior embeddings — Sarthak Bichhawa
+desc: "An unsupervised autoencoder that compresses each Azure Storage account's behavior into a vector fingerprint — similarity, segmentation, and drift-based anomaly detection across millions of accounts."
 ogImage: /og/case-account2vec.png
-ogImageAlt: "Case file — Account2Vec: every storage account compressed to a vector fingerprint"
-tag: Exhibit E · applied ML
-lede: "An unsupervised autoencoder that compresses ~100 behavioral metrics per Azure Storage account into a dense embedding — then extends hierarchically to subscriptions and customers. One shared representation powering similarity, anomaly detection, forecasting, and LLM reasoning, at the scale of <strong>millions of accounts</strong>."
+ogImageAlt: "Account behavior embeddings — every storage account as a vector fingerprint"
+lede: "An unsupervised autoencoder that compresses ~100 behavioral metrics per Azure Storage account into a dense embedding — then extends hierarchically to subscriptions and customers. One shared representation for similarity, anomaly detection, forecasting, and LLM reasoning across <strong>millions of accounts</strong>, productionizing now with its first consumer."
 role: Designer, model & pipeline owner
 stack: PyTorch · Azure Synapse · Azure Data Explorer
-status: PROD · fleet scale
-headline: millions of accounts, one representation
-next:
-  url: /case/stress-lab/
-  title: The stress lab
+status: Productionizing with a first consumer
+outcomes:
+  - { v: "millions", d: "of storage accounts, one embedding each" }
+  - { v: "40–50", d: "rolling features per account in the versioned matrix" }
+  - { v: "3 tiers", d: "account · subscription · customer" }
+  - { v: "1st", d: "consumer in production now; the platform work is what makes the second one cheap" }
+quick:
+  - "<strong>Problem:</strong> every team rebuilt its own feature set from the same raw telemetry; nothing was shared, versioned, or governed."
+  - "<strong>Built:</strong> a versioned feature matrix and an autoencoder that compresses each account's behavior into one embedding, pooled to subscription and customer tiers, with drift, coverage, and staleness monitoring around all of it."
+  - "<strong>Result:</strong> one representation across millions of accounts for similarity, anomaly detection, forecasting, and LLM reasoning — productionizing with a first consumer."
+toc:
+  - { id: problem, label: One feature set }
+  - { id: architecture, label: Architecture }
+  - { id: decision, label: The decision }
+  - { id: schema, label: Schema }
+  - { id: training, label: Training }
+  - { id: downstream, label: The payoff query }
+  - { id: siblings, label: Guardrails }
+  - { id: lessons, label: What I got wrong }
+removed: "model code reduced to representative structure; exact fleet counts stated as orders of magnitude; internal table and cluster names generalized. The architecture, the design trade-offs, and the schema shape are preserved."
 ---
 
 <section class="case-sec" id="problem">
-  <div class="reveal">
-    <div class="sec-mark">§A — One feature set, built once</div>
+  <div>
+    <h2>One feature set, built once</h2>
     <div class="prose">
       <p>
         Every ML effort in Azure Storage — customer similarity, anomaly
@@ -42,8 +56,8 @@ next:
 </section>
 
 <section class="case-sec" id="architecture">
-  <div class="reveal">
-    <div class="sec-mark">§B — Pipeline shape</div>
+  <div>
+    <h2>Architecture, as built</h2>
     <div class="prose">
       <p>
         Four stages: raw storage-service telemetry aggregates into the
@@ -56,21 +70,28 @@ next:
     </div>
   </div>
   {% include "partials/diagram-a2v.njk" %}
-  <div class="prose reveal">
+  <div class="prose">
     <p>
       The design decision that mattered most was <strong>separating the feature
       matrix from the model</strong>. The matrix is the platform contract — other
       teams can consume it directly even without embeddings. The embeddings are
       an optional-but-powerful second layer. The model is the least interesting
-      part, which is precisely the argument in the
-      <a href="/#judgment">judgment calls</a>.
+      part, which is precisely the argument in <a href="#decision">the decision below</a>.
     </p>
   </div>
 </section>
 
+<section class="case-sec decision-sec" id="decision">
+  <h2>The decision: a model is not a platform</h2>
+  <div class="prose">
+    <p>The embeddings could have shipped as one team's similarity model. Instead I named the abstraction, wrote the design doc, and built the drift, coverage, and staleness plumbing that makes other teams safe to depend on it — account, subscription, and customer tiers included.</p>
+    <p>It's productionizing now with its first consumer, and the platform work is why the second one won't need me. Ask me about why the embedding model is the least interesting part of the system.</p>
+  </div>
+</section>
+
 <section class="case-sec" id="schema">
-  <div class="reveal">
-    <div class="sec-mark">§C — The AccountFeatureMatrix schema</div>
+  <div>
+    <h2>The feature-matrix schema</h2>
     <div class="prose">
       <p>
         The single most important artifact in the system. If this schema isn't
@@ -79,8 +100,8 @@ next:
       </p>
     </div>
   </div>
-  <div class="table-panel panel reveal">
-    <div class="cp-head"><span>// AccountFeatureMatrix — column groups</span><span class="g">versioned · governed</span></div>
+  <div class="table-panel">
+    <div class="cp-head"><span>AccountFeatureMatrix — column groups</span><span class="g">versioned · governed</span></div>
     <div class="table-scroll">
       <table class="data-table">
         <thead><tr><th>Feature group</th><th>Examples</th><th># cols</th></tr></thead>
@@ -95,13 +116,13 @@ next:
         </tbody>
       </table>
     </div>
-    <div class="board-foot">// every column: rolling 7d/30d/90d windows · standardized per region · <span class="g">null-masked so new accounts don't drag the space.</span></div>
+    <div class="panel-foot">every column: rolling 7d/30d/90d windows · standardized per region · <span class="g">null-masked so new accounts don't drag the space.</span></div>
   </div>
 </section>
 
 <section class="case-sec" id="training">
-  <div class="reveal">
-    <div class="sec-mark">§D — The training loop</div>
+  <div>
+    <h2>The training loop</h2>
     <div class="prose">
       <p>
         A standard denoising autoencoder — the interesting engineering is
@@ -110,8 +131,8 @@ next:
       </p>
     </div>
   </div>
-  <div class="code-panel panel reveal">
-    <div class="cp-head"><span>// a2v/model.py</span><span class="g">representative · abridged</span></div>
+  <div class="code-panel">
+    <div class="cp-head"><span>a2v/model.py</span><span class="g">representative · abridged</span></div>
     <pre><code><span class="kw">class</span> <span class="hl">AccountEncoder</span>(nn.Module):
     <span class="kw">def</span> __init__(self, n_features=52, d=32):
         super().__init__()
@@ -140,7 +161,7 @@ next:
            0.01 * z.pow(2).mean()      <span class="cm"># soft unit-norm</span>
     loss.backward(); opt.step(); opt.zero_grad()</code></pre>
   </div>
-  <div class="prose reveal">
+  <div class="prose">
     <p>
       Two details matter: <strong>null-masking the loss</strong>, so brand-new accounts with
       missing history don't pull the embedding toward zero, and a <strong>soft
@@ -151,8 +172,8 @@ next:
 </section>
 
 <section class="case-sec" id="downstream">
-  <div class="reveal">
-    <div class="sec-mark">§E — The payoff query</div>
+  <div>
+    <h2>The payoff query</h2>
     <div class="prose">
       <p>
         Once embeddings exist, any team can ask "find me 20 accounts similar to
@@ -160,8 +181,8 @@ next:
       </p>
     </div>
   </div>
-  <div class="code-panel panel reveal">
-    <div class="cp-head"><span>// downstream: similarity search</span><span class="g">cosine over 32-d embeddings</span></div>
+  <div class="code-panel">
+    <div class="cp-head"><span>downstream: similarity search</span><span class="g">cosine over 32-d embeddings</span></div>
     <pre><code><span class="cm"># seed: a newly-escalated account</span>
 seed = a2v.get(account_id="stacc-7f1a…")        <span class="cm"># (32,)</span>
 
@@ -179,7 +200,7 @@ neighbors = a2v.knn(
 <span class="cm"># → used by forecasting to borrow seasonality from peers</span>
 <span class="cm"># → used by anomaly to calibrate expected ranges per cohort</span></code></pre>
   </div>
-  <div class="prose reveal">
+  <div class="prose">
     <p>
       Downstream teams don't always reason at the account level, so the platform
       exposes pooled embeddings at two higher tiers — <strong>account → subscription →
@@ -192,8 +213,8 @@ neighbors = a2v.knn(
 </section>
 
 <section class="case-sec" id="siblings">
-  <div class="reveal">
-    <div class="sec-mark">§F — The guardrail sibling</div>
+  <div>
+    <h2>The guardrails around it</h2>
     <div class="prose">
       <p>
         A representation other teams are meant to depend on needs to know it's
@@ -208,30 +229,11 @@ neighbors = a2v.knn(
   </div>
 </section>
 
-<section class="case-sec" id="errata">
-  <div class="errata panel reveal">
-    <div class="er-head">Errata — corrections this page has shipped</div>
-    <ul>
-      <li>
-        <span class="ed">2026-07-10</span>
-        <span><strong>Scale restated in plain words.</strong> Earlier revisions wrote "M+ accounts"; the résumé and this site now say what it is — millions of accounts — because a claim you have to decode isn't a receipt.</span>
-      </li>
-      <li>
-        <span class="ed">2026-05</span>
-        <span><strong>Naive average pooling cost a quarter of rework.</strong> The first subscription/customer tiers used plain means and collapsed bimodal customers; the attention-weighted pool replaced it. The aggregation-task loss should have been specced up front.</span>
-      </li>
-      <li>
-        <span class="ed">2026-04</span>
-        <span><strong>Onboarding was underinvested.</strong> The embeddings are only as useful as the number of teams comfortable reaching for them — a docs-and-evangelism problem, not a modeling one, and it was treated as neither for two quarters.</span>
-      </li>
-    </ul>
-  </div>
-
-  <div class="redaction reveal">
-    <span class="rx-head">Redaction record</span>
-    Published against the written checklist: model code reduced to representative
-    structure · exact fleet counts stated as orders of magnitude · internal table
-    and cluster names generalized · feature-group column counts preserved.
-    <span class="g">Preserved: the architecture, the design trade-offs, and the schema shape.</span>
-  </div>
+<section class="case-sec" id="lessons">
+  <h2>What I got wrong</h2>
+  <ul class="lessons">
+    <li><span class="ed">2026-05</span><span><strong>Naive average pooling cost a quarter of rework.</strong> The first subscription and customer tiers used plain means and collapsed bimodal customers; the attention-weighted pool replaced it. The aggregation-task loss should have been specced up front.</span></li>
+    <li><span class="ed">2026-04</span><span><strong>Onboarding was underinvested.</strong> The embeddings are only as useful as the number of teams comfortable reaching for them — a docs-and-evangelism problem, not a modeling one, and it was treated as neither for two quarters.</span></li>
+  </ul>
 </section>
+

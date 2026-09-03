@@ -40,12 +40,11 @@ identity:
   status: Open to offers
 
 summary:
+  statement: I build LLM agents and ML systems that run in production.
   hero: >-
     Nine years of ML and AI in production — autonomous LLM agents, a
     fleet-scale embedding platform, and the revenue systems behind
-    $5B+/year that Finance reconciles against. This page argues like a
-    hiring brief: claims up front, receipts attached, architecture on
-    request.
+    $5B+/year that Finance reconciles against.
   ats: >-
     Sarthak Bichhawa — Sr. Data & Applied Scientist, Microsoft (Azure
     Storage), Redmond WA. Targeting Staff / Principal Applied Scientist ·
@@ -68,19 +67,19 @@ receipts:
   - value: ~$45M/mo
     label: partner revenue attribution recovered, on a $5B+/yr platform
     sub: traced through 20+ components · reconciled against Finance actuals
-    anchor: "#exhibit-attribution"
+    anchor: "/case/revenue-attribution/#recovery"
   - value: 99%
     label: performance-throttling incidents eliminated for the most critical customers
     sub: 92% across all paying customers · fleet-wide early warning
-    anchor: "#ledger"
+    anchor: "/case/data-trust/#throttling"
   - value: hrs → min
     label: on-call incident diagnosis, autonomous multi-agent investigation
     sub: planner/executor loop on Azure OpenAI
-    anchor: "#exhibit-incident"
+    anchor: "/case/incident-agent/#trace"
   - value: days → <2 min
     label: executive-review prep, plain-English questions over live telemetry
     sub: governed queries across 13 metric domains
-    anchor: "#exhibit-health"
+    anchor: "/case/customer-health-agent/#evals"
 
 # Lanes — a reader picks the frame their role sits in and the board and
 # exhibits reorder. Mirrors the five resume archetypes, merged to four.
@@ -291,42 +290,42 @@ resume:
 cases:
   - slug: /case/incident-agent/
     id: exhibit-incident
-    tag: Exhibit A · agentic · flagship
+    tag: AI & agents
     title: The incident agent
     tease: An autonomous multi-agent loop that runs severity-2 triage — and the eval harness that decides whether to trust it.
     scent: Full case file — planner design, run trace, confidence rubric, eval table
     lanes: [ai]
   - slug: /case/customer-health-agent/
     id: exhibit-health
-    tag: Exhibit B · GenAI
+    tag: AI & agents
     title: The customer-health agent
     tease: Plain-English questions become governed live queries with review-ready narratives — days to under two minutes.
     scent: Full case file — system prompt, eval harness output, agent-generated queries
     lanes: [ai, analytics]
   - slug: /case/revenue-attribution/
     id: exhibit-attribution
-    tag: Exhibit C · judgment under fire
+    tag: Revenue systems
     title: The attribution recovery
     tease: A silent upstream data loss broke revenue attribution for a $5B+/yr platform. Six months of backfills, seven incidents, ~$45M/mo recovered.
     scent: Full case file — the failure, the recovery, the redesign that made it un-repeatable
     lanes: [analytics, platform]
   - slug: /case/data-trust/
     id: exhibit-trust
-    tag: Exhibit D · data platform
+    tag: Data platform
     title: The data-trust platform
     tease: Quality gates that caught an 88% silent row loss, grown into an org-wide discovery portal with an LLM lineage engine that reads pipeline code.
     scent: Full case file — check design, the catch, the portal, the lineage engine
     lanes: [platform]
   - slug: /case/account2vec/
     id: exhibit-a2v
-    tag: Exhibit E · applied ML
+    tag: Applied ML
     title: Account behavior embeddings
     tease: Every storage account compressed to a vector fingerprint — similarity, segmentation, and drift-based anomaly detection at fleet scale.
     scent: Full case file — architecture, embedding design, drift detection
     lanes: [ai, platform]
   - slug: /case/stress-lab/
     id: exhibit-stress
-    tag: Exhibit F · experimentation
+    tag: Experimentation
     title: The stress lab
     tease: An adaptive pre-release testing program where multi-armed bandits pick the next experiment — ship/hold calls per build.
     scent: Full case file — bandit design, failure taxonomy, ship/hold ledger

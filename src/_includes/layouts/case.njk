@@ -1,41 +1,83 @@
 ---
 layout: layouts/base.njk
 ---
-<article class="section-pad page-head case-page">
-  <div class="wrap">
-    <nav class="crumb" aria-label="Breadcrumb">‹ <a href="/case/">All case files</a></nav>
+{#- Resolve this page's entry in facts.cases (for the title, category, and prev/next) -#}
+{%- set me = null %}{% set idx = 0 %}
+{%- for c in facts.cases %}{% if c.slug == page.url %}{% set me = c %}{% set idx = loop.index0 %}{% endif %}{% endfor %}
+{%- set prev = facts.cases[idx - 1] if idx > 0 else null %}
+{%- set next = facts.cases[idx + 1] if idx < facts.cases.length - 1 else null %}
+{%- set systemProof = "" %}
+{%- for s in facts.systems %}{% if s.link == page.url and not systemProof %}{% set systemProof = s.proof %}{% endif %}{% endfor %}
 
-    <header class="reveal">
-      {% if tag %}<div class="exhibit-tag">{{ tag }}</div>{% endif %}
-      <h1 class="case-title flip">{{ title }}</h1>
-      {% if lede %}<p class="case-lede">{{ lede | safe }}</p>{% endif %}
-    </header>
+<article class="page wrap">
+  <nav class="crumb" aria-label="Breadcrumb"><a href="/#work">‹ Work</a></nav>
 
-    <div class="case-meta panel reveal">
-      <div><span class="k">Role</span><span class="v">{{ role }}</span></div>
-      <div><span class="k">Stack</span><span class="v">{{ stack }}</span></div>
-      <div><span class="k">Status</span><span class="v g">{{ status }}</span></div>
-      <div><span class="k">Headline</span><span class="v g">{{ headline }}</span></div>
-    </div>
+  <header>
+    <p class="case-label">{{ me.tag if me else 'Case study' }} · {{ facts.identity.org }}, {{ facts.identity.team }}{% if when %} · {{ when }}{% endif %}</p>
+    <h1 class="page-title">{{ me.title if me else title }}</h1>
+    {% if lede %}<p class="standfirst">{{ lede | safe }}</p>{% endif %}
+  </header>
 
+  {% if outcomes %}
+  <ul class="outcomes" aria-label="Outcomes">
+    {%- for o in outcomes %}
+    <li class="outcome"><span class="v">{{ o.v | safe }}</span><span class="d">{{ o.d }}</span></li>
+    {%- endfor %}
+  </ul>
+  {% endif %}
+
+  <dl class="case-meta">
+    <div><dt>My role</dt><dd>{{ role }}</dd></div>
+    {% if team %}<div><dt>Team</dt><dd>{{ team }}</dd></div>{% endif %}
+    <div><dt>Stack</dt><dd>{{ stack }}</dd></div>
+    <div><dt>Status</dt><dd>{{ status }}</dd></div>
+  </dl>
+
+  {% if quick %}
+  <section class="quick" aria-labelledby="quick-h">
+    <h2 id="quick-h">In 30 seconds</h2>
+    <ul>
+      {%- for q in quick %}<li>{{ q | safe }}</li>{% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  {% if toc %}
+  <nav class="toc" aria-label="On this page">
+    On this page
+    <ol>
+      {%- for t in toc %}<li><a href="#{{ t.id }}">{{ t.label }}</a></li>{% endfor %}
+    </ol>
+  </nav>
+  {% endif %}
+
+  <div class="case-body">
     {{ content | safe }}
-
-    {% if next %}
-    <p style="margin-top:3rem;">
-      <a class="case-cta panel" href="{{ next.url }}">
-        <span>Next case file — {{ next.title }}</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </a>
-    </p>
-    {% endif %}
   </div>
+
+  {% if removed %}
+  <p class="note">Before publishing: {{ removed }}</p>
+  {% endif %}
+
+  <section class="end-block" aria-labelledby="end-h">
+    <h2 id="end-h">Want to talk through this system?</h2>
+    <p>I'm happy to walk through the architecture, the evals, or the parts that didn't work — with the diagrams.</p>
+    <div class="actions">
+      <a href="mailto:{{ facts.identity.email }}" class="btn btn-primary" data-goatcounter-click="case-email">Email me</a>
+      <a href="{{ facts.resume.file }}" class="btn btn-secondary" data-goatcounter-click="case-resume-pdf">Résumé (PDF)</a>
+    </div>
+    <nav class="pager" aria-label="Other case studies">
+      {% if prev %}<a href="{{ prev.slug }}"><span class="lbl">Previous</span>{{ prev.title }}</a>{% endif %}
+      {% if next %}<a href="{{ next.slug }}" class="next"><span class="lbl">Next</span>{{ next.title }}</a>{% endif %}
+    </nav>
+  </section>
 </article>
 
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "TechArticle",
-  "headline": {{ title | dump | safe }},
+  "headline": {{ (me.title if me else title) | dump | safe }},
   "description": {{ desc | dump | safe }},
   "url": "{{ facts.meta.site_url }}{{ page.url }}",
   "author": { "@type": "Person", "name": "{{ facts.identity.name }}", "url": "{{ facts.meta.site_url }}/" },

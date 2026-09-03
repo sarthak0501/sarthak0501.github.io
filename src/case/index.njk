@@ -1,37 +1,32 @@
 ---
 layout: layouts/base.njk
 permalink: /case/
-title: Case files — Sarthak Bichhawa
-desc: "Six case files with architecture attached: an autonomous incident-investigation agent, a customer-health LLM agent, a $5B+/yr attribution recovery, a data-trust platform with an LLM lineage engine, fleet-scale embeddings, and an adaptive stress-testing program."
+title: Work — Sarthak Bichhawa
+desc: "Six systems in production at Microsoft Azure Storage, each written up with the architecture, one artifact worth inspecting, results, and what went wrong."
 ogImage: /og/case-index.png
-ogImageAlt: "The case files — six production systems, architecture attached"
+ogImageAlt: "Work — six systems in production, written up with the architecture"
 ---
-<section class="section-pad page-head">
-  <div class="wrap">
-    <nav class="crumb" aria-label="Breadcrumb">‹ <a href="/">The brief</a></nav>
-    <div class="reveal">
-      <div class="sec-mark">The case files</div>
-      <h1 class="sec-title flip">The work, <em>architecture attached.</em></h1>
-      <p class="sec-sub">
-        Each file carries what a hiring loop actually wants to inspect — planner
-        design, prompts, run traces, eval output — published against a written
-        redaction checklist, with errata when the record changes.
-      </p>
-    </div>
-
-    <div class="filecards">
-      {%- for c in facts.cases %}
-      <a class="filecard panel reveal" href="{{ c.slug }}">
-        <div class="exhibit-tag">{{ c.tag }}</div>
-        <h2>{{ c.title }}</h2>
-        <p>{{ c.tease }}</p>
-        <span class="fc-foot">{{ c.scent }} →</span>
+<section class="page wrap">
+  <nav class="crumb" aria-label="Breadcrumb"><a href="/">‹ Home</a></nav>
+  <header class="list-head">
+    <h1 class="page-title">Work</h1>
+    <p class="standfirst">Six systems in production at Microsoft Azure Storage — each with users, an on-call rotation, and the number it moved. Every one opens to the architecture, the evals, and what went wrong.</p>
+  </header>
+  <ul class="cards">
+    {%- for c in facts.cases %}
+    {%- set proof = "" %}
+    {%- for s in facts.systems %}{% if s.link == c.slug and not proof %}{% set proof = s.proof %}{% endif %}{% endfor %}
+    <li>
+      <a class="card" href="{{ c.slug }}">
+        <span class="card-cat">{{ c.tag }}</span>
+        <span class="card-title">{{ c.title }}</span>
+        <span class="card-text">{{ c.tease }}</span>
+        <span class="card-proof">
+          <span>{{ proof }}</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
       </a>
-      {%- endfor %}
-    </div>
-
-    <p class="mono-note strip-note" style="margin-top:1.6rem;">
-      // every number in these files traces to <a href="/receipts/" class="g">the receipts ledger</a>.
-    </p>
-  </div>
+    </li>
+    {%- endfor %}
+  </ul>
 </section>

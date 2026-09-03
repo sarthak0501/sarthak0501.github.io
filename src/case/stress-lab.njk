@@ -1,24 +1,38 @@
 ---
 layout: layouts/case.njk
 permalink: /case/stress-lab/
-title: The stress lab — bandits decide what we test next
-desc: "Case file: an adaptive pre-release stress-testing program for Azure Storage — thousands of controlled simulations per build, multi-armed bandits picking the next scenario, and per-build ship/hold calls that prevented 10+ top-severity incidents."
+title: The stress lab — Sarthak Bichhawa
+desc: "An adaptive pre-release stress-testing program for Azure Storage — thousands of controlled simulations per build, multi-armed bandits picking the next scenario, and per-build ship/hold calls that prevented 10+ top-severity incidents."
 ogImage: /og/case-stress-lab.png
-ogImageAlt: "Case file — the stress lab: adaptive pre-release testing, ship/hold calls per build"
-tag: Exhibit F · experimentation
-lede: "An adaptive pre-release stress-testing program for Azure Storage: <strong>thousands of controlled simulations per build</strong> across 20 workload types, with multi-armed bandits deciding which scenario to run next. It came to inform per-build <strong>ship / hold</strong> decisions — and helped prevent 10+ top-severity customer incidents by catching top-severity regressions before rollout."
-role: Program lead — 2-person effort, design doc & internal white paper
+ogImageAlt: "The stress lab — adaptive pre-release testing, ship/hold calls per build"
+lede: "An adaptive pre-release stress-testing program for Azure Storage: <strong>thousands of controlled simulations per build</strong> across 20 workload types, with multi-armed bandits deciding which scenario to run next. It came to inform per-build <strong>ship / hold</strong> decisions — and helped prevent 10+ top-severity customer incidents by catching regressions before rollout."
+role: Program lead — design doc and internal white paper
+team: 2-person effort
 stack: Python · multi-armed bandits · large-scale simulation
-status: PROD · per-build
-headline: 10+ top-severity incidents prevented
-next:
-  url: /case/incident-agent/
-  title: The incident agent
+status: In production · per build
+outcomes:
+  - { v: "10+", d: "top-severity incidents prevented before rollout" }
+  - { v: "−40%", d: "test-infrastructure cost after bandit scheduling" }
+  - { v: "−60%", d: "false positives after outcome-tuned scoring" }
+  - { v: "20", d: "workload types stress-tested per build" }
+quick:
+  - "<strong>Problem:</strong> regressions were being found by customers; a static test plan ran the same suite every build."
+  - "<strong>Built:</strong> thousands of controlled simulations per build across 20 workload types, ~500 failure signals distilled into 15 named modes, and multi-armed bandits choosing the next scenario."
+  - "<strong>Result:</strong> per-build ship/hold calls, 10+ top-severity incidents prevented before rollout, false positives −60%, test-infrastructure cost −40%."
+toc:
+  - { id: problem, label: The problem }
+  - { id: taxonomy, label: Taxonomy }
+  - { id: bandits, label: Bandits }
+  - { id: decision, label: The decision }
+  - { id: shiphold, label: Ship / hold }
+  - { id: advisor, label: Azure Advisor }
+  - { id: lessons, label: What I got wrong }
+removed: "build identifiers and internal system names; per-build volumes stated as orders of magnitude; the ship/hold ledger shown as shape, not as specific builds. The counts on the record — 20 workloads, ~500 signals, 15 modes, −60% false positives — are preserved."
 ---
 
 <section class="case-sec" id="problem">
-  <div class="reveal">
-    <div class="sec-mark">§A — The problem: regressions found by customers</div>
+  <div>
+    <h2>The problem: regressions found by customers</h2>
     <div class="prose">
       <p>
         The worst place to discover a performance regression is in a customer's
@@ -37,8 +51,8 @@ next:
 </section>
 
 <section class="case-sec" id="taxonomy">
-  <div class="reveal">
-    <div class="sec-mark">§B — From noise to a named taxonomy</div>
+  <div>
+    <h2>From noise to a named taxonomy</h2>
     <div class="prose">
       <p>
         The raw output was unmanageable by design — roughly <strong>500 distinct
@@ -59,8 +73,8 @@ next:
 </section>
 
 <section class="case-sec" id="bandits">
-  <div class="reveal">
-    <div class="sec-mark">§C — Letting bandits overrule the test plan</div>
+  <div>
+    <h2>Letting bandits overrule the test plan</h2>
     <div class="prose">
       <p>
         With ~500 signals and finite lab hours, the scheduling question — <em>which
@@ -79,17 +93,19 @@ next:
       </p>
     </div>
   </div>
-  <div class="metric-row panel reveal">
-    <div class="m"><span class="v">20</span><span class="d">workload types stress-tested per build</span></div>
-    <div class="m"><span class="v">~500</span><span class="d">failure signals distilled into the taxonomy</span></div>
-    <div class="m"><span class="v">15</span><span class="d">recurring failure modes, named and documented</span></div>
-    <div class="m"><span class="v">−60%</span><span class="d">false positives after bandit-tuned scoring</span></div>
+  </section>
+
+<section class="case-sec decision-sec" id="decision">
+  <h2>The decision: let bandits decide what we test next</h2>
+  <div class="prose">
+    <p>The roadmap argued for coverage; the data argued for yield. Thousands of simulations per build across 20 workload types were throwing off ~500 failure signals — far more than a static plan could triage — so I put multi-armed bandits in charge of picking the next scenario and tuned the scoring thresholds on outcomes.</p>
+    <p>What it cost: two quarters of a static plan before the scheduler shipped, and a design doc and internal white paper to make the case. What it produced: false positives down 60%, test-infrastructure cost down 40%, and per-build ship/hold calls that prevented 10+ top-severity incidents. Ask me about letting a bandit overrule the test plan.</p>
   </div>
 </section>
 
 <section class="case-sec" id="shiphold">
-  <div class="reveal">
-    <div class="sec-mark">§D — The ship / hold call</div>
+  <div>
+    <h2>The ship / hold call</h2>
     <div class="prose">
       <p>
         The program's output isn't a dashboard — it's a <strong>decision</strong>. Each build
@@ -98,8 +114,8 @@ next:
       </p>
     </div>
   </div>
-  <div class="table-panel panel reveal">
-    <div class="cp-head"><span>// ship-hold ledger — shape of the verdict</span><span class="g">illustrative · identifiers removed</span></div>
+  <div class="table-panel">
+    <div class="cp-head"><span>ship-hold ledger — shape of the verdict</span><span class="g">illustrative · identifiers removed</span></div>
     <div class="table-scroll">
       <table class="data-table">
         <thead><tr><th>Build</th><th>Modes fired</th><th>Worst severity</th><th>Verdict</th></tr></thead>
@@ -110,9 +126,9 @@ next:
         </tbody>
       </table>
     </div>
-    <div class="board-foot">// a HOLD is a claim with evidence attached: <span class="g">mode, repro steps, quantified impact.</span> that's why holds held.</div>
+    <div class="panel-foot">a HOLD is a claim with evidence attached: <span class="g">mode, repro steps, quantified impact.</span> that's why holds held.</div>
   </div>
-  <div class="prose reveal">
+  <div class="prose">
     <p>
       Cumulative effect: <strong>10+ top-severity customer incidents prevented</strong>, and — because the bandit stopped paying for low-yield runs — <strong>40% lower test-infrastructure cost</strong> —
       top-severity regressions caught in the lab instead of in production. I led
@@ -123,8 +139,8 @@ next:
 </section>
 
 <section class="case-sec" id="advisor">
-  <div class="reveal">
-    <div class="sec-mark">§E — Shipped in-product: Azure Advisor recommendations</div>
+  <div>
+    <h2>Shipped in-product: Azure Advisor recommendations</h2>
     <div class="prose">
       <p>
         The same evidence-first muscle shipped customer-facing:
@@ -138,26 +154,10 @@ next:
   </div>
 </section>
 
-<section class="case-sec" id="errata">
-  <div class="errata panel reveal">
-    <div class="er-head">Errata — corrections this page has shipped</div>
-    <ul>
-      <li>
-        <span class="ed">2026-07-10</span>
-        <span><strong>First publication of this case file.</strong> Earlier editions of this site compressed the program to half a bullet under "experimentation." A system that made per-build ship/hold calls deserved its own record.</span>
-      </li>
-      <li>
-        <span class="ed">2026-02</span>
-        <span><strong>The static-plan phase ran too long.</strong> The first two quarters scheduled scenarios by roadmap, and quiet arms burned lab hours while risky subsystems went under-tested. The bandit scheduler should have shipped a quarter earlier than it did.</span>
-      </li>
-    </ul>
-  </div>
-
-  <div class="redaction reveal">
-    <span class="rx-head">Redaction record</span>
-    Published against the written checklist: build identifiers and internal system
-    names removed · per-build volumes stated as orders of magnitude · the ship/hold
-    ledger shown as shape, not as specific builds.
-    <span class="g">Preserved: the counts on the record — 20 workloads, ~500 signals, 15 modes, −60% false positives.</span>
-  </div>
+<section class="case-sec" id="lessons">
+  <h2>What I got wrong</h2>
+  <ul class="lessons">
+    <li><span class="ed">2026-02</span><span><strong>The static-plan phase ran too long.</strong> The first two quarters scheduled scenarios by roadmap, and quiet arms burned lab hours while risky subsystems went under-tested. The bandit scheduler should have shipped a quarter earlier than it did.</span></li>
+  </ul>
 </section>
+

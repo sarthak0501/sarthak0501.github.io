@@ -4,8 +4,8 @@ eleventyExcludeFromCollections: true
 ---
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>{{ facts.identity.name }} — field notes</title>
-  <subtitle>Notes from production, where the demos go to die.</subtitle>
+  <title>{{ facts.identity.name }} — writing</title>
+  <subtitle>Essays on shipping ML and GenAI inside an enterprise.</subtitle>
   <link href="{{ facts.meta.site_url }}/feed.xml" rel="self" />
   <link href="{{ facts.meta.site_url }}/" />
   <updated>{{ build.updatedISO }}T00:00:00Z</updated>
@@ -21,7 +21,7 @@ eleventyExcludeFromCollections: true
   {%- endif %}{% endfor %}
   {%- for c in facts.cases %}
   <entry>
-    <title>Case file — {{ c.title }}</title>
+    <title>{{ c.title }} — case study</title>
     <link href="{{ facts.meta.site_url }}{{ c.slug }}" />
     <id>{{ facts.meta.site_url }}{{ c.slug }}</id>
     <updated>{{ build.updatedISO }}T00:00:00Z</updated>

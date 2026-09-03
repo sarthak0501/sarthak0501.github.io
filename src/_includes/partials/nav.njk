@@ -1,20 +1,27 @@
-<nav class="topnav" id="topnav" aria-label="Primary">
-  <div class="nav-inner">
-    <a href="/" class="nav-brand">
-      <span class="mark" aria-hidden="true"></span>
-      {{ facts.identity.name }}
-      <span class="doc">/ {{ facts.meta.doc }}</span>
-    </a>
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    </button>
-    <div class="nav-links" id="navLinks">
-      <a href="/case/">Work</a>
-      <a href="/#judgment">Judgment</a>
-      <a href="/#record">Record</a>
-      <a href="/#writing">Writing</a>
-      <a href="/resume/">Résumé</a>
-      <a href="/#ask" class="nav-cta">Contact</a>
-    </div>
+<nav class="nav" aria-label="Primary">
+  <div class="wrap nav-inner">
+    <a href="/" class="brand">{{ facts.identity.name }}</a>
+    <ul class="nav-links">
+      <li><a href="/#work">Work</a></li>
+      <li><a href="/#decisions">Decisions</a></li>
+      <li><a href="/#experience">Experience</a></li>
+      <li><a href="/#writing">Writing</a></li>
+      <li><a href="/resume/">Résumé</a></li>
+    </ul>
+    <a href="mailto:{{ facts.identity.email }}" class="btn btn-primary btn-sm nav-email" data-goatcounter-click="nav-email">Email</a>
+    <details class="nav-menu" id="navMenu">
+      <summary aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
+      </summary>
+      <ul>
+        <li><a href="/#work">Work</a></li>
+        <li><a href="/#decisions">Decisions</a></li>
+        <li><a href="/#experience">Experience</a></li>
+        <li><a href="/#writing">Writing</a></li>
+        <li><a href="/resume/">Résumé</a></li>
+        <li><a href="{{ facts.resume.file }}">Résumé (PDF)</a></li>
+        <li><a href="{{ facts.identity.linkedin }}">LinkedIn</a></li>
+      </ul>
+    </details>
   </div>
 </nav>

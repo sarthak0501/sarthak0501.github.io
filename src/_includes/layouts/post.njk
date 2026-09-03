@@ -1,20 +1,26 @@
 ---
 layout: layouts/base.njk
 ---
-<article class="section-pad page-head post-page">
-  <div class="wrap-narrow">
-    <nav class="crumb" aria-label="Breadcrumb">‹ <a href="/writing/">All field notes</a></nav>
-
-    <header class="reveal" style="margin-bottom:2.2rem;">
-      <p class="post-date">{{ page.date | humanDate }}</p>
-      <h1 class="case-title">{{ title }}</h1>
-      {% if lede %}<p class="case-lede">{{ lede | safe }}</p>{% endif %}
-    </header>
-
+<article class="page wrap-narrow">
+  <nav class="crumb" aria-label="Breadcrumb"><a href="/#writing">‹ Writing</a></nav>
+  <header>
+    <p class="case-label">{{ page.date | humanDate }}</p>
+    <h1 class="page-title">{{ title }}</h1>
+    {% if lede %}<p class="standfirst">{{ lede | safe }}</p>{% endif %}
+  </header>
+  <div class="case-body">
     <div class="prose">
       {{ content | safe }}
     </div>
   </div>
+  <section class="end-block" aria-labelledby="end-h">
+    <h2 id="end-h">Questions about this?</h2>
+    <p>Email me — I'm glad to go deeper on any of it.</p>
+    <div class="actions">
+      <a href="mailto:{{ facts.identity.email }}" class="btn btn-primary">Email me</a>
+      <a href="/#work" class="btn btn-secondary">See the work</a>
+    </div>
+  </section>
 </article>
 
 <script type="application/ld+json">

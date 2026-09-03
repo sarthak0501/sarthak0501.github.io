@@ -6,7 +6,7 @@
   leadership scope (the ML-lead cut). No rvariant = the master ordering.
 #}
 {% set ms = facts.record[0] %}
-<div class="resume-doc panel reveal">
+<div class="resume-doc">
   <header>
     <div class="r-name">{{ facts.identity.name }}</div>
     <p class="r-title">{{ facts.identity.title }} · {{ facts.identity.org }}, {{ facts.identity.team }}{% if rvariant and rvariant.target %} — {{ rvariant.target }}{% endif %}</p>

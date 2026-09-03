@@ -1,71 +1,66 @@
-<div class="diagram-wrap panel reveal">
-  <div class="dw-label">// architecture — as built</div>
-  <svg class="diagram" viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Customer-health agent architecture">
+<figure class="figure">
+  <figcaption class="figure-head">Architecture, as built</figcaption>
+  <div class="figure-body">
+  <svg class="diagram" viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="dg-mcc-t dg-mcc-d">
+    <title id="dg-mcc-t">Customer-health agent architecture</title>
+    <desc id="dg-mcc-d">A user question goes to an LLM agent on Azure OpenAI with function calling. The agent retrieves metric definitions and ticket excerpts, issues governed queries against Azure Data Explorer telemetry, tickets and reliability summaries, and the ownership graph, and returns a grounded, cited answer. An eval harness and guardrails run on every response.</desc>
     <defs>
-      <marker id="arr1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-        <path d="M 0 0 L 10 5 L 0 10 z" fill="#23744d"/>
-      </marker>
-      <marker id="arr1-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-        <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(31,43,37,0.45)"/>
-      </marker>
+      <marker id="arr1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z"/></marker>
+      <marker id="arr1-muted" class="muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z"/></marker>
     </defs>
-
     <rect class="wrap-rect" x="20" y="32" width="860" height="280" rx="10"/>
     <text class="wrap-label" x="36" y="24">EVAL HARNESS · GUARDRAILS · GROUNDEDNESS</text>
-
     <g>
       <rect class="node-box" x="40" y="146" width="140" height="60" rx="8"/>
       <text class="node-label" x="110" y="171" text-anchor="middle">User query</text>
       <text class="node-label sub" x="110" y="189" text-anchor="middle">exec · on-call · PM</text>
     </g>
-
     <g>
       <rect class="node-box" x="267" y="52" width="170" height="44" rx="8"/>
       <text class="node-label" x="352" y="72" text-anchor="middle">RAG + Tools</text>
-      <text class="node-label sub" x="352" y="87" text-anchor="middle">vector search · KQL exec</text>
+      <text class="node-label sub" x="352" y="88" text-anchor="middle">vector search · KQL exec</text>
     </g>
-
     <g>
       <rect class="node-box primary" x="252" y="126" width="200" height="100" rx="10"/>
       <text class="node-label tag" x="352" y="148" text-anchor="middle">LLM AGENT</text>
-      <text class="node-label" x="352" y="168" text-anchor="middle" style="font-size:13px;">Azure OpenAI</text>
-      <text class="node-label sub" x="352" y="186" text-anchor="middle">GPT-4 · function calling</text>
-      <text class="node-label sub" x="352" y="202" text-anchor="middle">grounded · schema-valid</text>
+      <text class="node-label" x="352" y="168" text-anchor="middle">Azure OpenAI</text>
+      <text class="node-label sub" x="352" y="186" text-anchor="middle">function calling</text>
+      <text class="node-label sub" x="352" y="203" text-anchor="middle">grounded · schema-valid</text>
     </g>
-
     <g>
       <rect class="node-box" x="560" y="64" width="160" height="48" rx="8"/>
       <text class="node-label" x="640" y="86" text-anchor="middle">Azure Data Explorer</text>
-      <text class="node-label sub" x="640" y="102" text-anchor="middle">telemetry</text>
+      <text class="node-label sub" x="640" y="103" text-anchor="middle">telemetry</text>
     </g>
     <g>
       <rect class="node-box" x="560" y="150" width="160" height="48" rx="8"/>
-      <text class="node-label" x="640" y="172" text-anchor="middle">Tickets · CRIs</text>
-      <text class="node-label sub" x="640" y="188" text-anchor="middle">the incident system · support</text>
+      <text class="node-label" x="640" y="172" text-anchor="middle">Tickets · reliability</text>
+      <text class="node-label sub" x="640" y="189" text-anchor="middle">incidents · support</text>
     </g>
     <g>
       <rect class="node-box" x="560" y="236" width="160" height="48" rx="8"/>
       <text class="node-label" x="640" y="258" text-anchor="middle">Ownership graph</text>
-      <text class="node-label sub" x="640" y="274" text-anchor="middle">accounts · subs · customer IDs</text>
+      <text class="node-label sub" x="640" y="275" text-anchor="middle">accounts · subs · customers</text>
     </g>
-
     <g>
       <rect class="node-box primary" x="768" y="146" width="112" height="60" rx="8"/>
-      <text class="node-label" x="824" y="171" text-anchor="middle" fill="#23744d">Answer</text>
+      <text class="node-label" x="824" y="171" text-anchor="middle">Answer</text>
       <text class="node-label sub" x="824" y="189" text-anchor="middle">grounded · cited</text>
     </g>
-
-    <!-- query in -->
     <path class="flow-line accent" d="M 180 176 H 248" marker-end="url(#arr1)"/>
-    <!-- agent ⇄ retrieval -->
     <path class="flow-line accent" d="M 352 122 V 100" marker-start="url(#arr1)" marker-end="url(#arr1)"/>
-    <!-- tool calls, request/response -->
     <path class="flow-line" d="M 456 150 H 506 V 88 H 556" marker-start="url(#arr1-muted)" marker-end="url(#arr1-muted)"/>
     <path class="flow-line" d="M 456 174 H 556" marker-start="url(#arr1-muted)" marker-end="url(#arr1-muted)"/>
     <path class="flow-line" d="M 456 202 H 506 V 260 H 556" marker-start="url(#arr1-muted)" marker-end="url(#arr1-muted)"/>
     <text class="diag-note" x="504" y="166" text-anchor="middle">governed KQL</text>
-    <!-- answer out, routed above the data column -->
     <path class="flow-line accent" d="M 452 138 H 530 V 44 H 824 V 142" marker-end="url(#arr1)"/>
     <text class="diag-note g" x="676" y="56" text-anchor="middle">narrative + citations</text>
   </svg>
-</div>
+  <ol class="flow-text" aria-hidden="true">
+    <li><strong>A question</strong> in plain English, from an exec, the on-call, or a PM.</li>
+    <li><strong>LLM agent</strong> on Azure OpenAI with function calling — retrieval is a tool, not a preprocessing step.</li>
+    <li><strong>Governed queries</strong> against telemetry, tickets and reliability summaries, and the ownership graph.</li>
+    <li><strong>A grounded, cited answer</strong> — checked by the eval harness and guardrails before it ships.</li>
+  </ol>
+  </div>
+</figure>

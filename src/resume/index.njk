@@ -2,29 +2,22 @@
 layout: layouts/base.njk
 permalink: /resume/
 title: Résumé — Sarthak Bichhawa
-desc: "The résumé, rendered from the same source of truth as the site — printable directly, with one PDF attached."
+desc: "Résumé of Sarthak Bichhawa, Sr. Data & Applied Scientist at Microsoft Azure Storage — rendered from the same source as the site, with the PDF attached."
 ogImage: /og/resume.png
 ogImageAlt: "Résumé — Sarthak Bichhawa, Sr. Data & Applied Scientist"
 ---
-<section class="section-pad page-head resume-page">
-  <div class="wrap">
-    <nav class="crumb" aria-label="Breadcrumb">‹ <a href="/">The brief</a></nav>
-
-    <div class="reveal">
-      <div class="sec-mark">The résumé — rev {{ facts.meta.resume_rev }}</div>
-      <h1 class="sec-title">One record, <em>one document.</em></h1>
-      <p class="sec-sub">
-        This page renders from the same <a href="/colophon/">source of truth</a> as the
-        rest of the site, so the résumé and the brief cannot contradict each other.
-        Print it directly, or take the PDF.
-      </p>
-    </div>
-
-    <div class="resume-actions reveal">
-      <a href="{{ facts.resume.file }}" target="_blank" rel="noopener" class="btn btn-primary" data-goatcounter-click="resume-page-pdf">↓ Download the PDF</a>
-      <button class="btn btn-mono" type="button" onclick="window.print()">⎙ print this page</button>
-    </div>
-
-    {% include "partials/resume-doc.njk" %}
+<section class="page wrap">
+  <nav class="crumb" aria-label="Breadcrumb"><a href="/">‹ Home</a></nav>
+  <header>
+    <h1 class="page-title">Résumé</h1>
+    <p class="standfirst">The same record as the rest of this site, in one page. Updated {{ facts.meta.resume_rev | humanDate }}.</p>
+  </header>
+  <div class="actions resume-actions">
+    <a href="{{ facts.resume.file }}" class="btn btn-primary" data-goatcounter-click="resume-page-pdf">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download the PDF
+    </a>
+    <button class="btn btn-secondary print-btn" type="button" onclick="window.print()">Print this page</button>
   </div>
+  {% include "partials/resume-doc.njk" %}
 </section>

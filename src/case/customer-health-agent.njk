@@ -1,24 +1,38 @@
 ---
 layout: layouts/case.njk
 permalink: /case/customer-health-agent/
-title: The customer-health agent — from days to under two minutes
-desc: "Case file: a grounded, tool-using LLM agent on Azure OpenAI that turns natural-language questions into governed live Azure Data Explorer queries — cutting customer-health time-to-insight from days to under two minutes."
+title: The customer-health agent — Sarthak Bichhawa
+desc: "A grounded, tool-using LLM agent on Azure OpenAI that turns plain-English questions into governed live Azure Data Explorer queries — cutting customer-health time-to-insight from days to under two minutes."
 ogImage: /og/case-customer-health-agent.png
-ogImageAlt: "Case file — customer-health agent: customer-health time-to-insight, days to under two minutes"
-tag: Exhibit B · GenAI
-lede: "A grounded, tool-using agent on Azure OpenAI that turns plain-English questions about the most critical customers into <strong>governed live Azure Data Explorer queries</strong> with PM-ready narratives — grounded on a curated catalog of 13 metric domains. Time-to-insight went from days to <strong>under two minutes</strong>, and it shipped with the eval harness, guardrails, and PII-aware prompts it needed to survive real enterprise load."
+ogImageAlt: "The customer-health agent — days to under two minutes"
+lede: "A grounded, tool-using agent on Azure OpenAI that turns plain-English questions about the most critical customers into <strong>governed live Azure Data Explorer queries</strong> with review-ready narratives — grounded on a curated catalog of 13 metric domains. Time-to-insight went from days to <strong>under two minutes</strong>, and it shipped with the eval harness, guardrails, and PII-aware prompts it needed to survive real enterprise load."
 role: Technical lead, design & implementation
 stack: Azure OpenAI · Azure Data Explorer · Python
-status: LIVE · in production
-headline: time-to-insight days → <2 min
-next:
-  url: /case/revenue-attribution/
-  title: The attribution recovery
+status: In production
+outcomes:
+  - { v: "days → &lt;2 min", d: "customer-health time-to-insight" }
+  - { v: "13", d: "metric domains in the curated, governed catalog" }
+  - { v: "8+", d: "engineering and support teams on one conversational surface" }
+  - { v: "~180", d: "golden-set cases gating every prompt and model change" }
+quick:
+  - "<strong>Problem:</strong> customer health lived across eight disconnected tools; every executive readout was a three-to-five day manual hunt."
+  - "<strong>Built:</strong> a grounded, tool-using agent on Azure OpenAI that turns plain-English questions into governed live queries across 13 metric domains — with retrieval as a tool the agent decides to call, not a preprocessing step."
+  - "<strong>Result:</strong> days → under 2 minutes to a trustworthy answer; an eval harness, guardrails, and PII-aware prompts gated it before any user saw it."
+toc:
+  - { id: gap, label: The problem }
+  - { id: architecture, label: Architecture }
+  - { id: decision, label: The decision }
+  - { id: prompt, label: System prompt }
+  - { id: kql, label: A query it wrote }
+  - { id: evals, label: Evals }
+  - { id: changed, label: Results }
+  - { id: lessons, label: What I got wrong }
+removed: "the system prompt is reduced to representative structure; customer names and IDs removed; cluster and database names generalized. Eval dimensions and deltas are as-run."
 ---
 
 <section class="case-sec" id="gap">
-  <div class="reveal">
-    <div class="sec-mark">§A — The gap the agent was built to close</div>
+  <div>
+    <h2>The problem</h2>
     <div class="prose">
       <p>
         Customer health inside Azure Storage lived across at least eight
@@ -39,8 +53,8 @@ next:
 </section>
 
 <section class="case-sec" id="architecture">
-  <div class="reveal">
-    <div class="sec-mark">§B — How the system is wired</div>
+  <div>
+    <h2>Architecture, as built</h2>
     <div class="prose">
       <p>
         At the center: an agent on Azure OpenAI with function calling. Around it:
@@ -52,7 +66,7 @@ next:
     </div>
   </div>
   {% include "partials/diagram-mcc.njk" %}
-  <div class="prose reveal">
+  <div class="prose">
     <p>
       The non-obvious design choice was to treat <strong>retrieval as a tool, not a
       preprocessing step</strong>. The agent decides when it needs metric definitions
@@ -64,9 +78,17 @@ next:
   </div>
 </section>
 
+<section class="case-sec decision-sec" id="decision">
+  <h2>The decision: evals before demos</h2>
+  <div class="prose">
+    <p>The agent didn't meet a single real user until a golden-set eval harness, guardrails, and PII-aware prompts existed. Demos earn applause; evals earn production. The harness now gates every prompt and model change the way CI gates code.</p>
+    <p>What it cost was weeks before anyone outside the team saw it work. What it produced is a regression — citation validity, on 12% of cases — caught in under ten minutes instead of in front of a customer. Ask me about what the eval harness blocked from shipping.</p>
+  </div>
+</section>
+
 <section class="case-sec" id="prompt">
-  <div class="reveal">
-    <div class="sec-mark">§C — The system prompt</div>
+  <div>
+    <h2>The system prompt</h2>
     <div class="prose">
       <p>
         Every grounded behavior starts here. The shape of this prompt went
@@ -75,8 +97,8 @@ next:
       </p>
     </div>
   </div>
-  <div class="code-panel panel reveal">
-    <div class="cp-head"><span>// system-prompt.v7</span><span class="g">redacted · representative</span></div>
+  <div class="code-panel">
+    <div class="cp-head"><span>system-prompt.v7</span><span class="g">redacted · representative</span></div>
     <pre><code><span class="cm"># role</span>
 You are a customer-health analyst for Azure Storage. You answer
 questions by calling tools against live data. <span class="hl">You do not guess.</span>
@@ -97,7 +119,7 @@ questions by calling tools against live data. <span class="hl">You do not guess.
 Return a JSON object with: summary, findings[] (claim, evidence),
 confidence (low|med|high), refusal (bool, reason).</code></pre>
   </div>
-  <div class="prose reveal">
+  <div class="prose">
     <p>
       Two lines did disproportionate work. <em>"If a tool returns zero rows, report
       that"</em> killed a whole class of "I found no issues" hallucinations.
@@ -109,8 +131,8 @@ confidence (low|med|high), refusal (bool, reason).</code></pre>
 </section>
 
 <section class="case-sec" id="kql">
-  <div class="reveal">
-    <div class="sec-mark">§D — A query the agent wrote</div>
+  <div>
+    <h2>A query the agent wrote</h2>
     <div class="prose">
       <p>
         For the long tail of questions no pre-built tool covered, the agent could
@@ -119,10 +141,10 @@ confidence (low|med|high), refusal (bool, reason).</code></pre>
       </p>
     </div>
   </div>
-  <div class="code-panel panel reveal">
-    <div class="cp-head"><span>// agent-generated KQL</span><span class="g">after grounding &amp; validation</span></div>
-    <pre><code><span class="cm">// resolved from: "APAC customers >10TB w/ availability-loss regressions this Q"</span>
-<span class="cm">// agent call: exec_kql(cluster="[analytics-cluster]", db="…")</span>
+  <div class="code-panel">
+    <div class="cp-head"><span>agent-generated KQL</span><span class="g">after grounding &amp; validation</span></div>
+    <pre><code><span class="cm">resolved from: "APAC customers >10TB w/ availability-loss regressions this Q"</span>
+<span class="cm">agent call: exec_kql(cluster="[analytics-cluster]", db="…")</span>
 StorageAccountMetrics
 | <span class="kw">where</span> TimeGenerated <span class="kw">between</span> (startofquarter(now()) .. now())
 | <span class="kw">where</span> GeoRegion == "APAC"
@@ -136,7 +158,7 @@ StorageAccountMetrics
 | <span class="kw">order by</span> WowLossMin desc
 | <span class="kw">take</span> 25</code></pre>
   </div>
-  <div class="prose reveal">
+  <div class="prose">
     <p>
       The user never saw the query first — they saw a paragraph with five
       customer names, then a link to the query, the row count, and the raw
@@ -147,8 +169,8 @@ StorageAccountMetrics
 </section>
 
 <section class="case-sec" id="evals">
-  <div class="reveal">
-    <div class="sec-mark">§E — The eval harness came before the users</div>
+  <div>
+    <h2>The eval harness</h2>
     <div class="prose">
       <p>
         A golden set of ~180 historical exec questions, each labeled with its
@@ -157,8 +179,8 @@ StorageAccountMetrics
       </p>
     </div>
   </div>
-  <div class="table-panel panel reveal">
-    <div class="cp-head"><span>// eval run — prompt v6 → v7</span><span class="g">180 cases · abridged</span></div>
+  <div class="table-panel">
+    <div class="cp-head"><span>eval run — prompt v6 → v7</span><span class="g">180 cases · abridged</span></div>
     <div class="table-scroll">
       <table class="data-table">
         <thead><tr><th>Dimension</th><th>v6</th><th>v7</th><th>Delta</th></tr></thead>
@@ -172,9 +194,9 @@ StorageAccountMetrics
         </tbody>
       </table>
     </div>
-    <div class="board-foot">// VERDICT: <span class="g">block ship</span> — citation validity regressed on 12% of cases. investigate tone-tweak before merge.</div>
+    <div class="panel-foot">Verdict: <span class="g">block ship</span> — citation validity regressed on 12% of cases. investigate tone-tweak before merge.</div>
   </div>
-  <div class="prose reveal">
+  <div class="prose">
     <p>
       That regression is real: a prompt tweak that improved tone silently
       dropped citations on 12% of cases — the kind of thing no qualitative
@@ -185,8 +207,8 @@ StorageAccountMetrics
 </section>
 
 <section class="case-sec" id="changed">
-  <div class="reveal">
-    <div class="sec-mark">§F — What it changed</div>
+  <div>
+    <h2>Results</h2>
     <div class="prose">
       <p>
         The agent's own number is <strong>speed to trustworthy insight</strong>: questions
@@ -196,13 +218,7 @@ StorageAccountMetrics
       </p>
     </div>
   </div>
-  <div class="metric-row panel reveal">
-    <div class="m"><span class="v">days → &lt;2 min</span><span class="d">customer-health time-to-insight — the agent's headline</span></div>
-    <div class="m"><span class="v">13</span><span class="d">metric domains in the curated, governed catalog</span></div>
-    <div class="m"><span class="v">8+</span><span class="d">teams unified on one conversational surface</span></div>
-    <div class="m"><span class="v">~180</span><span class="d">golden-set cases gating every prompt &amp; model change</span></div>
-  </div>
-  <div class="prose reveal">
+  <div class="prose">
     <p>
       The agent serves a broader <strong>executive health-review program</strong> I drove across those
       same teams — a unified customer-health view that cut executive readiness
@@ -216,26 +232,11 @@ StorageAccountMetrics
   </div>
 </section>
 
-<section class="case-sec" id="errata">
-  <div class="errata panel reveal">
-    <div class="er-head">Errata — corrections this page has shipped</div>
-    <ul>
-      <li>
-        <span class="ed">2026-07-10</span>
-        <span><strong>Attribution corrected.</strong> An earlier revision of this page headlined the ~50% aging-issue reduction and ~16% time-to-mitigate improvement as the agent's outcomes. They belong to the executive health-review program the agent serves. The agent's own number — days to under two minutes — was always the honest headline; now it's the one on the page.</span>
-      </li>
-      <li>
-        <span class="ed">2026-06</span>
-        <span><strong>PII and authorization were underscoped by at least 2×.</strong> Scrubbing middleware, per-user permission scoping, and the audit trail were specced in week six; they belonged in week one. The longer argument is in <a href="/writing/shipping-genai-enterprise.html">the field note</a>.</span>
-      </li>
-    </ul>
-  </div>
-
-  <div class="redaction reveal">
-    <span class="rx-head">Redaction record</span>
-    Published against the written checklist: system prompt reduced to representative
-    structure · customer names and customer IDs removed · cluster and database names
-    generalized · eval dimensions and deltas preserved as-run.
-    <span class="g">Preserved: the design decisions, the regression, and the verdict.</span>
-  </div>
+<section class="case-sec" id="lessons">
+  <h2>What I got wrong</h2>
+  <ul class="lessons">
+    <li><span class="ed">2026-07</span><span><strong>I once credited the program's outcomes to the agent.</strong> An earlier revision of this page headlined the ~50% aging-issue reduction and ~16% faster mitigation as the agent's numbers. They belong to the executive health-review program the agent serves. The agent's own number — days to under two minutes — was always the honest headline.</span></li>
+    <li><span class="ed">2026-06</span><span><strong>PII and authorization were underscoped by at least 2×.</strong> Scrubbing middleware, per-user permission scoping, and the audit trail were specced in week six; they belonged in week one. The longer argument is in <a href="/writing/shipping-genai-enterprise.html">the essay</a>.</span></li>
+  </ul>
 </section>
+

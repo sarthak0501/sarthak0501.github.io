@@ -1,148 +1,99 @@
 ---
 layout: layouts/base.njk
 permalink: /receipts/
-title: The receipts ledger — Sarthak Bichhawa
-desc: "Every claim this site makes, checked against the résumé revision it derives from. A build-time linter fails the deploy if the two ever disagree."
+noindex: true
+title: Sources and corrections — Sarthak Bichhawa
+desc: "Where every number on this site comes from, and what it was corrected from."
 ogImage: /og/receipts.png
-ogImageAlt: "The receipts ledger — every claim checked against its source"
+ogImageAlt: "Sources and corrections"
 ---
-<section class="section-pad page-head">
-  <div class="wrap">
-    <nav class="crumb" aria-label="Breadcrumb">‹ <a href="/">The brief</a></nav>
+<section class="page wrap">
+  <nav class="crumb" aria-label="Breadcrumb"><a href="/colophon/">‹ How this site is built</a></nav>
+  <header class="list-head">
+    <h1 class="page-title">Sources and corrections</h1>
+    <p class="standfirst">
+      Every number on this site renders from one source file, synced to the résumé dated
+      <strong>{{ facts.meta.resume_rev }}</strong>. A build check refuses any page that contradicts it.
+      Below: the sources, and the corrections made along the way.
+    </p>
+  </header>
 
-    <div class="reveal">
-      <div class="sec-mark">The receipts ledger</div>
-      <h1 class="sec-title">Every claim, <em>audited in public.</em></h1>
-      <p class="sec-sub">
-        Every number on this site renders from one source file, synced to résumé
-        revision <strong>{{ facts.meta.resume_rev }}</strong>. A linter runs on every deploy and
-        <strong>fails the build</strong> if any page contradicts the source — including claims
-        this site used to make and has since corrected. This page is the audit trail.
-      </p>
-    </div>
-
-    <div class="table-panel panel reveal">
-      <div class="cp-head"><span>// headline receipts</span><span class="g">vs résumé rev {{ facts.meta.resume_rev }}</span></div>
-      <div class="table-scroll">
-        <table class="data-table">
-          <thead><tr><th>Claim</th><th>Stated as</th><th>Evidence on site</th><th>Status</th></tr></thead>
-          <tbody>
-            {%- for r in facts.receipts %}
-            <tr>
-              <td>{{ r.label }}</td>
-              <td class="num">{{ r.value }}</td>
-              <td class="mono"><a href="/{{ r.anchor }}">{{ r.anchor }}</a></td>
-              <td><span class="chip pass"><i></i>PASS</span></td>
-            </tr>
-            {%- endfor %}
-          </tbody>
-        </table>
+  <div class="case-body">
+    <section class="case-sec" id="headline">
+      <h2>Headline numbers</h2>
+      <div class="table-panel">
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead><tr><th>Claim</th><th>Stated as</th><th>Where it's explained</th></tr></thead>
+            <tbody>
+              {%- for r in facts.receipts %}
+              <tr>
+                <td>{{ r.label }}</td>
+                <td class="num">{{ r.value }}</td>
+                <td class="mono"><a href="{{ r.anchor }}">{{ r.anchor }}</a></td>
+              </tr>
+              {%- endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="scroll-hint">Swipe sideways to see the whole table.</div>
       </div>
-    </div>
+    </section>
 
-    <div class="table-panel panel reveal">
-      <div class="cp-head"><span>// systems ledger proofs</span><span class="g">SYS-01 … SYS-0{{ facts.systems.length }}</span></div>
-      <div class="table-scroll">
-        <table class="data-table">
-          <thead><tr><th>ID</th><th>System</th><th>Proof on record</th><th>Status</th></tr></thead>
-          <tbody>
-            {%- for s in facts.systems %}
-            <tr>
-              <td class="mono dim">{{ s.id }}</td>
-              <td><a href="{{ s.link }}">{{ s.name }}</a></td>
-              <td class="num">{{ s.proof }}</td>
-              <td><span class="chip pass"><i></i>PASS</span></td>
-            </tr>
-            {%- endfor %}
-          </tbody>
-        </table>
+    <section class="case-sec" id="systems">
+      <h2>Systems and the number each one moved</h2>
+      <div class="table-panel">
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead><tr><th>ID</th><th>System</th><th>Result on record</th></tr></thead>
+            <tbody>
+              {%- for s in facts.systems %}
+              <tr>
+                <td class="mono dim">{{ s.id }}</td>
+                <td><a href="{{ s.link }}">{{ s.name }}</a></td>
+                <td class="num">{{ s.proof }}</td>
+              </tr>
+              {%- endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="scroll-hint">Swipe sideways to see the whole table.</div>
       </div>
-    </div>
+    </section>
 
-    <div class="table-panel panel reveal">
-      <div class="cp-head"><span>// career-ledger numbers</span><span class="g">one per era</span></div>
-      <div class="table-scroll">
-        <table class="data-table">
-          <thead><tr><th>Years</th><th>Role</th><th>The number</th><th>Status</th></tr></thead>
-          <tbody>
-            {%- for row in facts.career_ledger %}
-            <tr>
-              <td class="mono dim">{{ row.years }}</td>
-              <td>{{ row.role }}</td>
-              <td class="num">{{ row.number }}</td>
-              <td><span class="chip pass"><i></i>PASS</span></td>
-            </tr>
-            {%- endfor %}
-          </tbody>
-        </table>
+    <section class="case-sec" id="corrections">
+      <h2>Corrections</h2>
+      <div class="prose"><p>Earlier revisions of this site stated some of these numbers differently. The build now refuses the superseded forms. Superseded strings are written with numeric entities below so that the check can keep forbidding them while this page names them.</p></div>
+      <div class="table-panel" style="margin-top:16px;">
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead><tr><th>Previously stated</th><th>Now stated</th><th>Since</th></tr></thead>
+            <tbody>
+              <tr><td class="dim">"&#60;0.5&#37; variance vs Finance"</td><td class="num">&lt;1% variance vs Finance</td><td class="mono dim">2026-07-09</td></tr>
+              <tr><td class="dim">"4&#45;org severity-2 command"</td><td class="num">4-team cross-org severity-2 command</td><td class="mono dim">2026-07-09</td></tr>
+              <tr><td class="dim">Program outcomes credited to the customer-health agent</td><td class="num">Agent: days → &lt;2 min · program: ~50% fewer aging issues, ~16% faster mitigation</td><td class="mono dim">2026-07-10</td></tr>
+              <tr><td class="dim">"7&#54; tests · 1&#55; PRs · ~4&#215; partner coverage"</td><td class="num">Counts dropped as stale · ~80–90% more partner accounts tracked</td><td class="mono dim">2026-08-21</td></tr>
+              <tr><td class="dim">"4&#55; datasets profiled hourly"</td><td class="num">400+ production datasets profiled hourly</td><td class="mono dim">2026-08-21</td></tr>
+              <tr><td class="dim">"MCP tool servers &#215;2"</td><td class="num">Four reusable MCP servers, one of which lets Copilot query any live operations dashboard</td><td class="mono dim">2026-08-21</td></tr>
+              <tr><td class="dim">"5&#43; downstream consumers" for the account embeddings</td><td class="num">Productionizing with a first consumer — restated downward to match the résumé</td><td class="mono dim">2026-08-21</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="scroll-hint">Swipe sideways to see the whole table.</div>
       </div>
-    </div>
+    </section>
 
-    <div class="table-panel panel reveal">
-      <div class="cp-head"><span>// corrections on the record</span><span class="g">what the linter now forbids</span></div>
-      <div class="table-scroll">
-        <table class="data-table">
-          <thead><tr><th>Superseded claim</th><th>Corrected to</th><th>Since</th><th>Status</th></tr></thead>
-          <tbody>
-            {#- superseded claims are written with numeric entities so the
-                receipts linter (which forbids the literal strings) can keep
-                forbidding them while this table still names them. -#}
-            <tr>
-              <td class="mono dim">"&#60;0.5&#37; variance vs Finance"</td>
-              <td class="num">&lt;1% variance vs Finance</td>
-              <td class="mono dim">rev 2026-07-09</td>
-              <td><span class="chip warn"><i></i>FORBIDDEN</span></td>
-            </tr>
-            <tr>
-              <td class="mono dim">"4&#45;org severity-2 command"</td>
-              <td class="num">4-team cross-org severity-2 command</td>
-              <td class="mono dim">rev 2026-07-09</td>
-              <td><span class="chip warn"><i></i>FORBIDDEN</span></td>
-            </tr>
-            <tr>
-              <td class="mono dim">program outcomes credited to the customer-health agent</td>
-              <td class="num">agent: days → &lt;2 min · program: ~50% aging, ~16% mitigation</td>
-              <td class="mono dim">2026-07-10</td>
-              <td><span class="chip warn"><i></i>CORRECTED</span></td>
-            </tr>
-            <tr>
-              <td class="mono dim">"hourly profiling over 4&#55; datasets"</td>
-              <td class="num">400+ production datasets profiled hourly</td>
-              <td class="mono dim">rev {{ facts.meta.resume_rev }}</td>
-              <td><span class="chip warn"><i></i>CORRECTED</span></td>
-            </tr>
-            <tr>
-              <td class="mono dim">"MCP tool servers &#215;2"</td>
-              <td class="num">four reusable MCP tool servers</td>
-              <td class="mono dim">rev {{ facts.meta.resume_rev }}</td>
-              <td><span class="chip warn"><i></i>CORRECTED</span></td>
-            </tr>
-            <tr>
-              <td class="mono dim">"&#53;+ downstream consumers" (account embeddings)</td>
-              <td class="num">productionizing with a first consumer</td>
-              <td class="mono dim">rev {{ facts.meta.resume_rev }}</td>
-              <td><span class="chip warn"><i></i>CORRECTED DOWN</span></td>
-            </tr>
-            <tr>
-              <td class="mono dim">"7&#54; tests" · "1&#55; PRs" · "~4&#215; partner coverage"</td>
-              <td class="num">dropped — counts went stale; coverage restated as ~80–90% more partner accounts</td>
-              <td class="mono dim">rev {{ facts.meta.resume_rev }}</td>
-              <td><span class="chip warn"><i></i>FORBIDDEN</span></td>
-            </tr>
-          </tbody>
-        </table>
+    <section class="case-sec" id="how">
+      <h2>How this works</h2>
+      <div class="prose">
+        <p>
+          Every number, date, and link renders from <code>facts.yaml</code>, and
+          <code>scripts/receipts-lint.mjs</code> scans the built HTML on every deploy: required claims must
+          appear, superseded claims must not, internal jargon fails the build, and every internal link must
+          resolve. The mechanics are on the <a href="/colophon/">colophon</a>; the check itself is
+          <a href="{{ facts.identity.github }}/sarthak0501.github.io">in the repository</a>.
+        </p>
       </div>
-      <div class="board-foot">// stale claims aren't deleted — they're listed, dated, and <span class="g">made impossible to reintroduce.</span> one of them was corrected <em>downward</em>. that's the point.</div>
-    </div>
-
-    <div class="prose reveal" style="margin-top:2rem;">
-      <p>
-        How this works: every number, date, and link on the site renders from
-        <code>facts.yaml</code>, and <code>scripts/receipts-lint.mjs</code> scans the built HTML on
-        every deploy — required claims must appear, superseded claims must not.
-        The mechanics are on the <a href="/colophon/">colophon</a>; the enforcement is in
-        <a href="{{ facts.identity.github }}/sarthak0501.github.io" target="_blank" rel="noopener">the repo</a>, in public.
-      </p>
-    </div>
+    </section>
   </div>
 </section>

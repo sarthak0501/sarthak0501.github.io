@@ -1,88 +1,62 @@
-<div class="diagram-wrap panel reveal">
-  <div class="dw-label">// architecture — as built</div>
-  <svg class="diagram" viewBox="0 0 960 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Account2Vec architecture">
+<figure class="figure">
+  <figcaption class="figure-head">Architecture, as built</figcaption>
+  <div class="figure-body">
+  <svg class="diagram" viewBox="0 0 960 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="dg-a2v-t dg-a2v-d">
+    <title id="dg-a2v-t">Account behavior embeddings architecture</title>
+    <desc id="dg-a2v-d">Storage-service telemetry (about 100 raw metrics per account) becomes a versioned feature matrix of 40 to 50 rolling features. An autoencoder trained at fleet scale produces one embedding per account, pooled to subscription and customer tiers. One shared representation feeds similarity search, anomaly detection, forecasting, LLM reasoning, and the customer-health agents, with drift, coverage, and staleness monitoring around all of it.</desc>
     <defs>
-      <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-        <path d="M 0 0 L 10 5 L 0 10 z" fill="#23744d"/>
-      </marker>
-      <marker id="arr2-muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-        <path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(31,43,37,0.45)"/>
-      </marker>
+      <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z"/></marker>
+      <marker id="arr2-muted" class="muted" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z"/></marker>
     </defs>
-
     <rect class="wrap-rect" x="14" y="30" width="932" height="278" rx="10"/>
     <text class="wrap-label" x="30" y="22">DRIFT · COVERAGE · STALENESS MONITORING</text>
-
     <g>
       <rect class="node-box" x="36" y="128" width="140" height="80" rx="8"/>
       <text class="node-label tag" x="106" y="150" text-anchor="middle">INPUT</text>
-      <text class="node-label" x="106" y="168" text-anchor="middle">storage-service telemetry</text>
-      <text class="node-label sub" x="106" y="184" text-anchor="middle">~100 raw metrics</text>
-      <text class="node-label sub" x="106" y="198" text-anchor="middle">per account</text>
+      <text class="node-label" x="106" y="169" text-anchor="middle">Storage telemetry</text>
+      <text class="node-label sub" x="106" y="185" text-anchor="middle">~100 raw metrics</text>
+      <text class="node-label sub" x="106" y="200" text-anchor="middle">per account</text>
     </g>
-
     <g>
       <rect class="node-box" x="216" y="128" width="164" height="80" rx="8"/>
       <text class="node-label tag" x="298" y="150" text-anchor="middle">PIPELINE</text>
-      <text class="node-label" x="298" y="168" text-anchor="middle">AccountFeatureMatrix</text>
-      <text class="node-label sub" x="298" y="184" text-anchor="middle">40–50 rolling features</text>
-      <text class="node-label sub" x="298" y="198" text-anchor="middle">txn · capacity · auth · latency</text>
+      <text class="node-label" x="298" y="169" text-anchor="middle">Feature matrix</text>
+      <text class="node-label sub" x="298" y="185" text-anchor="middle">40–50 rolling features</text>
+      <text class="node-label sub" x="298" y="200" text-anchor="middle">txn · capacity · auth · latency</text>
     </g>
-
     <g>
       <rect class="node-box primary" x="420" y="118" width="160" height="100" rx="10"/>
       <text class="node-label tag" x="500" y="140" text-anchor="middle">MODEL</text>
-      <text class="node-label" x="500" y="160" text-anchor="middle" style="font-size:13px;">Autoencoder</text>
+      <text class="node-label" x="500" y="160" text-anchor="middle">Autoencoder</text>
       <text class="node-label sub" x="500" y="178" text-anchor="middle">PyTorch · Azure Synapse</text>
       <text class="node-label sub" x="500" y="194" text-anchor="middle">fleet-scale training</text>
-      <text class="node-label sub" x="500" y="208" text-anchor="middle">M+ accounts</text>
+      <text class="node-label sub" x="500" y="209" text-anchor="middle">millions of accounts</text>
     </g>
-
     <g>
       <rect class="node-box" x="620" y="64" width="152" height="48" rx="8"/>
       <text class="node-label" x="696" y="86" text-anchor="middle">Account2Vec</text>
-      <text class="node-label sub" x="696" y="102" text-anchor="middle">per storage account</text>
+      <text class="node-label sub" x="696" y="103" text-anchor="middle">per storage account</text>
     </g>
     <g>
       <rect class="node-box" x="620" y="144" width="152" height="48" rx="8"/>
       <text class="node-label" x="696" y="166" text-anchor="middle">Subscription2Vec</text>
-      <text class="node-label sub" x="696" y="182" text-anchor="middle">per subscription</text>
+      <text class="node-label sub" x="696" y="183" text-anchor="middle">per subscription</text>
     </g>
     <g>
       <rect class="node-box" x="620" y="224" width="152" height="48" rx="8"/>
       <text class="node-label" x="696" y="246" text-anchor="middle">Customer2Vec</text>
-      <text class="node-label sub" x="696" y="262" text-anchor="middle">per customer</text>
+      <text class="node-label sub" x="696" y="263" text-anchor="middle">per customer</text>
     </g>
-
-    <g>
-      <rect class="node-box" x="814" y="58" width="126" height="38" rx="6"/>
-      <text class="node-label" x="877" y="82" text-anchor="middle">Similarity</text>
-    </g>
-    <g>
-      <rect class="node-box" x="814" y="108" width="126" height="38" rx="6"/>
-      <text class="node-label" x="877" y="132" text-anchor="middle">Anomaly</text>
-    </g>
-    <g>
-      <rect class="node-box" x="814" y="158" width="126" height="38" rx="6"/>
-      <text class="node-label" x="877" y="182" text-anchor="middle">Forecasting</text>
-    </g>
-    <g>
-      <rect class="node-box" x="814" y="208" width="126" height="38" rx="6"/>
-      <text class="node-label" x="877" y="232" text-anchor="middle">LLM reasoning</text>
-    </g>
-    <g>
-      <rect class="node-box" x="814" y="258" width="126" height="38" rx="6"/>
-      <text class="node-label" x="877" y="282" text-anchor="middle">customer-health agents</text>
-    </g>
-
-    <!-- telemetry → features → model -->
+    <g><rect class="node-box" x="814" y="58" width="126" height="38" rx="6"/><text class="node-label" x="877" y="82" text-anchor="middle">Similarity</text></g>
+    <g><rect class="node-box" x="814" y="108" width="126" height="38" rx="6"/><text class="node-label" x="877" y="132" text-anchor="middle">Anomaly</text></g>
+    <g><rect class="node-box" x="814" y="158" width="126" height="38" rx="6"/><text class="node-label" x="877" y="182" text-anchor="middle">Forecasting</text></g>
+    <g><rect class="node-box" x="814" y="208" width="126" height="38" rx="6"/><text class="node-label" x="877" y="232" text-anchor="middle">LLM reasoning</text></g>
+    <g><rect class="node-box" x="814" y="258" width="126" height="38" rx="6"/><text class="node-label" x="877" y="282" text-anchor="middle">Health agents</text></g>
     <path class="flow-line" d="M 176 168 H 212" marker-end="url(#arr2-muted)"/>
     <path class="flow-line" d="M 380 168 H 416" marker-end="url(#arr2-muted)"/>
-    <!-- model → three embedding tiers -->
     <path class="flow-line accent" d="M 580 142 H 600 V 88 H 616" marker-end="url(#arr2)"/>
     <path class="flow-line accent" d="M 580 168 H 616" marker-end="url(#arr2)"/>
     <path class="flow-line accent" d="M 580 194 H 600 V 248 H 616" marker-end="url(#arr2)"/>
-    <!-- one shared representation: bus rail feeding every consumer -->
     <path class="flow-line" d="M 772 88 H 792"/>
     <path class="flow-line" d="M 772 168 H 792"/>
     <path class="flow-line" d="M 772 248 H 792"/>
@@ -93,4 +67,12 @@
     <path class="flow-line" d="M 792 227 H 810" marker-end="url(#arr2-muted)"/>
     <path class="flow-line" d="M 792 277 H 810" marker-end="url(#arr2-muted)"/>
   </svg>
-</div>
+  <ol class="flow-text" aria-hidden="true">
+    <li><strong>Storage telemetry</strong> — ~100 raw metrics per account.</li>
+    <li><strong>Feature matrix</strong> — 40–50 rolling features (transactions, capacity, auth, latency), versioned and governed.</li>
+    <li><strong>Autoencoder</strong> — PyTorch on Azure Synapse, trained across millions of accounts.</li>
+    <li><strong>Three tiers</strong> — one embedding per account, pooled to subscription and customer.</li>
+    <li><strong>Consumers</strong> — similarity, anomaly detection, forecasting, LLM reasoning, the customer-health agents.</li>
+  </ol>
+  </div>
+</figure>

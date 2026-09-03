@@ -1,102 +1,104 @@
 ---
 layout: layouts/base.njk
 permalink: /colophon/
-title: Colophon — how this site is built
-desc: "How the hiring brief is built: Eleventy, one facts.yaml source of truth, a receipts linter that fails the deploy on unsourced claims, self-hosted type, and PDFs printed from the site itself."
+title: How this site is built — Sarthak Bichhawa
+desc: "Eleventy, one source-of-truth file, a build check that refuses unsourced claims, self-hosted type, and a PDF printed from the same record."
 ogImage: /og/colophon.png
-ogImageAlt: "Colophon — how the hiring brief is built and enforced"
+ogImageAlt: "How this site is built"
 ---
-<section class="section-pad page-head">
-  <div class="wrap-narrow">
-    <nav class="crumb" aria-label="Breadcrumb">‹ <a href="/">The brief</a></nav>
+<section class="page wrap-narrow">
+  <nav class="crumb" aria-label="Breadcrumb"><a href="/">‹ Home</a></nav>
+  <header>
+    <h1 class="page-title">How this site is built</h1>
+    <p class="standfirst">A site that shows numbers should be held to the same standard as the systems it describes. This page is how it is.</p>
+  </header>
 
-    <div class="reveal">
-      <div class="sec-mark">Colophon</div>
-      <h1 class="sec-title">Built like the systems <em>it describes.</em></h1>
-      <p class="sec-sub">
-        A site that argues "claims up front, receipts attached" should hold
-        itself to the same contract. This page is how it does.
-      </p>
-    </div>
-
-    <div class="prose reveal">
+  <div class="case-body">
+    <section class="case-sec">
       <h2>One source of truth</h2>
-      <p>
-        Every number, date, title, and link on this site renders from a single
-        file — <code>src/_data/facts.yaml</code> — synced to résumé revision
-        <strong>{{ facts.meta.resume_rev }}</strong>. Pages are <a href="https://www.11ty.dev/" target="_blank" rel="noopener">Eleventy&nbsp;3</a>
-        + Nunjucks templates that interpolate from it; if a claim isn't in the
-        file, it doesn't ship.
-      </p>
+      <div class="prose">
+        <p>
+          Every number, date, title, and link on this site renders from a single file —
+          <code>src/_data/facts.yaml</code> — synced to the résumé dated <strong>{{ facts.meta.resume_rev }}</strong>.
+          Pages are <a href="https://www.11ty.dev/">Eleventy 3</a> + Nunjucks templates that interpolate
+          from it; if a claim isn't in the file, it doesn't ship.
+        </p>
+      </div>
+    </section>
 
-      <h2>The linter that fails the deploy</h2>
-      <p>
-        <code>scripts/receipts-lint.mjs</code> runs in CI on every push. It scans the
-        built HTML for four kinds of problems: <strong>required claims that went
-        missing</strong> (the headline receipts must appear on the homepage, verbatim),
-        <strong>superseded claims that crept back in</strong> — figures from older résumé
-        revisions are hard-forbidden by pattern — <strong>internal jargon</strong> that an
-        external reader couldn't evaluate, and <strong>internal links that point at
-        pages the build never emitted</strong>. A contradiction between this
-        site and the résumé is a broken build, not an embarrassment someone
-        eventually notices. The audit trail lives on
-        <a href="/receipts/">the receipts ledger</a>.
-      </p>
+    <section class="case-sec">
+      <h2>A build check that refuses the deploy</h2>
+      <div class="prose">
+        <p>
+          <code>scripts/receipts-lint.mjs</code> runs in CI on every push. It scans the built HTML for four
+          kinds of problems: required claims that went missing, superseded figures from older résumé
+          revisions that crept back in, internal jargon an outside reader couldn't evaluate, and internal
+          links that point at pages the build never emitted. A contradiction between this site and the
+          résumé is a broken build, not an embarrassment somebody eventually notices. The sources and
+          every correction made along the way are listed on <a href="/receipts/">sources and corrections</a>.
+        </p>
+      </div>
+    </section>
 
+    <section class="case-sec">
       <h2>No internal jargon</h2>
-      <p>
-        Everything here is described by what it does, never by its internal
-        codename. A reader outside Microsoft can't evaluate an acronym, and a
-        résumé that needs a glossary isn't evidence — it's a membership test.
-        The translation table lives with the résumé source, and the linter
-        enforces it: an internal name in the built HTML fails the deploy.
-      </p>
+      <div class="prose">
+        <p>
+          Everything here is described by what it does, never by its internal codename. A reader outside
+          Microsoft can't evaluate an acronym, and a write-up that needs a glossary isn't evidence — it's a
+          membership test. The translation table lives with the résumé source, and the build check enforces
+          it: an internal name in the built HTML fails the deploy.
+        </p>
+      </div>
+    </section>
 
+    <section class="case-sec">
       <h2>One résumé</h2>
-      <p>
-        There is exactly one résumé — no dossier of tailored cuts to choose
-        from. The PDF is the canonical authored document, hosted at the same
-        revision this site renders from, and the
-        <a href="/resume/">/resume/</a> page is the same record with a print
-        stylesheet, so what you print and what you download can't disagree.
-      </p>
+      <div class="prose">
+        <p>
+          There is exactly one résumé. The PDF is the canonical authored document, hosted at the same
+          revision this site renders from, and the <a href="/resume/">/resume/</a> page is the same record
+          with a print stylesheet, so what you print and what you download can't disagree.
+        </p>
+      </div>
+    </section>
 
-      <h2>Freshness is emitted, not maintained</h2>
-      <p>
-        The revision stamp and date in the footer — <strong>rev {{ build.rev }} ·
-        {{ build.updated }}</strong> — derive from git at build time. They cannot go
-        stale, because nobody types them.
-      </p>
-
+    <section class="case-sec">
       <h2>The stack, deliberately small</h2>
-      <ul>
-        <li><strong>Eleventy 3 + Nunjucks</strong>, built and deployed by GitHub Actions to GitHub Pages.</li>
-        <li><strong>Self-hosted type</strong>, latin subsets only: <a href="https://fonts.google.com/specimen/Fraunces" target="_blank" rel="noopener">Fraunces</a> for display, Inter for body, IBM Plex Mono for the chrome. No font CDN, no third-party requests on the critical path.</li>
-        <li><strong>Vanilla JavaScript</strong> — one small file: mobile nav, reveal-on-scroll, copy-summary, and the run-trace viewer. Every page works with JavaScript disabled.</li>
-        <li><strong>Motion contract:</strong> nothing over 200ms, and <code>prefers-reduced-motion</code> disables all of it.</li>
-        <li><strong>Analytics:</strong> <a href="https://www.goatcounter.com/" target="_blank" rel="noopener">GoatCounter</a> — no cookies, no fingerprinting, counts only.</li>
-        <li><strong>Per-page OG images</strong> rendered from SVG templates by a build script, committed with the site.</li>
-      </ul>
+      <div class="prose">
+        <ul>
+          <li><strong>Eleventy 3 + Nunjucks</strong>, built and deployed by GitHub Actions to GitHub Pages.</li>
+          <li><strong>Self-hosted type</strong>, latin subsets only: <a href="https://fonts.google.com/specimen/Fraunces">Fraunces</a> for display, Inter for everything else, IBM Plex Mono for code. No font CDN.</li>
+          <li><strong>Plain CSS and one small script</strong> — the mobile menu, the copy button, and the run-trace viewer. Every page works with JavaScript disabled; nothing animates on load.</li>
+          <li><strong>Analytics:</strong> <a href="https://www.goatcounter.com/">GoatCounter</a> — no cookies, no fingerprinting, counts only.</li>
+          <li><strong>Per-page preview images</strong> rendered by a build script from the same templates, committed with the site.</li>
+        </ul>
+      </div>
+    </section>
 
-      <h2>What gets redacted, and how</h2>
-      <p>
-        Every case file is published against a written redaction checklist:
-        customer and account identifiers removed, internal system names
-        generalized, absolute volumes stated as orders of magnitude or
-        multiples of baseline — while preserving the decision structure, the
-        trade-offs, and the numbers already on the public record. Each case
-        file carries its own redaction record and an <strong>errata section</strong>: when
-        this site corrects itself, the correction is dated and left visible.
-      </p>
+    <section class="case-sec">
+      <h2>What gets removed before publishing</h2>
+      <div class="prose">
+        <p>
+          Every write-up is published against a written checklist: customer and account identifiers removed,
+          internal system names generalized, absolute volumes stated as orders of magnitude or multiples of
+          baseline — while preserving the decision structure, the trade-offs, and the numbers already on the
+          public record. Where a write-up has corrected itself, the correction is dated and left visible under
+          "What I got wrong".
+        </p>
+      </div>
+    </section>
 
-      <h2>Lineage</h2>
-      <p>
-        This is the third edition of "The Hiring Brief" — same thesis, quieter
-        evidence, now with a dark counterpart that reskins from the token file
-        alone. Three earlier designs shipped and were retired for arguing
-        louder than they proved. The repo history keeps them honest:
-        <a href="{{ facts.identity.github }}/sarthak0501.github.io" target="_blank" rel="noopener">github.com/sarthak0501/sarthak0501.github.io</a>.
-      </p>
-    </div>
+    <section class="case-sec">
+      <h2>History</h2>
+      <div class="prose">
+        <p>
+          This is the fourth edition. Earlier ones argued louder than they proved; this one states and
+          shows. The repository keeps them honest:
+          <a href="{{ facts.identity.github }}/sarthak0501.github.io">github.com/sarthak0501/sarthak0501.github.io</a>.
+          Built at revision <code>{{ build.rev }}</code>, {{ build.updated }}.
+        </p>
+      </div>
+    </section>
   </div>
 </section>

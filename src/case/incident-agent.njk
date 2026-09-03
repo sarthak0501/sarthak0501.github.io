@@ -1,24 +1,38 @@
 ---
 layout: layouts/case.njk
 permalink: /case/incident-agent/
-title: The incident agent — autonomous severity-2 investigation
-desc: "Case file: an autonomous multi-agent planner/executor loop on Azure OpenAI that runs severity-2 triage — with the run trace, confidence rubric, and the eval harness that decides whether to trust it."
+title: The incident agent — Sarthak Bichhawa
+desc: "An autonomous multi-agent planner/executor loop on Azure OpenAI that runs severity-2 triage — with the run trace, the confidence rubric, and the eval harness that decides whether to trust it."
 ogImage: /og/case-incident-agent.png
-ogImageAlt: "Case file — the incident agent: autonomous severity-2 investigation, hours to minutes"
-tag: Exhibit A · agentic · flagship
-lede: "A severity-2 pages the on-call at 2am. Before a human finishes reading the bridge, an autonomous planner/executor loop has formed hypotheses, dispatched tools against live telemetry, killed the wrong theory on evidence, and posted a cited brief. Multi-hour investigations now take <strong>minutes</strong> — and this page shows the receipts: the run trace, the confidence rubric, and the evals that gate every change."
+ogImageAlt: "The incident agent — autonomous severity-2 investigation, hours to minutes"
+lede: "A severity-2 pages the on-call at 2am. Before a human finishes reading the bridge, an autonomous planner/executor loop has formed hypotheses, dispatched tools against live telemetry, killed the wrong theory on evidence, and posted a cited brief. Multi-hour investigations now take <strong>minutes</strong> — and this page shows the run trace, the confidence rubric, and the evals that gate every change."
 role: Design & implementation lead
 stack: Azure OpenAI · FastAPI · MCP · Azure Data Explorer
-status: LIVE · in production
-headline: multi-hour investigations → minutes
-next:
-  url: /case/customer-health-agent/
-  title: The customer-health agent
+status: In production
+outcomes:
+  - { v: "hrs → min", d: "severity-2 investigation time, end to end" }
+  - { v: "10", d: "MCP tools dispatched concurrently against live systems" }
+  - { v: "4", d: "reusable MCP servers now serving other agents and Copilot" }
+  - { v: "100%", d: "of runs traced — every claim resolves to a query ID" }
+quick:
+  - "<strong>Problem:</strong> a severity-2 investigation is a multi-hour join across telemetry, deployment state, and traffic that the on-call performs in their head at 2am."
+  - "<strong>Built:</strong> a planner/executor loop on Azure OpenAI that forms hypotheses, dispatches 10 MCP tools concurrently, and posts a confidence-scored, cited brief — every claim traced to a query."
+  - "<strong>Result:</strong> multi-hour investigations now take minutes; four reusable MCP servers came out of it; a golden-set eval gates every change."
+toc:
+  - { id: problem, label: The problem }
+  - { id: architecture, label: Architecture }
+  - { id: decision, label: The decision }
+  - { id: trace, label: One run }
+  - { id: rubric, label: Confidence rubric }
+  - { id: evals, label: Evals }
+  - { id: changed, label: Results }
+  - { id: lessons, label: What I got wrong }
+removed: "customer and account identifiers, cluster and incident IDs; absolute traffic volumes replaced with multiples of baseline; internal tool names generalized; elapsed times rounded. The step structure, tool sequence, and decision logic are as-run."
 ---
 
 <section class="case-sec" id="problem">
-  <div class="reveal">
-    <div class="sec-mark">§A — The problem</div>
+  <div>
+    <h2>The problem</h2>
     <div class="prose">
       <p>
         A severity-2 investigation is a join the on-call performs in their head at 2am:
@@ -40,8 +54,8 @@ next:
 </section>
 
 <section class="case-sec" id="architecture">
-  <div class="reveal">
-    <div class="sec-mark">§B — Architecture, as built</div>
+  <div>
+    <h2>Architecture, as built</h2>
     <div class="prose">
       <p>
         A hand-rolled <strong>planner / executor loop</strong> on Azure OpenAI — no
@@ -55,10 +69,9 @@ next:
     </div>
   </div>
   {% include "partials/diagram-incident.njk" %}
-  <div class="prose reveal">
+  <div class="prose">
     <p>
-      The framework decision has its own entry in the <a href="/#judgment">judgment
-      calls</a>: the first build sat on LangChain/LangGraph, and debugging through
+      The framework decision is <a href="#decision">below</a>: the first build sat on LangChain/LangGraph, and debugging through
       five layers of someone else's abstraction was slower than owning the loop.
       Deleting it bought full tracing, 429-storm retry we control, and an agent
       the on-call can actually reason about. The MCP tool layer shipped as
@@ -69,9 +82,17 @@ next:
   </div>
 </section>
 
+<section class="case-sec decision-sec" id="decision">
+  <h2>The decision: fire the framework</h2>
+  <div class="prose">
+    <p>The first build sat on LangChain and LangGraph. Debugging through five layers of someone else's abstraction was slower than owning the loop — so I replaced it with a hand-rolled planner/executor: full LLM tracing, retry under 429 storms, context compaction we control, concurrent tool dispatch.</p>
+    <p>The trade-off is more code and less framework. What it bought is faster iteration, traceable failures, and an agent the on-call can actually reason about. Ask me about the day I deleted the agent framework.</p>
+  </div>
+</section>
+
 <section class="case-sec" id="trace">
-  <div class="reveal">
-    <div class="sec-mark">§C — One run, step by step</div>
+  <div>
+    <h2>One run, step by step</h2>
     <div class="prose">
       <p>
         This is a production investigation replayed: an availability regression —
@@ -83,9 +104,9 @@ next:
     </div>
   </div>
 
-  <div class="trace panel reveal" id="traceViewer" tabindex="0" aria-label="Run trace, step by step">
+  <div class="trace" id="traceViewer" tabindex="0" aria-label="Run trace, step by step">
     <div class="cp-head">
-      <span>// {{ trace_incident.meta.label }}</span>
+      <span>{{ trace_incident.meta.label }}</span>
       <span class="trace-controls">
         <button type="button" data-trace="prev" aria-label="Previous step">‹ prev</button>
         <button type="button" data-trace="next" aria-label="Next step">next ›</button>
@@ -103,13 +124,13 @@ next:
       <div class="ts-body"><p>{{ s.body | safe }}</p></div>
     </details>
     {%- endfor %}
-    <div class="board-foot">// {{ trace_incident.meta.note }}. <span class="g">arrow keys step through the run.</span></div>
+    <div class="panel-foot">{{ trace_incident.meta.note }}.</div>
   </div>
 </section>
 
 <section class="case-sec" id="rubric">
-  <div class="reveal">
-    <div class="sec-mark">§D — Trust is a number: the confidence rubric</div>
+  <div>
+    <h2>The confidence rubric</h2>
     <div class="prose">
       <p>
         The agent is not allowed to sound more certain than its evidence. Every
@@ -118,8 +139,8 @@ next:
       </p>
     </div>
   </div>
-  <div class="table-panel panel reveal">
-    <div class="cp-head"><span>// confidence rubric — enforced on every finding</span></div>
+  <div class="table-panel">
+    <div class="cp-head"><span>confidence rubric — enforced on every finding</span></div>
     <div class="table-scroll">
       <table class="data-table">
         <thead><tr><th>Score</th><th>Evidence bar</th><th>What the agent may claim</th></tr></thead>
@@ -142,13 +163,13 @@ next:
         </tbody>
       </table>
     </div>
-    <div class="board-foot">// a zero-row query is reported as <span class="g">no data</span>, never as "no issues found."</div>
+    <div class="panel-foot">a zero-row query is reported as <span class="g">no data</span>, never as "no issues found."</div>
   </div>
 </section>
 
 <section class="case-sec" id="evals">
-  <div class="reveal">
-    <div class="sec-mark">§E — Evals decide whether to trust it</div>
+  <div>
+    <h2>The evals that gate every change</h2>
     <div class="prose">
       <p>
         An agent that briefs incident bridges doesn't get to be evaluated on
@@ -159,8 +180,8 @@ next:
       </p>
     </div>
   </div>
-  <div class="table-panel panel reveal">
-    <div class="cp-head"><span>// eval dimensions — replayed-incident golden set</span><span class="g">gates every change</span></div>
+  <div class="table-panel">
+    <div class="cp-head"><span>eval dimensions — replayed-incident golden set</span><span class="g">gates every change</span></div>
     <div class="table-scroll">
       <table class="data-table">
         <thead><tr><th>Dimension</th><th>Question it answers</th><th>Failure it exists to catch</th></tr></thead>
@@ -173,21 +194,15 @@ next:
         </tbody>
       </table>
     </div>
-    <div class="board-foot">// per-dimension scores are internal and stay internal — <span class="g">the gate, not the grade, is the point.</span></div>
+    <div class="panel-foot">per-dimension scores are internal and stay internal — <span class="g">the gate, not the grade, is the point.</span></div>
   </div>
 </section>
 
 <section class="case-sec" id="changed">
-  <div class="reveal">
-    <div class="sec-mark">§F — What it changed</div>
+  <div>
+    <h2>Results</h2>
   </div>
-  <div class="metric-row panel reveal">
-    <div class="m"><span class="v">hrs → min</span><span class="d">severity-2 investigation time, end to end</span></div>
-    <div class="m"><span class="v">10</span><span class="d">MCP tools dispatched concurrently against live systems</span></div>
-    <div class="m"><span class="v">4</span><span class="d">reusable MCP servers now serving other agents &amp; Copilot</span></div>
-    <div class="m"><span class="v">100%</span><span class="d">of runs traced — every claim resolves to a query ID</span></div>
-  </div>
-  <div class="prose reveal">
+  <div class="prose">
     <p>
       The quieter outcome is who acts on it: the agent's brief is the first
       artifact on the bridge, and the on-call validates instead of hunts. During
@@ -197,30 +212,11 @@ next:
   </div>
 </section>
 
-<section class="case-sec" id="errata">
-  <div class="errata panel reveal">
-    <div class="er-head">Errata — corrections this page has shipped</div>
-    <ul>
-      <li>
-        <span class="ed">2026-07-10</span>
-        <span><strong>First publication of this case file.</strong> Earlier editions of this site showed the agent only as a homepage diagram; the trace, rubric, and eval design above are the full record.</span>
-      </li>
-      <li>
-        <span class="ed">2026-05</span>
-        <span><strong>The first confidence rubric was miscalibrated</strong> — early HIGH verdicts leaned on two tools that shared an upstream table, which is one source wearing two hats. "Independent" now means independent data paths, and calibration is an eval dimension so it can't silently regress.</span>
-      </li>
-      <li>
-        <span class="ed">2026-03</span>
-        <span><strong>Deleted the agent framework.</strong> The LangChain/LangGraph build worked in demos and failed on-call: failures weren't traceable through the abstraction. The hand-rolled loop is more code and less system.</span>
-      </li>
-    </ul>
-  </div>
-
-  <div class="redaction reveal">
-    <span class="rx-head">Redaction record</span>
-    Published against the written checklist: customer and account identifiers removed ·
-    cluster and incident IDs removed · absolute traffic volumes replaced with multiples of baseline ·
-    internal tool names generalized · elapsed times rounded.
-    <span class="g">Preserved: the step structure, tool sequence, and decision logic, as-run.</span>
-  </div>
+<section class="case-sec" id="lessons">
+  <h2>What I got wrong</h2>
+  <ul class="lessons">
+    <li><span class="ed">2026-05</span><span><strong>The first confidence rubric was miscalibrated</strong> — early HIGH verdicts leaned on two tools that shared an upstream table, which is one source wearing two hats. "Independent" now means independent data paths, and calibration is an eval dimension so it can't silently regress.</span></li>
+    <li><span class="ed">2026-03</span><span><strong>I shipped on a framework first.</strong> The LangChain/LangGraph build worked in demos and failed on-call: failures weren't traceable through the abstraction. The hand-rolled loop is more code and less system.</span></li>
+  </ul>
 </section>
+

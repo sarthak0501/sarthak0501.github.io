@@ -1,24 +1,37 @@
 ---
 layout: layouts/case.njk
 permalink: /case/data-trust/
-title: The data-trust platform — checks, a portal, and an LLM that reads pipelines
-desc: "Case file: a self-service data-quality platform whose first named catch was an 88% silent row loss, grown into an org-wide discovery and governance portal with an LLM-powered lineage engine that reads pipeline code."
+title: The data-trust platform — Sarthak Bichhawa
+desc: "A self-service data-quality platform whose first named catch was an 88% silent row loss, grown into an org-wide discovery and governance portal with an LLM-powered lineage engine that reads pipeline code."
 ogImage: /og/case-data-trust.png
-ogImageAlt: "Case file — the data-trust platform: 400+ datasets profiled hourly, 88% row loss caught"
-tag: Exhibit D · data platform
-lede: "Every dashboard in an org is a claim about data somebody else owns. This is the case file on making that claim checkable: automated freshness, volume and schema checks with gates that can fail a run, hourly profiling across <strong>400+ production datasets</strong>, and the org-wide portal it grew into — including an <strong>LLM-powered lineage engine that reads pipeline code</strong> to map where production data actually comes from."
-role: Designer &amp; owner — platform, portal, and core services
+ogImageAlt: "The data-trust platform — 400+ datasets profiled hourly, an 88% row loss caught"
+lede: "Every dashboard in an org is a claim about data somebody else owns. This is the write-up on making that claim checkable: automated freshness, volume, and schema checks with gates that can fail a run, hourly profiling across <strong>400+ production datasets</strong>, and the org-wide portal it grew into — including an <strong>LLM-powered lineage engine that reads pipeline code</strong> to map where production data actually comes from."
+role: Designer & owner — platform, portal, and core services
 stack: Python · FastAPI · Azure Container Apps · Azure Data Explorer · Azure OpenAI
-status: PROD · launched org-wide
-headline: 400+ datasets profiled hourly
-next:
-  url: /case/account2vec/
-  title: Account behavior embeddings
+status: In production · launched org-wide
+outcomes:
+  - { v: "400+", d: "production datasets profiled hourly" }
+  - { v: "~88%", d: "silent row loss caught before it reached financial reports" }
+  - { v: "99%", d: "throttling incidents eliminated for the most critical customers" }
+  - { v: "4", d: "core backing services behind the org-wide portal" }
+quick:
+  - "<strong>Problem:</strong> nobody could answer \"can I rely on this data right now?\" — data quality was a report nobody opened."
+  - "<strong>Built:</strong> freshness, volume, and schema checks with gates that fail a run, hourly profiling of 400+ datasets, and the org-wide discovery portal it grew into — with an LLM lineage engine that reads pipeline code."
+  - "<strong>Result:</strong> the first named catch was an 88% silent row loss headed for financial reports; the same discipline pointed at customers eliminated 99% of throttling incidents."
+toc:
+  - { id: premise, label: The question }
+  - { id: checks, label: Checks }
+  - { id: catch, label: The first catch }
+  - { id: portal, label: The portal }
+  - { id: lineage, label: Lineage engine }
+  - { id: throttling, label: Throttling }
+  - { id: governance, label: Governance }
+removed: "internal product names, cluster and dataset identifiers, and the specific upstream source behind the 88% catch. Numbers and design decisions are unchanged."
 ---
 
 <section class="case-sec" id="premise">
-  <div class="reveal">
-    <div class="sec-mark">§A — The question nobody could answer</div>
+  <div>
+    <h2>The question nobody could answer</h2>
     <div class="prose">
       <p>
         "Can I rely on this data right now?" Before this platform, answering that
@@ -37,17 +50,11 @@ next:
       </p>
     </div>
   </div>
-  <div class="metric-row panel reveal">
-    <div class="m"><span class="v">400+</span><span class="d">production datasets profiled hourly</span></div>
-    <div class="m"><span class="v">~88%</span><span class="d">silent row loss caught before it reached financial reports</span></div>
-    <div class="m"><span class="v">org-wide</span><span class="d">discovery &amp; governance portal launch</span></div>
-    <div class="m"><span class="v">4</span><span class="d">core backing services designed</span></div>
-  </div>
-</section>
+  </section>
 
 <section class="case-sec" id="checks">
-  <div class="reveal">
-    <div class="sec-mark">§B — Checks that can fail a run, not a report that nobody opens</div>
+  <div>
+    <h2>Checks that can fail a run</h2>
     <div class="prose">
       <p>
         The platform is self-service by design: a team registers a dataset and
@@ -65,8 +72,8 @@ next:
       </p>
     </div>
   </div>
-  <div class="table-panel panel reveal">
-    <div class="cp-head"><span>// check families</span><span class="g">what each one catches that the others miss</span></div>
+  <div class="table-panel">
+    <div class="cp-head"><span>check families</span><span class="g">what each one catches that the others miss</span></div>
     <div class="table-scroll">
       <table class="data-table">
         <thead><tr><th>Family</th><th>Question it asks</th><th>Failure it catches</th></tr></thead>
@@ -77,13 +84,13 @@ next:
         </tbody>
       </table>
     </div>
-    <div class="board-foot">// volume is the boring one and it is the one that paid for the platform. <span class="g">a pipeline that returns 12% of its rows returns them successfully.</span></div>
+    <div class="panel-foot">volume is the boring one and it is the one that paid for the platform. <span class="g">a pipeline that returns 12% of its rows returns them successfully.</span></div>
   </div>
 </section>
 
 <section class="case-sec" id="catch">
-  <div class="reveal">
-    <div class="sec-mark">§C — The first named catch</div>
+  <div>
+    <h2>The first named catch</h2>
     <div class="prose">
       <p>
         An upstream change collapsed roughly <strong>88% of rows</strong> in a critical
@@ -97,8 +104,7 @@ next:
         or Finance — saw a wrong number. That's the catch the platform is named
         by internally, and it's the reason adoption stopped needing to be sold.
       </p>
-      <p class="mono-note">
-        // the argument for this kind of platform is never made in the abstract.
+      <p class="aside">the argument for this kind of platform is never made in the abstract.
         <span class="g">it's made once, by a catch nobody can argue with.</span>
       </p>
     </div>
@@ -106,8 +112,8 @@ next:
 </section>
 
 <section class="case-sec" id="portal">
-  <div class="reveal">
-    <div class="sec-mark">§D — From a checker to a portal: discovery, ownership, lineage</div>
+  <div>
+    <h2>From a checker to a portal</h2>
     <div class="prose">
       <p>
         Checks tell you a dataset is broken. They don't tell you what it is, who
@@ -123,8 +129,8 @@ next:
       </p>
     </div>
   </div>
-  <div class="table-panel panel reveal">
-    <div class="cp-head"><span>// the four services behind the portal</span><span class="g">each answers a different half of "can I trust this?"</span></div>
+  <div class="table-panel">
+    <div class="cp-head"><span>the four services behind the portal</span><span class="g">each answers a different half of "can I trust this?"</span></div>
     <div class="table-scroll">
       <table class="data-table">
         <thead><tr><th>Service</th><th>What it derives</th><th>Derived from</th></tr></thead>
@@ -132,7 +138,7 @@ next:
           <tr><td class="num">Lineage</td><td>where a dataset actually comes from, and what breaks downstream</td><td class="mono dim">pipeline code + orchestration systems</td></tr>
           <tr><td class="num">Ownership</td><td>who genuinely owns a dataset, not who is listed</td><td class="mono dim">access-pattern analysis</td></tr>
           <tr><td class="num">Profiling</td><td>the hourly health baseline every check compares against</td><td class="mono dim">400+ production datasets</td></tr>
-          <tr><td class="num">Monitoring</td><td>freshness / volume / schema anomalies and gate verdicts</td><td class="mono dim">the check families in §B</td></tr>
+          <tr><td class="num">Monitoring</td><td>freshness / volume / schema anomalies and gate verdicts</td><td class="mono dim">the check families above</td></tr>
         </tbody>
       </table>
     </div>
@@ -140,8 +146,8 @@ next:
 </section>
 
 <section class="case-sec" id="lineage">
-  <div class="reveal">
-    <div class="sec-mark">§E — The lineage engine: an LLM that reads pipeline code</div>
+  <div>
+    <h2>The lineage engine: an LLM that reads pipeline code</h2>
     <div class="prose">
       <p>
         Lineage is normally harvested from an orchestrator's declared
@@ -159,8 +165,7 @@ next:
         job that classical tooling had structurally failed at, rather than
         bolting a chat box onto something that already worked.
       </p>
-      <p class="mono-note">
-        // the honest caveat: code-derived lineage is <span class="g">high recall, imperfect precision.</span>
+      <p class="aside">the honest caveat: code-derived lineage is <span class="g">high recall, imperfect precision.</span>
         it earns trust as a map of where to look, and it is validated against
         observed access patterns rather than believed on sight.
       </p>
@@ -169,8 +174,8 @@ next:
 </section>
 
 <section class="case-sec" id="throttling">
-  <div class="reveal">
-    <div class="sec-mark">§F — The same discipline, pointed at customers: 99% of throttling incidents</div>
+  <div>
+    <h2>Pointed at customers: 99% of throttling incidents</h2>
     <div class="prose">
       <p>
         Data trust and customer trust are the same engineering problem viewed
@@ -194,7 +199,7 @@ next:
       </p>
     </div>
   </div>
-  <div class="metric-row panel reveal">
+  <div class="metric-row">
     <div class="m"><span class="v">99%</span><span class="d">throttling incidents eliminated, most critical customers</span></div>
     <div class="m"><span class="v">92%</span><span class="d">across all paying customers</span></div>
     <div class="m"><span class="v">10+</span><span class="d">at-risk accounts retained, each worth millions per month</span></div>
@@ -203,8 +208,8 @@ next:
 </section>
 
 <section class="case-sec" id="governance">
-  <div class="reveal">
-    <div class="sec-mark">§G — Governance is the unglamorous half</div>
+  <div>
+    <h2>Governance is the unglamorous half</h2>
     <div class="prose">
       <p>
         A trustworthy data estate also has to be a defensible one. I led
@@ -221,11 +226,5 @@ next:
         above was built to delete.
       </p>
     </div>
-  </div>
-  <div class="errata reveal">
-    <div class="er-head">// what this page deliberately omits</div>
-    <ul>
-      <li><span>Internal product names, cluster and dataset identifiers, and the specific upstream source behind the 88% catch are removed. Numbers and design decisions are unchanged.</span></li>
-    </ul>
   </div>
 </section>

@@ -1,24 +1,37 @@
 ---
 layout: layouts/case.njk
 permalink: /case/revenue-attribution/
-title: The attribution recovery — $45M/mo, seven incidents, six months of backfills
-desc: "Case file: an upstream data loss silently broke partner revenue attribution for a $5B+/yr platform. The trace through 20+ components, the recovery through quarter close, and the redesign that made the failure un-repeatable."
+title: The attribution recovery — Sarthak Bichhawa
+desc: "An upstream data loss silently broke partner revenue attribution for a $5B+/yr platform. The trace through 20+ components, the recovery through quarter close, and the redesign that made the failure un-repeatable."
 ogImage: /og/case-revenue-attribution.png
-ogImageAlt: "Case file — the attribution recovery: ~$45M/mo recovered on a $5B+/yr platform"
-tag: Exhibit C · judgment under fire
-lede: "Revenue attribution is invisible until it's wrong. An upstream data loss silently broke the pipeline that credits partners for <strong>$5B+/year</strong> of cloud-storage revenue — and nothing alerted, because the pipeline was still producing numbers. This is the case file on finding it, defending it through quarter close, and rebuilding it so the same failure can't hide again."
+ogImageAlt: "The attribution recovery — ~$45M/mo recovered on a $5B+/yr platform"
+lede: "Revenue attribution is invisible until it's wrong. An upstream data loss silently broke the pipeline that credits partners for <strong>$5B+/year</strong> of cloud-storage revenue — and nothing alerted, because the pipeline was still producing numbers. This is the write-up on finding it, defending it through quarter close, and rebuilding it so the same failure can't hide again."
 role: Owner — investigation, recovery, and redesign
 stack: Azure Data Factory · Azure Data Explorer · Python · SQL
-status: PROD · reconciled monthly
-headline: ~$45M/mo recovered
-next:
-  url: /case/data-trust/
-  title: The data-trust platform
+status: In production · reconciled monthly against Finance
+outcomes:
+  - { v: "~$45M/mo", d: "partner-attributed revenue recovered and sustained" }
+  - { v: "$5B+/yr", d: "platform revenue the attribution picture covers" }
+  - { v: "20+", d: "components in the legacy pipeline the failure hid inside" }
+  - { v: "7", d: "incidents worked, including a severity-2 led across 4 teams" }
+quick:
+  - "<strong>Problem:</strong> an upstream data loss silently broke partner attribution for $5B+/yr of revenue — no alert, because the pipeline kept producing plausible numbers."
+  - "<strong>Did:</strong> traced the failure through 20+ components, sourced an alternate telemetry feed, and drove six months of backfills through quarter close across 7 incidents."
+  - "<strong>Then:</strong> replaced last-writer-wins with multi-partner credit, validation gates, and independent reconciliation against Finance — ~$45M/mo recovered, &lt;1% variance."
+toc:
+  - { id: stakes, label: What attribution is }
+  - { id: trace, label: The trace }
+  - { id: recovery, label: The recovery }
+  - { id: redesign, label: The redesign }
+  - { id: decision, label: The decision }
+  - { id: guardrails, label: Reconciliation }
+  - { id: ask, label: Questions to ask me }
+removed: "internal system names, partner names, customer identifiers, and the specific upstream source. The numbers, the sequence, and the design change are exactly as they happened."
 ---
 
 <section class="case-sec" id="stakes">
-  <div class="reveal">
-    <div class="sec-mark">§A — What attribution actually is, and why it breaks quietly</div>
+  <div>
+    <h2>What attribution is, and why it breaks quietly</h2>
     <div class="prose">
       <p>
         Finance owns the totals. They know, to the dollar, what the platform
@@ -37,17 +50,11 @@ next:
       </p>
     </div>
   </div>
-  <div class="metric-row panel reveal">
-    <div class="m"><span class="v">$5B+/yr</span><span class="d">platform revenue the attribution picture covers</span></div>
-    <div class="m"><span class="v">~$45M/mo</span><span class="d">partner-attributed revenue recovered &amp; sustained</span></div>
-    <div class="m"><span class="v">20+</span><span class="d">components in the legacy pipeline the failure hid inside</span></div>
-    <div class="m"><span class="v">7</span><span class="d">incidents worked, including a severity-2 led across 4 teams</span></div>
-  </div>
-</section>
+  </section>
 
 <section class="case-sec" id="trace">
-  <div class="reveal">
-    <div class="sec-mark">§B — The trace: 20+ components, no map</div>
+  <div>
+    <h2>The trace: 20+ components, no map</h2>
     <div class="prose">
       <p>
         The pipeline had been built up over years by people who had since moved
@@ -63,8 +70,7 @@ next:
         drop? The answer was an upstream source that had changed underneath
         us — still delivering data, no longer delivering <em>this</em> data.
       </p>
-      <p class="mono-note">
-        // the lesson I took from this is the whole reason the
+      <p class="aside">the lesson I took from this is the whole reason the
         <a href="/case/data-trust/" class="g">data-trust platform</a> exists.
         a pipeline that cannot tell you it's wrong is a pipeline you are
         eventually going to be wrong with.
@@ -74,8 +80,8 @@ next:
 </section>
 
 <section class="case-sec" id="recovery">
-  <div class="reveal">
-    <div class="sec-mark">§C — The recovery: an alternate feed, and six months nobody wanted</div>
+  <div>
+    <h2>The recovery: an alternate feed, and six months nobody wanted</h2>
     <div class="prose">
       <p>
         Finding the break doesn't restore the number. The original signal wasn't
@@ -103,8 +109,8 @@ next:
 </section>
 
 <section class="case-sec" id="redesign">
-  <div class="reveal">
-    <div class="sec-mark">§D — The redesign: last-writer-wins was the real bug</div>
+  <div>
+    <h2>The redesign: last-writer-wins was the real bug</h2>
     <div class="prose">
       <p>
         The data loss was the trigger. The design flaw underneath it was
@@ -124,8 +130,8 @@ next:
       </p>
     </div>
   </div>
-  <div class="table-panel panel reveal">
-    <div class="cp-head"><span>// what changed in the attribution model</span><span class="g">shape only · identifiers removed</span></div>
+  <div class="table-panel">
+    <div class="cp-head"><span>what changed in the attribution model</span><span class="g">shape only · identifiers removed</span></div>
     <div class="table-scroll">
       <table class="data-table">
         <thead><tr><th>Dimension</th><th>Before</th><th>After</th></tr></thead>
@@ -137,13 +143,21 @@ next:
         </tbody>
       </table>
     </div>
-    <div class="board-foot">// the point of the right-hand column: <span class="g">every row is a way the pipeline can now tell you it's wrong.</span></div>
+    <div class="panel-foot">the point of the right-hand column: <span class="g">every row is a way the pipeline can now tell you it's wrong.</span></div>
+  </div>
+</section>
+
+<section class="case-sec decision-sec" id="decision">
+  <h2>The decision: trust is a number</h2>
+  <div class="prose">
+    <p>Revenue data is only useful if Finance can't break it — and if the pipeline can tell you when it's wrong. Rebuilding first and backfilling later would have been faster to ship and impossible to trust: a better model of worse data. So the order was recovery, then redesign, then reconciliation built in as a feature rather than run as a report.</p>
+    <p>What it cost: six months of backfills through quarter close that nobody wanted to own. What it produced: ~$45M/mo recovered and sustained, &lt;1% variance against Finance, and ~80–90% more partner accounts tracked. Ask me about the six months of backfills nobody wanted to own.</p>
   </div>
 </section>
 
 <section class="case-sec" id="guardrails">
-  <div class="reveal">
-    <div class="sec-mark">§E — Reconciliation as a feature, not a report</div>
+  <div>
+    <h2>Reconciliation as a feature, not a report</h2>
     <div class="prose">
       <p>
         The claim I'll defend in an interview is this one: <strong>Finance is not a
@@ -172,8 +186,8 @@ next:
 </section>
 
 <section class="case-sec" id="ask">
-  <div class="reveal">
-    <div class="sec-mark">§F — What I'd grill me on</div>
+  <div>
+    <h2>Questions to ask me</h2>
     <div class="prose">
       <p>
         <strong>Why not rebuild first and backfill later?</strong> Because the restated
@@ -194,11 +208,5 @@ next:
         happened yet.
       </p>
     </div>
-  </div>
-  <div class="errata reveal">
-    <div class="er-head">// what this page deliberately omits</div>
-    <ul>
-      <li><span>Internal system names, partner names, customer identifiers, and the specific upstream source are removed. The numbers, the sequence, and the design change are exactly as they happened.</span></li>
-    </ul>
   </div>
 </section>

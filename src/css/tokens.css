@@ -1,9 +1,9 @@
 /* ============================================================
-   THE HIRING BRIEF · SECOND EDITION — token vocabulary
-   Quiet paper: warm cream ground, deep ink text, calm forest
-   green. Same semantic names as the dark edition — only the
-   values changed, so components reskin for free.
-   Self-hosted latin-subset fonts + the one shared palette.
+   TOKENS — fourth edition
+   Three faces with strict roles (Fraunces = display, Inter =
+   everything else, Plex Mono = code only), one cream/ink/green
+   palette in light and dark, and nothing decorative. Every text
+   pair clears WCAG AA; every control boundary clears 3:1.
    ============================================================ */
 
 /* ---------- fonts (latin subsets, self-hosted) ---------- */
@@ -13,14 +13,6 @@
   font-weight: 440 760;
   font-display: swap;
   src: url('/fonts/fraunces-var.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'Fraunces';
-  font-style: italic;
-  font-weight: 440 760;
-  font-display: swap;
-  src: url('/fonts/fraunces-var-italic.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
@@ -39,131 +31,83 @@
   src: url('/fonts/plexmono-400.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+/* metric-matched fallbacks so the first paint doesn't reflow */
 @font-face {
-  font-family: 'IBM Plex Mono';
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/plexmono-400i.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  font-family: 'Fraunces Fallback';
+  src: local('Georgia'), local('Times New Roman');
+  size-adjust: 103%; ascent-override: 92%; descent-override: 24%; line-gap-override: 0%;
 }
 @font-face {
-  font-family: 'IBM Plex Mono';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('/fonts/plexmono-500.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'IBM Plex Mono';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('/fonts/plexmono-600.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  font-family: 'Inter Fallback';
+  src: local('Helvetica Neue'), local('Arial');
+  size-adjust: 100%; ascent-override: 93%; descent-override: 23%; line-gap-override: 0%;
 }
 
-/* ---------- the one token vocabulary ----------
-   Semantic names kept from the dark edition:
-   --bg      = page ground (now warm cream)
-   --paper   = primary text (now deep ink)
-   --ink     = the one dark surface left (code panels)          */
+/* ---------- the palette ---------- */
 :root {
-  --bg: #f7f4ec;
-  --bg-1: #f2eee4;
-  --surface: #efebdf;
+  color-scheme: light dark;
 
-  --ink: #1f2b25;
-  --ink-2: #24322b;
+  --bg: #f7f4ec;          /* page */
+  --bg-2: #f0ecE1;        /* tinted band, details panels, table heads */
+  --surface: #fdfcf8;     /* cards */
 
-  --panel: #fdfcf8;
-  --panel-2: #fbf9f2;
-  --border: rgba(31, 43, 37, 0.11);
-  --border-2: rgba(31, 43, 37, 0.22);
-  --hairline: #ddd8c9;
+  --text: #1f2a24;        /* 13.5:1 on bg */
+  --text-2: #4b564f;      /* 7.0:1 */
+  --text-3: #5c665e;      /* 5.4:1 — the floor, used for labels/meta only */
 
-  --green: #23744d;
-  --green-dim: #3d7659;
-  --green-hover: #1d6341;
-  --green-soft: rgba(35, 116, 77, 0.08);
-  --green-glow: rgba(35, 116, 77, 0.18);
-  --orange: #a8481f;
-  --orange-soft: rgba(168, 72, 31, 0.10);
+  --line: #ddd8c9;        /* decorative hairlines */
+  --line-strong: #7a857b; /* control boundaries — 3.4:1 on bg (WCAG 1.4.11) */
 
-  --paper: #232d27;
-  --paper-2: #4d5850;
-  --paper-3: #616b5e;
-
-  --font-display: 'Fraunces', Georgia, serif;
-  --font-sans: 'Inter', -apple-system, "Segoe UI", sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
-
-  --radius: 10px;
-  --radius-sm: 6px;
-
-  /* nav ground is translucent over the page, so it needs its own token;
-     --on-green is the text colour that sits on a green fill. */
-  --nav-bg: rgba(247, 244, 236, 0.86);
-  --nav-bg-solid: rgba(247, 244, 236, 0.98);
+  --green: #23744d;       /* interactive only: links, buttons, focus */
+  --green-hover: #1a5c3c;
   --on-green: #f7f4ec;
+  --green-tint: rgba(35, 116, 77, 0.08);
 
-  --maxw: 1140px;
-  --maxw-narrow: 860px;
+  --warn: #9a4a22;        /* corrections and regressions in tables only */
 
+  --code-bg: #1b231e;     /* the one dark surface */
+  --code-text: #e3e8e0;
+  --code-muted: #9aa69c;
+  --code-kw: #8fd1ab;
+  --code-line: rgba(227, 232, 224, 0.12);
+
+  --font-display: 'Fraunces', 'Fraunces Fallback', Georgia, serif;
+  --font-sans: 'Inter', 'Inter Fallback', -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+  --maxw: 1040px;
+  --maxw-narrow: 720px;
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-::selection { background: var(--green); color: #f7f4ec; }
-
-/* ---------- dark edition ----------
-   The token vocabulary is semantic, so the whole site reskins from this
-   block alone. Roles are preserved: --bg is still the page ground,
-   --paper is still the primary text, --ink is still the one dark surface
-   (code panels), which is why it barely moves here. ---------- */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #171b18;
-    --bg-1: #1a1f1b;
-    --surface: #212722;
+    --bg: #151917;
+    --bg-2: #1c2220;
+    --surface: #1a1f1c;
 
-    --ink: #101310;
-    --ink-2: #141814;
+    --text: #eae7dc;
+    --text-2: #bec5ba;
+    --text-3: #9aa397;
 
-    --panel: #1c211d;
-    --panel-2: #1f251f;
-    --border: rgba(234, 231, 220, 0.12);
-    --border-2: rgba(234, 231, 220, 0.26);
-    --hairline: #2c332d;
+    --line: #2b322d;
+    --line-strong: #727d74;
 
     --green: #6cc295;
-    --green-dim: #57a67e;
     --green-hover: #8ad3af;
-    --green-soft: rgba(108, 194, 149, 0.10);
-    --green-glow: rgba(108, 194, 149, 0.22);
-    --orange: #e8875a;
-    --orange-soft: rgba(232, 135, 90, 0.12);
-
-    --paper: #eae7dc;
-    --paper-2: #bcc3b8;
-    --paper-3: #98a094;
-
-    --nav-bg: rgba(23, 27, 24, 0.86);
-    --nav-bg-solid: rgba(23, 27, 24, 0.98);
-    /* the dark edition's green is light, so text on it must be dark */
     --on-green: #101310;
+    --green-tint: rgba(108, 194, 149, 0.12);
+
+    --warn: #e8875a;
+
+    --code-bg: #0f1311;
+    --code-text: #e3e8e0;
+    --code-muted: #8f9b92;
+    --code-kw: #8fd1ab;
+    --code-line: rgba(227, 232, 224, 0.12);
   }
-  ::selection { background: var(--green); color: #101310; }
 }
 
-
-/* ---------- cross-document view transitions (160ms) ---------- */
-@view-transition { navigation: auto; }
-::view-transition-old(root),
-::view-transition-new(root) { animation-duration: 160ms; }
-
-@media (prefers-reduced-motion: reduce) {
-  @view-transition { navigation: none; }
-  ::view-transition-old(root),
-  ::view-transition-new(root) { animation: none; }
-}
+::selection { background: var(--green); color: var(--on-green); }
