@@ -39,7 +39,11 @@ const FORBIDDEN = [
 
 // 2. Headline claims that must appear on the homepage, verbatim.
 const HOMEPAGE_MUST = [
-  ...facts.receipts.map((r) => r.value),
+  ...facts.homepage.receipts.map((id) => {
+    const receipt = facts.receipts.find((r) => r.id === id);
+    if (!receipt) throw new Error(`Unknown homepage receipt: ${id}`);
+    return receipt.value;
+  }),
   "$5B+",
   "<1% variance",
   "4-team",

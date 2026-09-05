@@ -1,188 +1,123 @@
 ---
 layout: layouts/base.njk
-desc: "Sr. Data & Applied Scientist at Microsoft Azure Storage. Nine years of ML and AI in production — autonomous LLM agents, a fleet-scale embedding platform, and the revenue systems behind $5B+/year that Finance reconciles against."
+desc: "Sarthak Bichhawa, Sr. Data & Applied Scientist at Microsoft Azure Storage. Applied AI and data platforms for incident response, customer health, and revenue attribution."
 ---
 
-<header class="hero">
-  <div class="wrap">
-    <div class="byline">
-      <img class="portrait" src="/assets/sarthak.jpg" alt="" width="112" height="112" fetchpriority="high" decoding="async" />
-      <div>
-        <h1 class="name">{{ facts.identity.name }}</h1>
-        <p class="role">{{ facts.identity.title }} · {{ facts.identity.org }}, {{ facts.identity.team }} · {{ facts.identity.location }}</p>
-      </div>
-    </div>
-
-    <p class="statement">{{ facts.summary.statement }}</p>
-    <p class="deck">{{ facts.summary.hero }}</p>
-
+<header class="home-hero wrap">
+  <div class="hero-copy">
+    <p class="eyebrow">Applied AI & data platforms · {{ facts.identity.org }} {{ facts.identity.team }}</p>
+    <h1 class="hero-title">I make complex<br />systems <em>dependable.</em></h1>
+    <p class="hero-intro">{{ facts.summary.hero }}</p>
     <div class="actions">
-      <a href="mailto:{{ facts.identity.email }}" class="btn btn-primary" data-goatcounter-click="hero-email">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        Email me
-      </a>
-      <a href="{{ facts.resume.file }}" class="btn btn-secondary" data-goatcounter-click="hero-resume-pdf">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Résumé (PDF)
-      </a>
-      <a href="{{ facts.identity.linkedin }}" class="text-link" data-goatcounter-click="hero-linkedin">LinkedIn</a>
+      <a class="btn btn-primary" href="#work" data-goatcounter-click="hero-work">Explore selected work <span aria-hidden="true">↓</span></a>
+      <a class="text-link" href="{{ facts.resume.file }}" data-goatcounter-click="hero-resume-pdf">Résumé (PDF) <span aria-hidden="true">↗</span></a>
     </div>
-    <p class="open-to">Open to {{ facts.identity.open_to[0] }}, {{ facts.identity.open_to[1] }}, and {{ facts.identity.open_to[2] }} roles.</p>
-
-    <ol class="stats" aria-label="Headline outcomes">
-      {%- for r in facts.receipts %}
-      <li>
-        <a class="stat" href="{{ r.anchor }}">
-          <span class="stat-v">{{ r.value }}</span>
-          <span class="stat-l">{{ r.label }}</span>
-          <span class="stat-s">{{ r.sub }}</span>
-        </a>
-      </li>
-      {%- endfor %}
-    </ol>
+  </div>
+  <div class="hero-person">
+    <img src="/assets/sarthak.jpg" alt="Sarthak Bichhawa" width="112" height="112" fetchpriority="high" decoding="async" />
+    <div>
+      <p class="person-role">{{ facts.identity.title }}</p>
+      <p class="person-context">{{ facts.identity.org }} · {{ facts.identity.location }}<br />Previously Walmart Labs</p>
+      <a href="{{ facts.identity.linkedin }}" class="person-link" data-goatcounter-click="hero-linkedin">LinkedIn <span aria-hidden="true">↗</span></a>
+    </div>
   </div>
 </header>
 
-<section class="section" id="work">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>Work</h2>
-      <p class="sub">Six systems in production at Microsoft Azure Storage — each with users, an on-call rotation, and the number it moved. Every one opens to the architecture, the evals, and what went wrong.</p>
+<div class="wrap">
+  <ol class="home-outcomes" aria-label="Selected outcomes">
+    {%- for id in facts.homepage.receipts %}
+    {%- for r in facts.receipts %}{% if r.id == id %}
+    <li><a href="{{ r.anchor }}"><span class="outcome-value">{{ r.value }}</span><span class="outcome-label">{{ r.label }}</span></a></li>
+    {%- endif %}{% endfor %}
+    {%- endfor %}
+  </ol>
+</div>
+
+<section class="home-section wrap" id="work" aria-labelledby="work-heading">
+  <div class="home-section-head">
+    <h2 id="work-heading">Selected work</h2>
+    <a href="/case/" class="text-link">All six case studies <span aria-hidden="true">↗</span></a>
+  </div>
+  <article class="featured-case" aria-labelledby="featured-title">
+    <div class="featured-copy">
+      <p class="eyebrow">01 / Applied AI · In production</p>
+      <h3 id="featured-title"><a href="/case/incident-agent/">From an incident alert to an evidence-backed answer.</a></h3>
+      <p>An agent that tests competing hypotheses against live telemetry and produces a cited investigation brief.</p>
+      <dl class="featured-ownership">
+        <div><dt>My role</dt><dd>Design & implementation lead</dd></div>
+        <div><dt>Key decision</dt><dd>Own the planner / executor loop</dd></div>
+      </dl>
+      <a class="case-link" href="/case/incident-agent/">Read the case study <span aria-hidden="true">↗</span></a>
     </div>
-    <ul class="cards">
-      {%- for c in facts.cases %}
-      {%- set proof = "" %}
-      {%- for s in facts.systems %}{% if s.link == c.slug and not proof %}{% set proof = s.proof %}{% endif %}{% endfor %}
-      <li>
-        <a class="card" href="{{ c.slug }}">
-          <span class="card-cat">{{ c.tag }}</span>
-          <span class="card-title">{{ c.title }}</span>
-          <span class="card-text">{{ c.tease }}</span>
-          <span class="card-proof">
-            <span>{{ proof }}</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </span>
-        </a>
-      </li>
-      {%- endfor %}
-    </ul>
+    <figure class="featured-system">
+      <figcaption class="eyebrow">An investigation</figcaption>
+      <ol class="investigation-flow">
+        <li><span class="flow-step">01</span><strong>Incident signals</strong><span>Telemetry + deployment state</span></li>
+        <li><span class="flow-step">02</span><strong>Planner</strong><span>Competing hypotheses</span></li>
+        <li><span class="flow-step">03</span><strong>Executor + tools</strong><span>Test against live evidence</span></li>
+        <li><span class="flow-step">04</span><strong>Cited brief</strong><span>Confidence + query references</span></li>
+      </ol>
+      <p class="system-example"><strong>The decision that mattered</strong>A recent deployment looked responsible. The agent rejected that theory after checking the telemetry. <a href="/case/incident-agent/#trace">Explore the production replay <span aria-hidden="true">↗</span></a></p>
+    </figure>
+    <details class="featured-decision" id="decisions">
+      <summary>Explore the engineering decision <span aria-hidden="true">+</span></summary>
+      <div>
+        <h4>Own the loop. Make every conclusion traceable.</h4>
+        <p>I replaced the initial framework with a planner / executor loop to control tracing, retries, and context compaction. The trade-off: more orchestration code to maintain. A golden-set evaluation harness gates changes, and the final brief links claims to supporting queries.</p>
+        <a href="/case/incident-agent/#decision" class="case-link">Architecture, evaluation, and lessons <span aria-hidden="true">↗</span></a>
+      </div>
+    </details>
+  </article>
+  <div class="supporting-cases">
+    <article aria-labelledby="revenue-title">
+      <p class="eyebrow">02 / Revenue systems</p>
+      <h3 id="revenue-title"><a href="/case/revenue-attribution/">Making the numbers trustworthy.</a></h3>
+      <p>I traced a silent attribution failure through 20+ components, drove six months of backfills, and redesigned the engine.</p>
+      <p class="supporting-result">{{ facts.receipts[0].value }} in attribution recovered · &lt;1% variance vs Finance</p>
+      <a href="/case/revenue-attribution/" class="case-link">Read the recovery <span aria-hidden="true">↗</span></a>
+    </article>
+    <article aria-labelledby="health-title">
+      <p class="eyebrow">03 / Customer intelligence</p>
+      <h3 id="health-title"><a href="/case/customer-health-agent/">Answers at the speed of a question.</a></h3>
+      <p>I built an agent that turns plain-English questions into governed telemetry queries and review-ready narratives across 13 metric domains.</p>
+      <p class="supporting-result">{{ facts.receipts[3].value }} for executive-review preparation</p>
+      <a href="/case/customer-health-agent/" class="case-link">Explore the agent <span aria-hidden="true">↗</span></a>
+    </article>
   </div>
 </section>
 
-<section class="section" id="decisions">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>Decisions</h2>
-      <p class="sub">Five calls made under ambiguity — what I chose, what it cost, and what it produced. Each one is worth asking me about.</p>
-    </div>
-    <ol class="decisions">
-      <li class="decision">
-        <span class="d-n">01</span>
-        <h3 class="d-title">{{ facts.judgment[0].title }}.</h3>
-        <p class="d-body">The incident agent started on LangChain and LangGraph. Debugging through five layers of someone else's abstraction was slower than owning the loop, so I replaced it with a hand-rolled planner/executor — full LLM tracing, retry under 429 storms, and context compaction we control.</p>
-        <p class="d-out">Faster iteration, traceable failures, and an agent that on-call actually trusts.</p>
-        <p class="d-ask">Ask me about {{ facts.judgment[0].ask_me_about }}.</p>
-      </li>
-      <li class="decision">
-        <span class="d-n">02</span>
-        <h3 class="d-title">{{ facts.judgment[1].title }}.</h3>
-        <p class="d-body">The customer-health agent met no real user until a golden-set eval harness, guardrails, and PII-aware prompts existed. The harness now gates every prompt and model change the way CI gates code.</p>
-        <p class="d-out">Days → under 2 minutes to a trustworthy answer, across 13 metric domains under governance.</p>
-        <p class="d-ask">Ask me about {{ facts.judgment[1].ask_me_about }}.</p>
-      </li>
-      <li class="decision">
-        <span class="d-n">03</span>
-        <h3 class="d-title">{{ facts.judgment[2].title }}.</h3>
-        <p class="d-body">The account embeddings could have shipped as one team's similarity model. Instead I named the abstraction, wrote the design doc, and built the drift, coverage, and staleness plumbing that makes other teams safe to depend on it.</p>
-        <p class="d-out">One representation, productionizing with a first consumer — designed so the second one won't need me.</p>
-        <p class="d-ask">Ask me about {{ facts.judgment[2].ask_me_about }}.</p>
-      </li>
-      <li class="decision">
-        <span class="d-n">04</span>
-        <h3 class="d-title">{{ facts.judgment[3].title }}.</h3>
-        <p class="d-body">An upstream data loss silently broke partner attribution for $5B+/yr of revenue — no alert, because the pipeline kept producing plausible numbers. I traced it through 20+ components, sourced an alternate telemetry feed, and drove six months of backfills through quarter close. Then I rebuilt the thing that let it happen.</p>
-        <p class="d-out">~$45M/mo recovered and sustained · &lt;1% variance vs Finance · ~80–90% more partner accounts tracked.</p>
-        <p class="d-ask">Ask me about {{ facts.judgment[3].ask_me_about }}.</p>
-      </li>
-      <li class="decision">
-        <span class="d-n">05</span>
-        <h3 class="d-title">{{ facts.judgment[4].title }}.</h3>
-        <p class="d-body">The stress lab threw off ~500 failure signals per build across 20 workload types — more than a static test plan could triage. I put multi-armed bandits in charge of choosing the next scenario and tuned the scoring thresholds on outcomes.</p>
-        <p class="d-out">False positives −60%, test-infrastructure cost −40%, and 10+ top-severity incidents prevented before rollout.</p>
-        <p class="d-ask">Ask me about {{ facts.judgment[4].ask_me_about }}.</p>
-      </li>
-    </ol>
-  </div>
-</section>
-
-<section class="section" id="experience">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>Experience</h2>
-      <p class="sub">Nine years, four companies. One line per role — the full résumé is one click away.</p>
-    </div>
-    <table class="table restack">
-      <caption class="sr-only">Career summary: years, role, and one result per era</caption>
-      <thead><tr><th scope="col">Years</th><th scope="col">Role</th><th scope="col">One result</th></tr></thead>
-      <tbody>
-        {%- for row in facts.career_ledger %}
-        <tr>
-          <td class="yrs">{{ row.years }}</td>
-          <td><a href="{{ row.ref }}">{{ row.role }}</a></td>
-          <td class="num">{{ row.number }}</td>
-        </tr>
-        {%- endfor %}
-      </tbody>
-    </table>
-
-    <h3 class="sub-head">Leadership at {{ facts.identity.org }}</h3>
-    <ul class="leadership">
-      {%- for item in facts.record[0].leadership_band %}<li>{{ item }}</li>{% endfor %}
-      <li>led 4 data scientists + 2 interns at Walmart Labs to productionize an item-level placement workflow</li>
-    </ul>
-
-    <div class="actions exp-actions">
-      <a href="/resume/" class="btn btn-secondary" data-goatcounter-click="exp-resume-page">Full résumé</a>
-      <a href="{{ facts.resume.file }}" class="btn btn-secondary" data-goatcounter-click="exp-resume-pdf">Download PDF</a>
+<section class="home-section wrap" id="experience" aria-labelledby="experience-heading">
+  <div class="leadership-story">
+    <div><p class="eyebrow">Experience & leadership</p><h2 id="experience-heading">Build the system.<br />Bring the team.</h2></div>
+    <div class="leadership-copy">
+      <p>At Microsoft, I led a 4-team cross-org severity-2 response during the attribution recovery and aligned 8+ engineering and support teams around one customer-health program.</p>
+      <p>Previously at Walmart Labs, I led 4 data scientists and 2 interns to productionize an item-level placement workflow.</p>
+      <a class="text-link" href="/resume/" data-goatcounter-click="exp-resume-page">Full experience & résumé <span aria-hidden="true">↗</span></a>
     </div>
   </div>
+  <ol class="career-strip" aria-label="Career history">
+    {% for role in facts.record %}
+    <li><a href="/resume/#{{ role.id }}"><strong>{{ role.company }}</strong><span>{{ role.dates }}</span></a></li>
+    {% endfor %}
+  </ol>
 </section>
 
-<section class="section" id="writing">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>Writing</h2>
-      <p class="sub">What I've learned shipping ML and GenAI inside an enterprise.</p>
-    </div>
-    <ul class="posts">
-      {%- for w in facts.writing %}{% if w.url %}
-      <li>
-        <a class="post-row" href="{{ w.url }}">
-          <span class="post-date">{{ w.date | humanDate }}</span>
-          <span class="post-title">{{ w.title }}</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </a>
-      </li>
-      {%- endif %}{% endfor %}
-    </ul>
-  </div>
+<section class="home-section wrap home-writing" id="writing" aria-labelledby="writing-heading">
+  <div class="home-section-head"><h2 id="writing-heading">Notes from production</h2><a href="/writing/" class="text-link">All writing <span aria-hidden="true">↗</span></a></div>
+  <ul class="posts">
+    {% for w in facts.writing %}{% if w.url %}
+    <li><a class="post-row" href="{{ w.url }}"><span class="post-date">{{ w.date | humanDate }}</span><span class="post-title">{{ w.title }}</span><span class="post-arrow" aria-hidden="true">↗</span></a></li>
+    {% endif %}{% endfor %}
+  </ul>
 </section>
 
-<section class="section contact" id="contact">
+<section class="home-contact" id="contact" aria-labelledby="contact-heading">
   <div class="wrap">
-    <div class="section-head">
-      <h2>Get in touch.</h2>
+    <div class="contact-intro">
+      <div><h2 id="contact-heading">Let’s build something dependable.</h2><p>Open to senior opportunities in applied AI and ML leadership.</p></div>
+      <a href="mailto:{{ facts.identity.email }}" class="btn btn-primary" data-goatcounter-click="contact-email">Get in touch <span aria-hidden="true">↗</span></a>
     </div>
-    <p>I'm {{ facts.identity.name }}, {{ facts.identity.title }} at {{ facts.identity.org }} ({{ facts.identity.team }}). I lead the design and delivery of the systems above — the agents, the embeddings, and the attribution layer that Finance reconciles against. I'm looking at {{ facts.identity.open_to[0] }}, {{ facts.identity.open_to[1] }}, and {{ facts.identity.open_to[2] }} roles; if you're hiring for one, email me.</p>
-    <div class="actions">
-      <a href="mailto:{{ facts.identity.email }}" class="btn btn-primary" data-goatcounter-click="contact-email">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        {{ facts.identity.email }}
-      </a>
-      <a href="{{ facts.resume.file }}" class="btn btn-secondary" data-goatcounter-click="contact-resume-pdf">Résumé (PDF)</a>
-      <a href="{{ facts.identity.linkedin }}" class="text-link" data-goatcounter-click="contact-linkedin">LinkedIn</a>
-      <a href="{{ facts.identity.github }}" class="text-link" data-goatcounter-click="contact-github">GitHub</a>
-    </div>
+    <div class="contact-links"><a href="mailto:{{ facts.identity.email }}">{{ facts.identity.email }}</a><a href="{{ facts.identity.linkedin }}">LinkedIn</a><a href="{{ facts.identity.github }}">GitHub</a><a href="{{ facts.resume.file }}">Résumé (PDF)</a></div>
     <details class="disclosure">
       <summary>Plain-text summary, for your notes</summary>
       <div class="disclosure-body">

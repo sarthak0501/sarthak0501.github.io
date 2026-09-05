@@ -40,11 +40,10 @@ identity:
   status: Open to offers
 
 summary:
-  statement: I build LLM agents and ML systems that run in production.
+  statement: I make complex systems dependable.
   hero: >-
-    Nine years of ML and AI in production — autonomous LLM agents, a
-    fleet-scale embedding platform, and the revenue systems behind
-    $5B+/year that Finance reconciles against.
+    I build LLM agents and data platforms for incident response, customer
+    health, and revenue attribution at Microsoft Azure Storage.
   ats: >-
     Sarthak Bichhawa — Sr. Data & Applied Scientist, Microsoft (Azure
     Storage), Redmond WA. Targeting Staff / Principal Applied Scientist ·
@@ -63,20 +62,27 @@ summary:
 
 # The four headline receipts — one per kind of impact: money, customer
 # reliability, autonomous AI, human time. Each anchors to its evidence.
+homepage:
+  receipts: [incident, revenue, health]
+
 receipts:
-  - value: ~$45M/mo
+  - id: revenue
+    value: ~$45M/mo
     label: partner revenue attribution recovered, on a $5B+/yr platform
     sub: traced through 20+ components · reconciled against Finance actuals
     anchor: "/case/revenue-attribution/#recovery"
-  - value: 99%
+  - id: reliability
+    value: 99%
     label: performance-throttling incidents eliminated for the most critical customers
     sub: 92% across all paying customers · fleet-wide early warning
     anchor: "/case/data-trust/#throttling"
-  - value: hrs → min
+  - id: incident
+    value: hrs → min
     label: on-call incident diagnosis, autonomous multi-agent investigation
     sub: planner/executor loop on Azure OpenAI
     anchor: "/case/incident-agent/#trace"
-  - value: days → <2 min
+  - id: health
+    value: days → <2 min
     label: executive-review prep, plain-English questions over live telemetry
     sub: governed queries across 13 metric domains
     anchor: "/case/customer-health-agent/#evals"
@@ -148,7 +154,7 @@ systems:
     name: Account behavior embeddings
     what: Autoencoder + FAISS fingerprints compressing millions of storage accounts into searchable vectors for similarity, segmentation, and drift-based anomaly detection
     proof: millions of accounts · productionizing with a first consumer
-    status: PROD
+    status: Productionizing
     link: /case/account2vec/
     lanes: [ai, platform]
   - id: SYS-08

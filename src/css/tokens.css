@@ -1,10 +1,4 @@
-/* ============================================================
-   TOKENS — fourth edition
-   Three faces with strict roles (Fraunces = display, Inter =
-   everything else, Plex Mono = code only), one cream/ink/green
-   palette in light and dark, and nothing decorative. Every text
-   pair clears WCAG AA; every control boundary clears 3:1.
-   ============================================================ */
+/* Fifth edition: warm paper, dark ink, and a cobalt accent. */
 
 /* ---------- fonts (latin subsets, self-hosted) ---------- */
 @font-face {
@@ -46,68 +40,49 @@
 /* ---------- the palette ---------- */
 :root {
   color-scheme: light dark;
-
-  --bg: #f7f4ec;          /* page */
-  --bg-2: #f0ecE1;        /* tinted band, details panels, table heads */
-  --surface: #fdfcf8;     /* cards */
-
-  --text: #1f2a24;        /* 13.5:1 on bg */
-  --text-2: #4b564f;      /* 7.0:1 */
-  --text-3: #5c665e;      /* 5.4:1 — the floor, used for labels/meta only */
-
-  --line: #ddd8c9;        /* decorative hairlines */
-  --line-strong: #7a857b; /* control boundaries — 3.4:1 on bg (WCAG 1.4.11) */
-
-  --green: #23744d;       /* interactive only: links, buttons, focus */
-  --green-hover: #1a5c3c;
-  --on-green: #f7f4ec;
-  --green-tint: rgba(35, 116, 77, 0.08);
-
-  --warn: #9a4a22;        /* corrections and regressions in tables only */
-
-  --code-bg: #1b231e;     /* the one dark surface */
-  --code-text: #e3e8e0;
-  --code-muted: #9aa69c;
-  --code-kw: #8fd1ab;
-  --code-line: rgba(227, 232, 224, 0.12);
-
+  --bg: #f9f8f4;
+  --bg-2: #eef0f2;
+  --surface: #ffffff;
+  --text: #18252e;
+  --text-2: #46555f;
+  --text-3: #56646e;
+  --line: #d6dbdc;
+  --line-strong: #7c8993;
+  --accent: #284dcc;
+  --accent-hover: #19369b;
+  --on-accent: #ffffff;
+  --accent-tint: #edf1fb;
+  --warn: #9a4a22;
+  --code-bg: #19212b;
+  --code-text: #e6eaf0;
+  --code-muted: #a6b2c2;
+  --code-kw: #afc2ff;
+  --code-line: rgba(230, 234, 240, 0.14);
   --font-display: 'Fraunces', 'Fraunces Fallback', Georgia, serif;
   --font-sans: 'Inter', 'Inter Fallback', -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
-
-  --radius: 12px;
-  --radius-sm: 8px;
-  --maxw: 1040px;
-  --maxw-narrow: 720px;
+  --radius: 6px;
+  --radius-sm: 4px;
+  --maxw: 1120px;
+  --maxw-narrow: 760px;
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
-
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #151917;
-    --bg-2: #1c2220;
-    --surface: #1a1f1c;
-
-    --text: #eae7dc;
-    --text-2: #bec5ba;
-    --text-3: #9aa397;
-
-    --line: #2b322d;
-    --line-strong: #727d74;
-
-    --green: #6cc295;
-    --green-hover: #8ad3af;
-    --on-green: #101310;
-    --green-tint: rgba(108, 194, 149, 0.12);
-
-    --warn: #e8875a;
-
-    --code-bg: #0f1311;
-    --code-text: #e3e8e0;
-    --code-muted: #8f9b92;
-    --code-kw: #8fd1ab;
-    --code-line: rgba(227, 232, 224, 0.12);
+    --bg: #14181c;
+    --bg-2: #20272d;
+    --surface: #1c232a;
+    --text: #f0f0e9;
+    --text-2: #c4cdd3;
+    --text-3: #b0bcc4;
+    --line: #39434a;
+    --line-strong: #74848f;
+    --accent: #a7baff;
+    --accent-hover: #c7d3ff;
+    --on-accent: #14181c;
+    --accent-tint: #252f45;
+    --warn: #edaa86;
+    --code-bg: #0e141b;
   }
 }
-
-::selection { background: var(--green); color: var(--on-green); }
+::selection { background: var(--accent); color: var(--on-accent); }

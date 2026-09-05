@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light dark" />
-  <meta name="theme-color" content="#f7f4ec" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#151917" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f9f8f4" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#14181c" media="(prefers-color-scheme: dark)" />
   {%- set pageTitle = title if title else facts.identity.name + " — " + facts.identity.title + ", " + facts.identity.org %}
   {%- set pageDesc = desc if desc else facts.summary.hero %}
   {%- set shareTitle = ogTitle if ogTitle else pageTitle %}
@@ -35,6 +35,7 @@
   <link rel="preload" href="/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="/css/tokens.css" />
   <link rel="stylesheet" href="/css/site.css" />
+  {% if page.url == "/" %}<link rel="stylesheet" href="/css/home.css" />{% endif %}
   <script>document.documentElement.classList.add('js');</script>
 
   {% if page.url == "/" %}

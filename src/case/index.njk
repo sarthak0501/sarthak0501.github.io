@@ -2,23 +2,26 @@
 layout: layouts/base.njk
 permalink: /case/
 title: Work — Sarthak Bichhawa
-desc: "Six systems in production at Microsoft Azure Storage, each written up with the architecture, one artifact worth inspecting, results, and what went wrong."
+desc: "Six case studies from Microsoft Azure Storage: applied AI, revenue attribution, data reliability, embeddings, and experimentation. Architecture, ownership, results, and lessons."
 ogImage: /og/case-index.png
 ogImageAlt: "Work — six systems in production, written up with the architecture"
 ---
 <section class="page wrap">
   <nav class="crumb" aria-label="Breadcrumb"><a href="/">‹ Home</a></nav>
   <header class="list-head">
-    <h1 class="page-title">Work</h1>
-    <p class="standfirst">Six systems in production at Microsoft Azure Storage — each with users, an on-call rotation, and the number it moved. Every one opens to the architecture, the evals, and what went wrong.</p>
+    <h1 class="page-title">Work, in detail.</h1>
+    <p class="standfirst">Six systems I’ve worked on at Microsoft Azure Storage. Each case study covers what I owned, the architecture, the decisions, and the results. Production status is listed for each project.</p>
   </header>
   <ul class="cards">
     {%- for c in facts.cases %}
     {%- set proof = "" %}
+    {%- set projectStatus = "" %}
+    {%- for p in collections.all %}{% if p.url == c.slug %}{% set projectStatus = p.data.status %}{% endif %}{% endfor %}
     {%- for s in facts.systems %}{% if s.link == c.slug and not proof %}{% set proof = s.proof %}{% endif %}{% endfor %}
     <li>
       <a class="card" href="{{ c.slug }}">
         <span class="card-cat">{{ c.tag }}</span>
+        <span class="card-status">{{ projectStatus }}</span>
         <span class="card-title">{{ c.title }}</span>
         <span class="card-text">{{ c.tease }}</span>
         <span class="card-proof">
