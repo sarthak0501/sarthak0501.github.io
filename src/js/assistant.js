@@ -7,7 +7,7 @@
 
   const MAX_TURNS = 8;
   const REQUEST_TIMEOUT = 35000;
-  const UNAVAILABLE = 'Live AI is currently unavailable. Explore the public brief or browse the work below.';
+  const UNAVAILABLE = 'Live AI is currently unavailable.';
   const elements = {
     form: root.querySelector('#assistant-form'),
     live: root.querySelector('#assistant-live'),
@@ -27,7 +27,11 @@
     conversation: root.querySelector('#assistant-conversation'),
   };
   const modeButtons = [...root.querySelectorAll('[data-assistant-mode]')];
-  const promptButtons = [...root.querySelectorAll('[data-assistant-prompt]')];
+  const guideButtons = [...root.querySelectorAll('[data-guide]')];
+  const guidePanels = [...root.querySelectorAll('[data-guide-panel]')];
+  const guideAnswer = root.querySelector('#guide-answer');
+  const guideClose = root.querySelector('#guide-close');
+  let currentGuide = null;
   const canonicalOrigin = new URL(root.dataset.siteUrl).origin;
   let mode = 'question';
   let endpoint = '';
@@ -65,13 +69,12 @@
     elements.question.disabled = busy || mode !== 'question';
     elements.job.disabled = busy || mode !== 'match';
     modeButtons.forEach((button) => { button.disabled = busy; });
-    promptButtons.forEach((button) => { button.disabled = busy; });
     elements.conversation.setAttribute('aria-busy', String(busy));
   }
 
   function readyStatus() {
     if (checking) return setStatus('Checking availability…');
-    if (!available) return setStatus(UNAVAILABLE);
+    if (!available) return setStatus(`${UNAVAILABLE} The guided answers below are ready to explore.`);
     if (turns >= MAX_TURNS) return setStatus('This conversation has reached eight requests. Clear it to start a new conversation.');
     if (turns) return setStatus(`${MAX_TURNS - turns} requests left in this conversation.`);
     setStatus('Ready when you are. No text is sent until you send.');
@@ -83,11 +86,11 @@
     const matching = mode === 'match';
     elements.questionField.hidden = matching;
     elements.matchField.hidden = !matching;
-    elements.suggestions.hidden = matching;
+    elements.suggestions.hidden = false;
     elements.question.required = !matching;
     elements.job.required = matching;
     elements.sendLabel.textContent = matching ? 'Compare public experience' : 'Ask the assistant';
-    elements.note.textContent = matching ? 'Relevant experience, evidence, and gaps. No match score.' : 'Specific questions get the most useful answers.';
+    elements.note.textContent = matching ? 'Relevant experience, evidence, and gaps. No match score.' : 'Public questions only. Answers with sources.';
     modeButtons.forEach((button) => {
       button.setAttribute('aria-pressed', String(button.dataset.assistantMode === mode));
     });
@@ -322,21 +325,35 @@
       window.clearTimeout(timeout);
       checking = false;
       root.dataset.availability = available ? 'ready' : 'unavailable';
-      elements.live.hidden = !available;
+      elements.live.hidden = false;
       readyStatus();
       refreshControls();
     }
   }
 
   modeButtons.forEach((button) => button.addEventListener('click', () => setMode(button.dataset.assistantMode)));
-  promptButtons.forEach((button) => button.addEventListener('click', () => {
-    setMode('question');
-    elements.question.value = button.dataset.assistantPrompt;
-    refreshControls();
-    elements.question.focus();
+  function selectGuide(id) {
+    currentGuide = id;
+    guideAnswer.hidden = !id;
+    guidePanels.forEach((panel) => { panel.hidden = panel.dataset.guidePanel !== id; });
+    guideButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.guide === id)));
+  }
+  guideButtons.forEach((button) => button.addEventListener('click', () => {
+    selectGuide(currentGuide === button.dataset.guide ? null : button.dataset.guide);
   }));
+  guideClose.addEventListener('click', () => {
+    const previous = currentGuide;
+    selectGuide(null);
+    guideButtons.find((button) => button.dataset.guide === previous)?.focus();
+  });
   [elements.question, elements.job].forEach((input) => input.addEventListener('input', refreshControls));
   elements.form.addEventListener('submit', send);
+  [elements.question, elements.job].forEach((input) => input.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && (event.metaKey || event.ctrlKey) && !event.isComposing) {
+      event.preventDefault();
+      if (!elements.send.disabled) elements.form.requestSubmit();
+    }
+  }));
   elements.cancel.addEventListener('click', () => {
     if (!pending) return;
     pending.reason = 'user';
@@ -351,6 +368,7 @@
     elements.conversation.replaceChildren();
     elements.conversation.hidden = true;
     elements.welcome.hidden = false;
+    selectGuide(null);
     elements.question.value = '';
     elements.job.value = '';
     readyStatus();

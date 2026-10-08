@@ -27,9 +27,12 @@ for (const width of [320, 390, 768, 1440]) {
     await expect(page.locator('h1')).toContainText('Sarthak Bichhawa');
     await expect(page.locator('#assistant-status')).toContainText('currently unavailable');
     await expect(page.locator('#assistant-send')).toBeDisabled();
-    await expect(page.locator('#assistant-live')).toBeHidden();
-    await expect(page.locator('.portfolio-brief')).toContainText('Curated public facts');
-    await expect(page.locator('.brief-item')).toHaveCount(3);
+    await expect(page.locator('#assistant-live')).toBeVisible();
+    await expect(page.locator('#assistant-question')).toBeVisible();
+    await expect(page.locator('#assistant-question')).toBeEnabled();
+    expect(await page.locator('#assistant-question').evaluate(el => el.getBoundingClientRect().top)).toBeLessThan(900);
+    await expect(page.locator('[data-guide]')).toHaveCount(3);
+    await expect(page.locator('#guide-answer')).toBeHidden();
     const positions = await page.evaluate(() => ({
       assistant: document.querySelector('#assistant').getBoundingClientRect().top,
       work: document.querySelector('#work').getBoundingClientRect().top,
@@ -62,7 +65,7 @@ test('sending is explicit; model and visitor HTML stay text; citations link publ
     requests += 1;
     return route.fulfill(response({ ...answer, answer: '<img src=x onerror=alert(1)> [profile]' }));
   });
-  await page.getByRole('button', { name: /AI systems shipped/ }).click();
+  await page.getByRole('button', { name: /AI work/ }).click();
   expect(requests).toBe(0);
   await page.locator('#assistant-question').fill('<script>window.secret=true</script>');
   await page.locator('#assistant-send').click();
@@ -170,11 +173,11 @@ test('request timeout recovers controls', async ({ page }) => {
 
 test('keyboard entry and JavaScript-free public content remain usable', async ({ page, browser }) => {
   await enabled(page);
-  await page.getByRole('button', { name: /AI systems shipped/ }).focus();
+  await page.getByRole('button', { name: /AI work/ }).focus();
   await page.keyboard.press('Enter');
-  await expect(page.locator('#assistant-question')).toBeFocused();
-  await page.locator('#assistant-send').focus();
-  await page.keyboard.press('Enter');
+  await expect(page.locator('#guide-ai')).toBeVisible();
+  await page.locator('#assistant-question').fill('Give me the strongest case for Sarthak.');
+  await page.locator('#assistant-question').press('Control+Enter');
   await expect(page.locator('#assistant-status')).toContainText('Answer ready');
   const context = await browser.newContext({ javaScriptEnabled: false });
   const plain = await context.newPage();
@@ -213,7 +216,7 @@ test('mobile navigation and curated evidence links resolve', async ({ page }) =>
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
   await expect(page.locator('.nav-resume')).toBeVisible();
-  const evidence = await page.locator('.brief-item').evaluateAll(links => links.map(link => link.getAttribute('href')));
+  const evidence = await page.locator('.guide-sources a').evaluateAll(links => links.map(link => link.getAttribute('href')));
   for (const href of evidence) {
     await page.goto(href);
     const hash = new URL(page.url()).hash;
@@ -241,3 +244,61 @@ test('mobile live advocate and dark role results remain accessible', async ({ pa
   expect(a11y.violations).toEqual([]);
   await page.screenshot({ path: 'artifacts/assistant-dark-mobile-result.png', fullPage: true });
 });
+
+
+test('typing remains available offline; guided answers preserve drafts and never call the model', async ({ page }) => {
+  let modelCalls = 0;
+  await page.route(endpoint, route => { modelCalls++; return route.fulfill(response(answer)); });
+  await page.goto('/');
+  await expect(page.locator('#assistant-status')).toContainText('currently unavailable');
+  await page.locator('#assistant-question').fill('How would his experience help my team?');
+  await expect(page.locator('#assistant-send')).toBeDisabled();
+  for (const id of ['why', 'ai', 'leadership']) {
+    await page.locator(`[data-guide="${id}"]`).click();
+    await expect(page.locator(`[data-guide-panel="${id}"]`)).toBeVisible();
+    await expect(page.locator('[data-guide-panel]:visible')).toHaveCount(1);
+    await expect(page.locator('.guide-answer-head')).toContainText('Curated public answer');
+    await expect(page.locator('#assistant-question')).toHaveValue('How would his experience help my team?');
+  }
+  await page.locator('#guide-close').click();
+  await expect(page.locator('#guide-answer')).toBeHidden();
+  await expect(page.locator('[data-guide="leadership"]')).toBeFocused();
+  await page.getByRole('button', { name: 'Compare a role', exact: true }).click();
+  await page.locator('#assistant-job').fill('A public AI leadership role.');
+  await page.getByRole('button', { name: 'Ask a question', exact: true }).click();
+  await expect(page.locator('#assistant-question')).toHaveValue('How would his experience help my team?');
+  expect(modelCalls).toBe(0);
+  await expect(page.locator('.assistant-message--assistant')).toHaveCount(0);
+});
+
+for (const width of [320, 390, 1440]) {
+  test(`guided answers and project showcase ${width}px: progressive disclosure and keyboard navigation`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/');
+    for (const id of ['why', 'ai', 'leadership']) {
+      await page.locator(`[data-guide="${id}"]`).click();
+      const a11y = await new AxeBuilder({ page }).include('#assistant').withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
+      expect(a11y.violations).toEqual([]);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    }
+    await page.screenshot({ path: `artifacts/guide-open-${width}.png`, fullPage: true });
+    const tabs = page.locator('[data-work-tab]');
+    await expect(tabs).toHaveCount(3);
+    for (let i = 0; i < 3; i++) {
+      await tabs.nth(i).click();
+      await expect(tabs.nth(i)).toHaveAttribute('aria-selected', 'true');
+      await expect(page.locator('[data-work-panel]:visible')).toHaveCount(1);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      const a11y = await new AxeBuilder({ page }).include('#work').withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
+      expect(a11y.violations).toEqual([]);
+    }
+    await tabs.first().focus();
+    await page.keyboard.press('ArrowRight');
+    await expect(tabs.nth(1)).toBeFocused();
+    await expect(tabs.nth(1)).toHaveAttribute('aria-selected', 'true');
+    await page.keyboard.press('End');
+    await expect(tabs.last()).toBeFocused();
+    await page.keyboard.press('Home');
+    await expect(tabs.first()).toBeFocused();
+  });
+}

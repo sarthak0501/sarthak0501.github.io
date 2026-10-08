@@ -40,8 +40,7 @@ const productionizingCount = facts.systems.filter((item) => item.status === 'Pro
 // A missing fact fails generation instead of retaining an outdated claim.
 const PAGES = [
   {
-    slug: 'home', kicker: 'Applied AI & data platforms', title: facts.summary.statement,
-    emphasis: 'dependable.', sub: role,
+    slug: 'home', kicker: 'Applied AI & data platforms', title: 'AI that works. Where it matters.', sub: role,
     stats: [
       { value: receipt('revenue').value, label: receipt('revenue').label },
       { value: receipt('incident').value, label: 'On-call incident diagnosis' },
@@ -129,18 +128,18 @@ function html(page) {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><style>
 @font-face{font-family:Inter;src:url(data:font/woff2;base64,${inter}) format('woff2');font-weight:400 700}
 @font-face{font-family:Fraunces;src:url(data:font/woff2;base64,${fraunces}) format('woff2');font-weight:440 760}
-*{box-sizing:border-box}html,body{margin:0;width:1200px;height:630px;background:#f5f6f0;color:#20251f;font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}html,body{margin:0;width:1200px;height:630px;background:#ffffff;color:#1d1d1f;font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased}
 .card{position:relative;width:1200px;height:630px;padding:44px 64px 38px;display:flex;flex-direction:column;overflow:hidden}
 .top{display:flex;align-items:center;justify-content:space-between;min-height:40px}
-.brand{font-size:23px;font-weight:650;letter-spacing:-.04em}.brand-dot{color:#355b22}
-.tag{background:#ddf79a;color:#355b22;font-size:15px;font-weight:600;letter-spacing:.025em;border-radius:40px;padding:10px 16px;display:flex;align-items:center;gap:15px}.tag .arrow{font-size:23px;line-height:1}
-.kicker{margin-top:30px;color:#355b22;font-size:17px;font-weight:550;letter-spacing:.055em;text-transform:uppercase}
+.brand{font-size:23px;font-weight:650;letter-spacing:-.04em}.brand-dot{color:#3156c8}
+.tag{background:#eef2ff;color:#3156c8;font-size:15px;font-weight:600;letter-spacing:.025em;border-radius:40px;padding:10px 16px;display:flex;align-items:center;gap:15px}.tag .arrow{font-size:23px;line-height:1}
+.kicker{margin-top:30px;color:#3156c8;font-size:17px;font-weight:550;letter-spacing:.055em;text-transform:uppercase}
 .title{font-size:${size}px;font-weight:650;line-height:1.04;letter-spacing:-.065em;margin-top:14px;max-width:1072px;text-wrap:balance}
-.title em{font-family:Fraunces,Georgia,serif;font-weight:560;letter-spacing:-.05em;color:#355b22}
-.sub{font-size:25px;line-height:1.42;letter-spacing:-.02em;color:#4c5548;margin-top:17px;max-width:1020px}
-.stats{display:grid;grid-template-columns:repeat(${page.stats?.length || 1},minmax(0,1fr));gap:30px;list-style:none;padding:23px 0 0;margin:auto 0 0;border-top:1px solid #bcc8b1}
-.stats li{min-width:0}.stats b{display:block;font-weight:650;line-height:1.1;letter-spacing:-.055em;color:#355b22}.stats span{display:block;margin-top:9px;font-size:18px;line-height:1.35;letter-spacing:-.01em;max-width:315px;color:#4c5548}
-.foot{display:flex;align-items:center;justify-content:space-between;gap:32px;margin-top:auto;padding-top:24px;font-size:17px;color:#5c6656}.stats+.foot{margin-top:0;padding-top:26px}.foot .site{font-weight:550;color:#355b22}.foot .line{height:1px;background:#d3d9cc;flex:1}.foot .note{white-space:nowrap}
+.title em{font-family:Fraunces,Georgia,serif;font-weight:560;letter-spacing:-.05em;color:#3156c8}
+.sub{font-size:25px;line-height:1.42;letter-spacing:-.02em;color:#51515b;margin-top:17px;max-width:1020px}
+.stats{display:grid;grid-template-columns:repeat(${page.stats?.length || 1},minmax(0,1fr));gap:30px;list-style:none;padding:23px 0 0;margin:auto 0 0;border-top:1px solid #e2e2e8}
+.stats li{min-width:0}.stats b{display:block;font-weight:650;line-height:1.1;letter-spacing:-.055em;color:#3156c8}.stats span{display:block;margin-top:9px;font-size:18px;line-height:1.35;letter-spacing:-.01em;max-width:315px;color:#51515b}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:32px;margin-top:auto;padding-top:24px;font-size:17px;color:#656570}.stats+.foot{margin-top:0;padding-top:26px}.foot .site{font-weight:550;color:#3156c8}.foot .line{height:1px;background:#e2e2e8;flex:1}.foot .note{white-space:nowrap}
 </style></head><body><main class="card"><div class="top"><div class="brand">${esc(name)}<span class="brand-dot">.</span></div><div class="tag">PUBLIC PORTFOLIO<span class="arrow" aria-hidden="true">↗</span></div></div><div class="kicker">${esc(page.kicker)}</div><div class="title">${title}</div>${page.sub ? `<div class="sub">${esc(page.sub)}</div>` : ''}${stats ? `<ul class="stats">${stats}</ul>` : ''}<div class="foot"><span class="site">${esc(site)}</span><span class="line"></span><span class="note">Work, with the evidence.</span></div></main></body></html>`;
 }
 
