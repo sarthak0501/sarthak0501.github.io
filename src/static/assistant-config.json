@@ -1,4 +1,4 @@
 {
-  "enabled": false,
-  "endpoint": ""
+  "enabled": true,
+  "endpoint": "https://sarthak-portfolio-assistant.sarthak0501-github-io.workers.dev/api/assistant"
 }

@@ -90,7 +90,7 @@
     elements.question.required = !matching;
     elements.job.required = matching;
     elements.sendLabel.textContent = matching ? 'Compare public experience' : 'Ask the assistant';
-    elements.note.textContent = matching ? 'Relevant experience, evidence, and gaps. No match score.' : 'Public questions only. Answers with sources.';
+    elements.note.textContent = matching ? 'Public descriptions only. Sent to OpenAI when you send.' : 'Public questions only. Sent to OpenAI when you send.';
     modeButtons.forEach((button) => {
       button.setAttribute('aria-pressed', String(button.dataset.assistantMode === mode));
     });

@@ -13,7 +13,7 @@
   "vars": {
     "ASSISTANT_ENABLED": "true",
     "IP_MINUTE_LIMIT": "5",
-    "IP_DAILY_LIMIT": "30",
+    "IP_DAILY_LIMIT": "50",
     "GLOBAL_DAILY_LIMIT": "100",
     "GLOBAL_MONTHLY_LIMIT": "1000",
     "DAILY_BUDGET_CENTS": "150",

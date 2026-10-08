@@ -7,6 +7,13 @@ const source = { id: 'profile', title: 'Public résumé', url: 'https://sarthak0
 const answer = { answer: 'Documented public experience. [profile]', evidence: [source], matches: [], unknowns: [] };
 const response = (json, status = 200) => ({ status, contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify(json) });
 
+test.beforeEach(async ({ context, page }) => {
+  // Never use the published service from UI tests, even after production activation.
+  // Explicit page-level mock handlers in enabled() take precedence over this guard.
+  await context.route(/\/api\/assistant(?:[?#]|$)/, route => route.abort('blockedbyclient'));
+  await page.route('**/assistant-config.json', route => route.fulfill(response({ enabled: false, endpoint: '' })));
+});
+
 async function enabled(page, handler = route => route.fulfill(response(answer))) {
   await page.route('**/assistant-config.json', route => route.fulfill(response({ enabled: true, endpoint })));
   await page.route(endpoint, handler);
@@ -65,6 +72,8 @@ test('sending is explicit; model and visitor HTML stay text; citations link publ
     requests += 1;
     return route.fulfill(response({ ...answer, answer: '<img src=x onerror=alert(1)> [profile]' }));
   });
+  await expect(page.locator('#assistant-input-note')).toBeVisible();
+  await expect(page.locator('#assistant-input-note')).toContainText('Sent to OpenAI when you send.');
   await page.getByRole('button', { name: /AI work/ }).click();
   expect(requests).toBe(0);
   await page.locator('#assistant-question').fill('<script>window.secret=true</script>');
@@ -89,6 +98,8 @@ test('public job matching shows relevant evidence, gaps and unknowns', async ({ 
     ], unknowns: ['Kubernetes experience is not established.'] }));
   });
   await page.getByRole('button', { name: /Compare a role/ }).click();
+  await expect(page.locator('#assistant-input-note')).toBeVisible();
+  await expect(page.locator('#assistant-input-note')).toContainText('Sent to OpenAI when you send.');
   await expect(page.locator('#assistant-question')).toBeHidden();
   await page.locator('#assistant-job').fill('Public role: LLM agents, PhD, Kubernetes.');
   await page.locator('#assistant-send').click();
