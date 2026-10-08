@@ -333,21 +333,23 @@ test('persistent atomic reservations prevent concurrent calls exceeding the glob
   assert.equal((await reserve(restarted, reserveInput('a'.repeat(64)))).allowed, false);
 });
 
-test('model changes preserve existing spend and visitor counts under unchanged dollar caps', async t => {
+test('a reviewed daily budget increase preserves spend, visitor counts and the monthly cap', async t => {
   const timestamp = Date.parse('2026-10-08T12:00:00Z');
   t.mock.method(Date, 'now', () => timestamp);
-  const { object, storage } = environment();
+  const { object, storage } = environment({ DAILY_BUDGET_CENTS: '150' });
   const input = reserveInput('a'.repeat(64));
   const existing = {
     day: '2026-10-08', month: '2026-10', dailyRequests: 28, monthlyRequests: 28,
     dailyInputTokens: 560000, monthlyInputTokens: 560000,
     dailyOutputTokens: 28000, monthlyOutputTokens: 28000,
-    dailyCostMicros: 300000, monthlyCostMicros: 300000
+    dailyCostMicros: 1500000, monthlyCostMicros: 1500000
   };
   const visitorKey = `ip:2026-10-08:${input.key}`;
   await storage.put('global', existing);
   await storage.put(visitorKey, { requests: 30, recent: [], expires: timestamp + 43200000 });
-  assert.equal((await reserve(object, input)).allowed, true);
+  assert.equal((await reserve(object, input)).code, 'budget_exhausted');
+  const increased = new BudgetGuard({ storage }, { DAILY_BUDGET_CENTS: '500' });
+  assert.equal((await reserve(increased, input)).allowed, true);
   const current = await storage.get('global');
   assert.equal(current.dailyRequests, 29);
   assert.equal(current.monthlyRequests, 29);
@@ -355,10 +357,10 @@ test('model changes preserve existing spend and visitor counts under unchanged d
   assert.equal(current.monthlyCostMicros, existing.monthlyCostMicros + input.costMicros);
   assert.equal(current.dailyOutputTokens, existing.dailyOutputTokens + 3000);
   assert.equal((await storage.get(visitorKey)).requests, 31);
-  await storage.put('global', { ...current, dailyCostMicros: 1500000 - input.costMicros + 1 });
-  assert.equal((await reserve(object, input)).code, 'budget_exhausted');
+  await storage.put('global', { ...current, dailyCostMicros: 5000000 - input.costMicros + 1 });
+  assert.equal((await reserve(increased, input)).code, 'budget_exhausted');
   await storage.put('global', { ...current, dailyCostMicros: 0, monthlyCostMicros: 15000000 - input.costMicros + 1 });
-  assert.equal((await reserve(object, input)).code, 'budget_exhausted');
+  assert.equal((await reserve(increased, input)).code, 'budget_exhausted');
   assert.equal((await storage.get(visitorKey)).requests, 31);
 });
 

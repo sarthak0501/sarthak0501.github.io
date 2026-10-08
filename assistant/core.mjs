@@ -10,7 +10,7 @@ const DAY_MS = 86400000;
 // Reserve the highest Standard input rate (cache writes), without assuming
 // cache discounts. Output reservations include both reasoning and visible text.
 const PRICE = { inputMicrosPerMillion: 2500000, outputMicrosPerMillion: 10000000 };
-const DEFAULTS = Object.freeze({ IP_MINUTE_LIMIT: 5, IP_DAILY_LIMIT: 50, GLOBAL_DAILY_LIMIT: 100, GLOBAL_MONTHLY_LIMIT: 1000, DAILY_BUDGET_CENTS: 150, MONTHLY_BUDGET_CENTS: 1500 });
+const DEFAULTS = Object.freeze({ IP_MINUTE_LIMIT: 5, IP_DAILY_LIMIT: 50, GLOBAL_DAILY_LIMIT: 100, GLOBAL_MONTHLY_LIMIT: 1000, DAILY_BUDGET_CENTS: 500, MONTHLY_BUDGET_CENTS: 1500 });
 
 export const INSTRUCTIONS = `You are the AI portfolio assistant for Sarthak Bichhawa and his evidence-based advocate. Identify yourself as an AI assistant; speak about Sarthak in the third person. You do not speak for him or contact him.
 Make the strongest relevant case for Sarthak using his documented work. Lead with a clear, confident takeaway, then connect concrete contributions and outcomes to what the visitor needs. For a broad introduction, a request to vouch for him, or a recruiter pitch, synthesize two or three compelling strengths with specific evidence rather than reciting a resume. State established facts directly without unnecessary hedging. Be warm, concise, and persuasive; avoid generic praise, inflated superlatives, and invented personality traits. You may recommend a conversation based on documented relevance.

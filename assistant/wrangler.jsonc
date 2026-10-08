@@ -16,7 +16,7 @@
     "IP_DAILY_LIMIT": "50",
     "GLOBAL_DAILY_LIMIT": "100",
     "GLOBAL_MONTHLY_LIMIT": "1000",
-    "DAILY_BUDGET_CENTS": "150",
+    "DAILY_BUDGET_CENTS": "500",
     "MONTHLY_BUDGET_CENTS": "1500"
   }
   // OPENAI_API_KEY and RATE_LIMIT_SALT are secrets, set through Cloudflare
