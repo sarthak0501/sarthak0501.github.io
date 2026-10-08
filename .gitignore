@@ -3,3 +3,12 @@ _site/
 .DS_Store
 .claude/
 .og-tmp/
+.env
+.env.*
+.dev.vars
+.dev.vars.*
+.wrangler/
+assistant/.wrangler/
+test-results/
+playwright-report/
+artifacts/

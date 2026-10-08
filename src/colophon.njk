@@ -69,10 +69,19 @@ ogImageAlt: "How this site is built"
         <ul>
           <li><strong>Eleventy 3 + Nunjucks</strong>, built and deployed by GitHub Actions to GitHub Pages.</li>
           <li><strong>Self-hosted type</strong>, latin subsets only: Inter for the interface and headings, <a href="https://fonts.google.com/specimen/Fraunces">Fraunces</a> for editorial accents, IBM Plex Mono for code. No font CDN.</li>
-          <li><strong>Plain CSS and one small script</strong> — the mobile menu, the copy button, and the run-trace viewer. Every page works with JavaScript disabled; nothing animates on load.</li>
+          <li><strong>Plain CSS and JavaScript</strong> — the mobile menu, copy button, run-trace viewer, and portfolio assistant. The résumé, case studies and contact links remain available with JavaScript disabled.</li>
           <li><strong>Analytics:</strong> <a href="https://www.goatcounter.com/">GoatCounter</a> — no cookies, no fingerprinting, counts only.</li>
           <li><strong>Per-page preview images</strong> rendered by a build script from the same templates, committed with the site.</li>
         </ul>
+      </div>
+    </section>
+
+    <section class="case-sec">
+      <h2 id="assistant-privacy">The AI portfolio assistant</h2>
+      <div class="prose">
+        <p>The assistant explains the public record and compares public job descriptions with documented experience. It is an AI assistant, not Sarthak speaking. Its source material is generated from the same approved facts as the portfolio, with links back to the résumé and case studies. Unknown details remain unknown; a role comparison shows evidence and gaps.</p>
+        <p>When enabled, sending a question transmits your text and up to two previous questions to a server and OpenAI. Please use public job descriptions and omit confidential or personal information. This site does not save conversations: the visible history stays in this tab until cleared or reloaded. The server stores temporary rate-limit identifiers and usage counters, and requests no saved model conversation. Cloudflare and OpenAI may retain operational or abuse-prevention data under their own policies.</p>
+        <p>API credentials stay on the server. Input limits, citation checks, rate limits and conservative spending reservations bound each request. If the service is unavailable, the public sources and contact links remain accessible.</p>
       </div>
     </section>
 

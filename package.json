@@ -3,14 +3,24 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "eleventy",
+    "build": "node scripts/build-assistant-knowledge.mjs && eleventy",
     "serve": "eleventy --serve",
     "lint:receipts": "node scripts/receipts-lint.mjs",
-    "og": "node scripts/og-gen.mjs"
+    "og": "node scripts/og-gen.mjs",
+    "test:assistant": "node --test tests/*.test.mjs",
+    "test:browser": "playwright test",
+    "assistant:build": "node scripts/build-assistant-knowledge.mjs",
+    "assistant:check": "npm run assistant:build && wrangler deploy --dry-run --config assistant/wrangler.jsonc",
+    "assistant:deploy": "npm run assistant:build && wrangler deploy --config assistant/wrangler.jsonc",
+    "assistant:configure": "node scripts/configure-assistant.mjs",
+    "assistant:eval": "node scripts/eval-assistant-live.mjs"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.1.2",
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.64.0",
     "js-yaml": "^4.1.0",
-    "sharp": "^0.34.2"
+    "sharp": "^0.34.2",
+    "wrangler": "^4.148.0"
   }
 }

@@ -1,17 +1,18 @@
 /* Editorial homepage: identity, evidence, selected work, and leadership. */
-.home-hero { display: grid; grid-template-columns: minmax(0, 1fr) 196px; gap: 52px; align-items: center; padding-top: 60px; padding-bottom: 44px; }
+.home-hero { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 44px; align-items: center; padding-top: 40px; padding-bottom: 36px; }
 .home-hero > *, .home-section > * { min-width: 0; }
-.hero-title { font-family: var(--font-sans); font-size: clamp(2.5rem, 1.2rem + 4vw, 4rem); font-weight: 500; letter-spacing: -0.055em; line-height: 1.07; margin-top: 18px; text-wrap: balance; }
+.hero-title { font-family: var(--font-sans); font-size: clamp(2rem, 1.35rem + 2vw, 3rem); font-weight: 500; letter-spacing: -0.055em; line-height: 1.07; margin-top: 12px; text-wrap: balance; }
+.hero-statement { display: block; font-size: clamp(1.0625rem, .9rem + .65vw, 1.375rem); line-height: 1.4; letter-spacing: -.025em; margin-top: 10px; }
 .hero-title em { font-family: var(--font-display); font-weight: 500; color: var(--accent); letter-spacing: -0.045em; }
-.hero-intro { max-width: 56ch; margin-top: 24px; color: var(--text-2); font-size: 1.0625rem; line-height: 1.65; }
-.home-hero .actions { margin-top: 28px; gap: 24px; }
+.hero-intro { max-width: 61ch; margin-top: 14px; color: var(--text-2); font-size: 1rem; line-height: 1.65; }
+.home-hero .actions { margin-top: 12px; gap: 24px; }
 .home-hero .btn { gap: 20px; }
-.hero-person { border-left: 1px solid var(--line); padding-left: 28px; }
-.hero-person img { width: 112px; height: 112px; object-fit: cover; border-radius: var(--radius-sm); margin-bottom: 18px; }
+.hero-person { display: flex; gap: 16px; align-items: center; border-left: 1px solid var(--line); padding-left: 24px; }
+.hero-person img { width: 72px; height: 88px; object-fit: cover; border-radius: var(--radius-sm); flex: none; }
 .person-role { font-size: 0.9375rem; font-weight: 600; }
 .person-context { margin-top: 8px; font-size: 0.8125rem; color: var(--text-3); }
 .person-link { display: inline-block; margin-top: 8px; padding: 5px 0; font-size: 0.875rem; }
-.home-outcomes { list-style: none; padding: 26px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+.home-outcomes { list-style: none; margin-top: 36px; padding: 26px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
 .home-outcomes li { min-width: 0; }
 .home-outcomes li + li { padding-left: 28px; border-left: 1px solid var(--line); }
 .home-outcomes a { display: block; color: var(--text); text-decoration: none; }
@@ -85,14 +86,16 @@
 .contact-links a { padding: 6px 0; overflow-wrap: anywhere; }
 .home-contact .disclosure { margin-top: 24px; }
 @media (max-width: 900px) {
-  .home-hero { grid-template-columns: minmax(0, 1fr) 165px; gap: 28px; }
-  .hero-person { padding-left: 22px; }
+  .home-hero { grid-template-columns: minmax(0, 1fr) 248px; gap: 24px; }
+  .hero-person { padding-left: 18px; gap: 12px; }
+  .hero-person img { width: 60px; height: 76px; }
   .featured-copy, .featured-system { padding: 24px; }
   .leadership-story { gap: 28px; }
 }
 @media (max-width: 760px) {
-  .home-hero { padding-top: 36px; padding-bottom: 32px; }
-  .hero-title { font-size: clamp(2.25rem, 5.8vw, 3rem); }
+  .home-hero { padding-top: 28px; padding-bottom: 28px; grid-template-columns: 1fr; gap: 20px; }
+  .hero-title { font-size: clamp(2rem, 5.8vw, 2.75rem); }
+  .hero-person { border: 0; padding: 0; }
   .home-outcomes { gap: 20px; }
   .home-outcomes li + li { padding-left: 20px; }
   .featured-case { grid-template-columns: 1fr; }
@@ -105,14 +108,14 @@
   .contact-intro { flex-wrap: wrap; }
 }
 @media (max-width: 540px) {
-  .home-hero { grid-template-columns: 1fr; gap: 26px; }
-  .hero-title { font-size: clamp(2.125rem, 8.2vw, 2.875rem); }
-  .hero-intro { margin-top: 20px; }
+  .home-hero { gap: 18px; }
+  .hero-title { font-size: clamp(1.875rem, 8.2vw, 2.5rem); }
+  .hero-intro { margin-top: 14px; }
   .hero-person { display: flex; gap: 16px; align-items: center; padding: 0; border: 0; }
   .hero-person img { width: 64px; height: 64px; margin: 0; flex: none; }
   .person-context { margin-top: 4px; }
   .person-link { margin-top: 4px; }
-  .home-hero .actions { gap: 14px 20px; }
+  .home-hero .actions { gap: 6px 20px; }
   .home-hero .actions .btn { flex: 0 1 auto; }
   .home-outcomes { grid-template-columns: 1fr; gap: 20px; padding: 22px 0; }
   .home-outcomes li + li { border: 0; padding: 0; }

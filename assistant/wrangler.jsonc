@@ -1,0 +1,24 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "sarthak-portfolio-assistant",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-10-07",
+  "workers_dev": true,
+  "send_metrics": false,
+  "observability": { "enabled": false },
+  "durable_objects": {
+    "bindings": [{ "name": "BUDGET_GUARD", "class_name": "BudgetGuard" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["BudgetGuard"] }],
+  "vars": {
+    "ASSISTANT_ENABLED": "true",
+    "IP_MINUTE_LIMIT": "5",
+    "IP_DAILY_LIMIT": "30",
+    "GLOBAL_DAILY_LIMIT": "100",
+    "GLOBAL_MONTHLY_LIMIT": "1000",
+    "DAILY_BUDGET_CENTS": "150",
+    "MONTHLY_BUDGET_CENTS": "1500"
+  }
+  // OPENAI_API_KEY and RATE_LIMIT_SALT are secrets, set through Cloudflare
+  // settings or `wrangler secret put`. Never place secrets in this file.
+}

@@ -35,7 +35,7 @@
   <link rel="preload" href="/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="stylesheet" href="/css/tokens.css" />
   <link rel="stylesheet" href="/css/site.css" />
-  {% if page.url == "/" %}<link rel="stylesheet" href="/css/home.css" />{% endif %}
+  {% if page.url == "/" %}<link rel="stylesheet" href="/css/home.css" /><link rel="stylesheet" href="/css/assistant.css" />{% endif %}
   <script>document.documentElement.classList.add('js');</script>
 
   {% if page.url == "/" %}
@@ -61,6 +61,7 @@
   {% endif %}
 
   <script src="/js/main.js" defer></script>
+  {% if page.url == "/" %}<script src="/js/assistant.js" defer></script>{% endif %}
 </head>
 <body>
 
