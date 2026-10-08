@@ -57,7 +57,7 @@ npm run test:assistant
 npm run test:browser
 ```
 
-The evaluations make real, capped model requests using synthetic public prompts. They check grounding, unsupported questions, prompt injection, source links and role gaps; review the complete answers as well as the automated result. They deliberately space requests to respect rate limits. `assistant:configure` makes a health request without invoking the model and refuses an unavailable Worker. It writes only the public URL to `src/static/assistant-config.json`.
+The evaluations make real, capped model requests using synthetic public prompts. They check confident evidence-backed advocacy, grounding, unsupported questions, prompt injection, source links and role gaps; review the complete answers as well as the automated result. They deliberately space requests to respect rate limits. `assistant:configure` makes a health request without invoking the model and refuses an unavailable Worker. It writes only the public URL to `src/static/assistant-config.json`.
 
 After passing evaluations and reviewing the answers, commit and push the configuration file to `main` to publish activation. In the Codex chat, say **“API setup is complete; the public Worker URL is …”** and the assistant can finish these checks and publication. No key is needed in chat.
 

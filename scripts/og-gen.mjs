@@ -1,77 +1,167 @@
-// Per-page preview images (1200×630), rendered from an HTML template with the
-// site's own fonts and palette by the Playwright headless shell, so the card
-// looks like the page it links to. Run locally (`npm run og`); output is
-// committed because CI has no browser.
-import { execFileSync } from "node:child_process";
-import { mkdirSync, writeFileSync, readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
-import { homedir } from "node:os";
-import yaml from "js-yaml";
+// Per-page social cards (1200 × 630), rendered with the site's own fonts.
+// Run `npm run og` locally. PNGs are committed so publication needs no browser.
+import { mkdirSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { chromium } from '@playwright/test';
+import yaml from 'js-yaml';
 
-const facts = yaml.load(readFileSync("src/_data/facts.yaml", "utf8"));
-const SHELL = join(homedir(), "Library/Caches/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-mac-arm64/chrome-headless-shell");
-const FONTS = resolve("src/fonts");
-const TMP = resolve(".og-tmp");
-
+const facts = yaml.load(readFileSync('src/_data/facts.yaml', 'utf8'));
 const name = facts.identity.name;
-const role = `${facts.identity.title} · ${facts.identity.org}, ${facts.identity.team}`;
-const r = facts.receipts;
+const role = `${facts.identity.title} · ${facts.identity.org} ${facts.identity.team}`;
+const site = new URL(facts.meta.site_url).hostname;
+const receipt = (id) => {
+  const result = facts.receipts.find((item) => item.id === id);
+  if (!result) throw new Error(`Missing canonical receipt: ${id}`);
+  return result;
+};
+const system = (id) => {
+  const result = facts.systems.find((item) => item.id === id);
+  if (!result) throw new Error(`Missing canonical system: ${id}`);
+  return result;
+};
+const metric = (text, pattern, label) => {
+  const result = String(text).match(pattern);
+  if (!result) throw new Error(`Missing canonical metric: ${label}`);
+  return result[1] ?? result[0];
+};
+const writing = (url) => {
+  const result = facts.writing.find((item) => item.url === url);
+  if (!result) throw new Error(`Missing canonical writing entry: ${url}`);
+  return result;
+};
+const microsoft = facts.record.find((item) => item.id === 'record-microsoft');
+const microsoftBullets = microsoft.workstreams.flatMap((item) => item.bullets);
+const financeReconciliation = microsoftBullets.find((text) => text.includes('variance vs Finance'));
+const falsePositives = microsoftBullets.find((text) => text.includes('false positives'));
+const productionizingCount = facts.systems.filter((item) => item.status === 'Productionizing'
+  && facts.cases.some((itemCase) => itemCase.slug === item.link)).length;
 
-// kicker: small label; title: the big line (may contain <em>); sub: one line; stats: up to 3 {v,d}
+// Metrics come from facts.yaml by ID, with extraction checks for non-receipts.
+// A missing fact fails generation instead of retaining an outdated claim.
 const PAGES = [
-  { slug: "home", kicker: role, title: facts.summary.statement, stats: [{ value: r[0].value, label: "partner revenue attribution recovered" }, { value: r[2].value, label: "on-call incident diagnosis" }, { value: r[3].value, label: "executive-review prep" }] },
-  { slug: "case-index", kicker: "Work", title: "Six systems in production, written up with the architecture.", sub: "Each with users, an on-call rotation, and the number it moved." },
-  { slug: "case-incident-agent", kicker: "AI & agents · case study", title: "The incident agent", sub: "Autonomous severity-2 investigation — multi-hour investigations → minutes.", stats: [{ value: "hrs → min", label: "on-call diagnosis" }, { value: "4", label: "reusable MCP servers" }, { value: "100%", label: "of runs traced" }] },
-  { slug: "case-customer-health-agent", kicker: "AI & agents · case study", title: "The customer-health agent", sub: "Plain-English questions over live telemetry — days to under two minutes.", stats: [{ value: "days → <2 min", label: "time-to-insight" }, { value: "13", label: "governed metric domains" }, { value: "~180", label: "golden-set eval cases" }] },
-  { slug: "case-revenue-attribution", kicker: "Revenue systems · case study", title: "The attribution recovery", sub: "A silent upstream failure on a $5B+/yr platform — traced, recovered, redesigned.", stats: [{ value: "~$45M/mo", label: "recovered and sustained" }, { value: "20+", label: "pipeline components traced" }, { value: "<1%", label: "variance vs Finance" }] },
-  { slug: "case-data-trust", kicker: "Data platform · case study", title: "The data-trust platform", sub: "Quality gates, an org-wide portal, and an LLM lineage engine that reads pipeline code.", stats: [{ value: "400+", label: "datasets profiled hourly" }, { value: "~88%", label: "silent row loss caught" }, { value: "99%", label: "throttling incidents eliminated" }] },
-  { slug: "case-account2vec", kicker: "Applied ML · case study", title: "Account behavior embeddings", sub: "Every storage account compressed to a vector fingerprint.", stats: [{ value: "millions", label: "of accounts embedded" }, { value: "3 tiers", label: "account · subscription · customer" }, { value: "1st", label: "consumer productionizing" }] },
-  { slug: "case-stress-lab", kicker: "Experimentation · case study", title: "The stress lab", sub: "Multi-armed bandits decide what to test next — ship/hold calls per build.", stats: [{ value: "10+", label: "top-severity incidents prevented" }, { value: "−40%", label: "test-infrastructure cost" }, { value: "−60%", label: "false positives" }] },
-  { slug: "resume", kicker: "Résumé", title: `${name}`, sub: `${role}. Updated ${facts.meta.resume_rev}.` },
-  { slug: "receipts", kicker: "Sources and corrections", title: "Where every number comes from.", sub: "One source file, synced to the résumé; a build check refuses contradictions." },
-  { slug: "colophon", kicker: "How this site is built", title: "Eleventy, one source of truth, a build check.", sub: "Self-hosted type, no frameworks, every page works without JavaScript." },
-  { slug: "writing", kicker: "Writing", title: "Shipping ML and GenAI inside an enterprise.", sub: "Essays from production." },
-  { slug: "writing-genai", kicker: "Essay · April 2026", title: "Shipping GenAI in enterprise: what actually breaks", sub: "Demos lie · grounding is the product · evals before users." },
-  { slug: "writing-a2v", kicker: "Essay · April 2026", title: "Why we built account embeddings as a platform, not a model", sub: "The feature matrix, the drift plumbing, and the doc that names the abstraction." },
+  {
+    slug: 'home', kicker: 'Applied AI & data platforms', title: facts.summary.statement,
+    emphasis: 'dependable.', sub: role,
+    stats: [
+      { value: receipt('revenue').value, label: receipt('revenue').label },
+      { value: receipt('incident').value, label: 'On-call incident diagnosis' },
+      { value: receipt('health').value, label: 'Executive-review preparation' },
+    ],
+  },
+  {
+    slug: 'case-index', kicker: 'Selected work', title: 'Behind the work.',
+    sub: 'The architecture, decisions, and public evidence behind the systems.',
+    stats: [
+      { value: String(facts.cases.length), label: 'Public engineering case studies' },
+      { value: String(productionizingCount), label: 'Project productionizing with a first consumer' },
+    ],
+  },
+  {
+    slug: 'case-incident-agent', kicker: 'AI & agents / Case study', title: 'The incident agent',
+    sub: 'Autonomous severity-2 triage with a planner / executor loop.',
+    stats: [
+      { value: receipt('incident').value, label: 'On-call incident diagnosis' },
+      { value: metric(system('SYS-03').proof, /^(\d+) /, 'MCP servers'), label: 'Reusable MCP servers in org use' },
+    ],
+  },
+  {
+    slug: 'case-customer-health-agent', kicker: 'AI & agents / Case study', title: 'The customer-health agent',
+    sub: 'Plain-English questions become governed live telemetry queries.',
+    stats: [
+      { value: receipt('health').value, label: 'Executive-review preparation' },
+      { value: metric(system('SYS-02').what, /(\d+) metric domains/, 'metric domains'), label: 'Governed metric domains' },
+    ],
+  },
+  {
+    slug: 'case-revenue-attribution', kicker: 'Revenue systems / Case study', title: 'The attribution recovery',
+    sub: 'A silent upstream failure on a $5B+/yr platform. Recovered and redesigned.',
+    stats: [
+      { value: receipt('revenue').value, label: 'Partner revenue attribution recovered' },
+      { value: metric(receipt('revenue').sub, /(\d+\+) components/, 'pipeline components'), label: 'Pipeline components traced' },
+      { value: metric(financeReconciliation, /(<\d+%)/, 'Finance variance'), label: 'Variance vs Finance actuals' },
+    ],
+  },
+  {
+    slug: 'case-data-trust', kicker: 'Data platform / Case study', title: 'The data-trust platform',
+    sub: 'Quality gates, an org-wide discovery portal, and an LLM lineage engine.',
+    stats: [
+      { value: metric(system('SYS-05').proof, /^(\d+\+)/, 'datasets'), label: 'Production datasets profiled hourly' },
+      { value: metric(system('SYS-05').proof, /(\d+%) silent row loss/, 'row loss'), label: 'Silent row loss caught' },
+      { value: receipt('reliability').value, label: 'Throttling incidents eliminated for the most critical customers' },
+    ],
+  },
+  {
+    slug: 'case-account2vec', kicker: 'Applied ML / Case study', title: 'Account behavior embeddings',
+    sub: 'Autoencoder + FAISS fingerprints for similarity, segmentation, and drift detection.',
+    stats: [
+      { value: metric(system('SYS-07').proof, /^(millions)/i, 'account scale'), label: 'Storage accounts represented' },
+      { value: system('SYS-07').status, label: 'With a first consumer' },
+    ],
+  },
+  {
+    slug: 'case-stress-lab', kicker: 'Experimentation / Case study', title: 'The stress lab',
+    sub: 'Adaptive simulations and bandit-prioritized tests inform per-build ship / hold calls.',
+    stats: [
+      { value: metric(system('SYS-08').proof, /^(\d+\+)/, 'incidents prevented'), label: 'Major customer incidents prevented' },
+      { value: metric(system('SYS-08').proof, /(\d+%)$/, 'test cost'), label: 'Test-infrastructure cost reduction' },
+      { value: metric(falsePositives, /(\d+%)\./, 'false positives'), label: 'False-positive reduction' },
+    ],
+  },
+  { slug: 'resume', kicker: 'Public résumé', title: name, sub: `${role}. Source revision ${facts.meta.resume_rev}.` },
+  { slug: 'receipts', kicker: 'Sources & corrections', title: 'Where every number comes from.', sub: 'Public claims, evidence links, and a single source synced to the résumé.' },
+  { slug: 'colophon', kicker: 'How this site is built', title: 'A small site. A clear source of truth.', sub: 'Static Eleventy pages, self-hosted type, and a server-side AI portfolio assistant.' },
+  { slug: 'writing', kicker: 'Field notes', title: 'Shipping ML and GenAI in enterprise.', sub: 'Lessons from production, written down.' },
+  { slug: 'writing-genai', kicker: 'Essay / April 2026', title: writing('/writing/shipping-genai-enterprise.html').title, sub: 'Grounding, evaluation, and the gap between a demo and production.' },
+  { slug: 'writing-a2v', kicker: 'Essay / April 2026', title: writing('/writing/account2vec-platform.html').title, sub: 'The feature matrix, drift monitoring, and the systems around the model.' },
 ];
 
-const esc = (s) => String(s).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+const fontData = (filename) => readFileSync(resolve('src/fonts', filename)).toString('base64');
+const inter = fontData('inter-var.woff2');
+const fraunces = fontData('fraunces-var.woff2');
+const esc = (value) => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
 
-function html(p) {
-  const stats = (p.stats || []).map((s) => `<li><b>${esc(s.value)}</b><span>${esc(s.label)}</span></li>`).join("");
-  const big = p.slug === "home" || p.slug === "resume";
-  return `<!doctype html><html><head><meta charset="utf-8"><style>
-@font-face{font-family:'Fraunces';src:url('file://${FONTS}/fraunces-var.woff2') format('woff2');font-weight:440 760}
-@font-face{font-family:'Inter';src:url('file://${FONTS}/inter-var.woff2') format('woff2');font-weight:400 700}
-html,body{margin:0;width:1200px;height:630px;background:#f7f4ec;color:#1f2a24;font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased}
-.card{position:relative;width:1200px;height:630px;padding:64px 72px 44px;box-sizing:border-box;display:flex;flex-direction:column}
-.kicker{font-size:24px;font-weight:600;color:#5c665e;letter-spacing:.005em}
-.title{font-family:Fraunces,Georgia,serif;font-weight:560;font-size:${big ? 72 : 64}px;line-height:1.06;letter-spacing:-.018em;margin-top:22px;max-width:${p.stats ? 1000 : 960}px;text-wrap:balance}
-.sub{font-size:28px;line-height:1.4;color:#4b564f;margin-top:22px;max-width:960px}
-.stats{list-style:none;padding:0;margin:auto 0 0;display:flex;gap:56px;border-top:1px solid #ddd8c9;padding-top:26px}
-.stats span{max-width:300px}
-.stats li{display:flex;flex-direction:column;gap:6px;min-width:0}
-.stats b{font-family:Fraunces,Georgia,serif;font-weight:560;font-size:44px;line-height:1;letter-spacing:-.02em}
-.stats span{font-size:20px;color:#4b564f}
-.foot{margin-top:auto;padding-top:28px;display:flex;justify-content:space-between;align-items:baseline;font-size:22px;color:#5c665e}
-.stats+.foot{margin-top:34px}
-.foot b{color:#1f2a24;font-family:Fraunces,Georgia,serif;font-weight:600;font-size:24px}
-.bar{position:absolute;left:0;top:0;width:1200px;height:8px;background:#23744d}
-</style></head><body><div class="card"><div class="bar"></div>
-<div class="kicker">${esc(p.kicker)}</div>
-<div class="title">${esc(p.title)}</div>
-${p.sub ? `<div class="sub">${esc(p.sub)}</div>` : ""}
-${stats ? `<ul class="stats" style="${p.stats ? "" : "display:none"}">${stats}</ul>` : ""}
-<div class="foot"><b>${esc(name)}</b><span>sarthak0501.github.io</span></div>
-</div></body></html>`;
+function html(page) {
+  const hasStats = Boolean(page.stats?.length);
+  const size = page.slug === 'home' ? 84 : page.title.length > 65 ? 58 : page.title.length > 42 ? 64 : hasStats ? 70 : 80;
+  const title = page.emphasis && page.title.endsWith(page.emphasis)
+    ? `${esc(page.title.slice(0, -page.emphasis.length))}<em>${esc(page.emphasis)}</em>` : esc(page.title);
+  const stats = (page.stats || []).map((item) => `<li><b style="font-size:${item.value.length > 12 ? 32 : item.value.length > 8 ? 40 : 48}px">${esc(item.value)}</b><span>${esc(item.label)}</span></li>`).join('');
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><style>
+@font-face{font-family:Inter;src:url(data:font/woff2;base64,${inter}) format('woff2');font-weight:400 700}
+@font-face{font-family:Fraunces;src:url(data:font/woff2;base64,${fraunces}) format('woff2');font-weight:440 760}
+*{box-sizing:border-box}html,body{margin:0;width:1200px;height:630px;background:#f5f6f0;color:#20251f;font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased}
+.card{position:relative;width:1200px;height:630px;padding:44px 64px 38px;display:flex;flex-direction:column;overflow:hidden}
+.top{display:flex;align-items:center;justify-content:space-between;min-height:40px}
+.brand{font-size:23px;font-weight:650;letter-spacing:-.04em}.brand-dot{color:#355b22}
+.tag{background:#ddf79a;color:#355b22;font-size:15px;font-weight:600;letter-spacing:.025em;border-radius:40px;padding:10px 16px;display:flex;align-items:center;gap:15px}.tag .arrow{font-size:23px;line-height:1}
+.kicker{margin-top:30px;color:#355b22;font-size:17px;font-weight:550;letter-spacing:.055em;text-transform:uppercase}
+.title{font-size:${size}px;font-weight:650;line-height:1.04;letter-spacing:-.065em;margin-top:14px;max-width:1072px;text-wrap:balance}
+.title em{font-family:Fraunces,Georgia,serif;font-weight:560;letter-spacing:-.05em;color:#355b22}
+.sub{font-size:25px;line-height:1.42;letter-spacing:-.02em;color:#4c5548;margin-top:17px;max-width:1020px}
+.stats{display:grid;grid-template-columns:repeat(${page.stats?.length || 1},minmax(0,1fr));gap:30px;list-style:none;padding:23px 0 0;margin:auto 0 0;border-top:1px solid #bcc8b1}
+.stats li{min-width:0}.stats b{display:block;font-weight:650;line-height:1.1;letter-spacing:-.055em;color:#355b22}.stats span{display:block;margin-top:9px;font-size:18px;line-height:1.35;letter-spacing:-.01em;max-width:315px;color:#4c5548}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:32px;margin-top:auto;padding-top:24px;font-size:17px;color:#5c6656}.stats+.foot{margin-top:0;padding-top:26px}.foot .site{font-weight:550;color:#355b22}.foot .line{height:1px;background:#d3d9cc;flex:1}.foot .note{white-space:nowrap}
+</style></head><body><main class="card"><div class="top"><div class="brand">${esc(name)}<span class="brand-dot">.</span></div><div class="tag">PUBLIC PORTFOLIO<span class="arrow" aria-hidden="true">↗</span></div></div><div class="kicker">${esc(page.kicker)}</div><div class="title">${title}</div>${page.sub ? `<div class="sub">${esc(page.sub)}</div>` : ''}${stats ? `<ul class="stats">${stats}</ul>` : ''}<div class="foot"><span class="site">${esc(site)}</span><span class="line"></span><span class="note">Work, with the evidence.</span></div></main></body></html>`;
 }
 
-mkdirSync("og", { recursive: true });
-mkdirSync(TMP, { recursive: true });
-for (const page of PAGES) {
-  const file = join(TMP, `${page.slug}.html`);
-  writeFileSync(file, html(page));
-  const out = resolve(`og/${page.slug}.png`);
-  execFileSync(SHELL, ["--headless", "--disable-gpu", "--hide-scrollbars", "--window-size=1200,630", "--virtual-time-budget=3000", `--screenshot=${out}`, `file://${file}`], { stdio: "ignore" });
-  console.log(`✓ og/${page.slug}.png`);
+mkdirSync('og', { recursive: true });
+const browser = await chromium.launch({ headless: true, ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
+  ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH } : {}) });
+try {
+  const context = await browser.newContext({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1, colorScheme: 'light' });
+  const page = await context.newPage();
+  for (const card of PAGES) {
+    await page.setContent(html(card));
+    await page.evaluate(() => document.fonts.ready);
+    const clipped = await page.evaluate(() => [...document.querySelectorAll('.top,.kicker,.title,.sub,.stats,.foot')].some((element) => {
+      const rect = element.getBoundingClientRect();
+      return rect.bottom > 608 || rect.right > 1137 || rect.left < 63;
+    }));
+    if (clipped) throw new Error(`OpenGraph content does not fit: ${card.slug}`);
+    await page.screenshot({ path: resolve('og', `${card.slug}.png`), animations: 'disabled' });
+    console.log(`✓ og/${card.slug}.png`);
+  }
+  await context.close();
+} finally {
+  await browser.close();
 }

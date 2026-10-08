@@ -27,6 +27,9 @@ for (const width of [320, 390, 768, 1440]) {
     await expect(page.locator('h1')).toContainText('Sarthak Bichhawa');
     await expect(page.locator('#assistant-status')).toContainText('currently unavailable');
     await expect(page.locator('#assistant-send')).toBeDisabled();
+    await expect(page.locator('#assistant-live')).toBeHidden();
+    await expect(page.locator('.portfolio-brief')).toContainText('Curated public facts');
+    await expect(page.locator('.brief-item')).toHaveCount(3);
     const positions = await page.evaluate(() => ({
       assistant: document.querySelector('#assistant').getBoundingClientRect().top,
       work: document.querySelector('#work').getBoundingClientRect().top,
@@ -180,4 +183,61 @@ test('keyboard entry and JavaScript-free public content remain usable', async ({
   await expect(plain.locator('.hero-copy a[href$=".pdf"]')).toBeVisible();
   await expect(plain.locator('#work')).toContainText('Selected work');
   await context.close();
+});
+
+const publicRoutes = [
+  '/case/', '/case/incident-agent/', '/case/customer-health-agent/',
+  '/case/revenue-attribution/', '/case/data-trust/', '/case/account2vec/',
+  '/case/stress-lab/', '/resume/', '/writing/',
+  '/writing/shipping-genai-enterprise.html', '/writing/account2vec-platform.html',
+  '/colophon/', '/receipts/'
+];
+for (const width of [390, 1440]) {
+  test(`public pages ${width}px: readable layout, working navigation, accessibility`, async ({ page }) => {
+    test.setTimeout(120000);
+    await page.setViewportSize({ width, height: 900 });
+    for (const path of publicRoutes) {
+      await page.goto(path);
+      await expect(page.locator('h1')).toHaveCount(1);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), path).toBe(true);
+      const a11y = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+      expect.soft(a11y.violations.map(v => ({ id: v.id, nodes: v.nodes.map(n => ({ target: n.target, reason: n.failureSummary })) })), path).toEqual([]);
+      if (['/case/', '/resume/', '/case/incident-agent/'].includes(path)) {
+        await page.screenshot({ path: `artifacts/page-${path.replaceAll('/', '-').replace(/^-|-$/g, '')}-${width}.png`, fullPage: true });
+      }
+    }
+  });
+}
+
+test('mobile navigation and curated evidence links resolve', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await expect(page.locator('.nav-resume')).toBeVisible();
+  const evidence = await page.locator('.brief-item').evaluateAll(links => links.map(link => link.getAttribute('href')));
+  for (const href of evidence) {
+    await page.goto(href);
+    const hash = new URL(page.url()).hash;
+    if (hash) await expect(page.locator(hash)).toBeVisible();
+  }
+  await page.locator('#navMenu summary').click();
+  await expect(page.locator('#navMenu')).toBeVisible();
+  await page.locator('#navMenu').getByRole('link', { name: 'Work', exact: true }).click();
+  await expect(page).toHaveURL(/\/case\/$/);
+});
+
+test('mobile live advocate and dark role results remain accessible', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
+  await enabled(page, route => route.fulfill(response({ ...answer,
+    matches: [{ requirement: 'LLM agents', evidence: 'Documented production work [profile]', gap: 'Team scope needs a conversation.', sourceIds: ['profile'] }],
+    unknowns: ['Availability is not established by these sources.']
+  })));
+  await page.getByRole('button', { name: /Compare a role/ }).click();
+  await page.locator('#assistant-job').fill('Public role requiring production AI systems and technical leadership.');
+  await page.locator('#assistant-send').click();
+  await expect(page.locator('#assistant-status')).toContainText('Answer ready');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  const a11y = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+  expect(a11y.violations).toEqual([]);
+  await page.screenshot({ path: 'artifacts/assistant-dark-mobile-result.png', fullPage: true });
 });

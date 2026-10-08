@@ -1,26 +1,23 @@
 <nav class="nav" aria-label="Primary">
   <div class="wrap nav-inner">
-    <a href="/" class="brand">{{ facts.identity.name }}<span class="brand-dot" aria-hidden="true">.</span></a>
+    <a href="/" class="brand" aria-label="{{ facts.identity.name }} — home"><span class="brand-mark" aria-hidden="true">sb.</span><span class="brand-name">{{ facts.identity.name }}</span></a>
     <ul class="nav-links">
-      <li><a href="/#work">Work</a></li>
-      <li><a href="/#experience">Experience</a></li>
-      <li><a href="/#writing">Writing</a></li>
-      <li><a href="/resume/">Résumé</a></li>
+      <li><a href="{{ '/#work' if page.url == '/' else '/case/' }}"{% if page.url == '/case/' %} aria-current="page"{% endif %}>Work</a></li>
+      <li><a href="/writing/"{% if page.url == '/writing/' %} aria-current="page"{% endif %}>Notes</a></li>
+      <li><a href="/resume/"{% if page.url == '/resume/' %} aria-current="page"{% endif %}>Résumé</a></li>
     </ul>
-    <a href="mailto:{{ facts.identity.email }}" class="nav-contact" data-goatcounter-click="nav-email">Get in touch <span aria-hidden="true">↗</span></a>
+    <a href="mailto:{{ facts.identity.email }}" class="nav-contact" data-goatcounter-click="nav-email">Let’s talk <span aria-hidden="true">↗</span></a>
+    <a href="{{ facts.resume.file }}" class="nav-resume" aria-label="Résumé (PDF)" data-goatcounter-click="nav-resume-pdf">Résumé <span aria-hidden="true">↗</span></a>
     <details class="nav-menu" id="navMenu">
       <summary aria-label="Menu">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
       </summary>
       <ul>
-        <li><a href="/#work">Work</a></li>
-        <li><a href="/case/">All case studies</a></li>
-        <li><a href="/#experience">Experience</a></li>
-        <li><a href="/#writing">Writing</a></li>
-        <li><a href="/resume/">Résumé</a></li>
-        <li><a href="{{ facts.resume.file }}">Résumé (PDF)</a></li>
+        <li><a href="/case/"{% if page.url == '/case/' %} aria-current="page"{% endif %}>Work</a></li>
+        <li><a href="/writing/"{% if page.url == '/writing/' %} aria-current="page"{% endif %}>Notes</a></li>
+        <li><a href="/resume/"{% if page.url == '/resume/' %} aria-current="page"{% endif %}>Résumé</a></li>
         <li><a href="{{ facts.identity.linkedin }}">LinkedIn</a></li>
-        <li><a href="mailto:{{ facts.identity.email }}">Email me</a></li>
+        <li><a href="mailto:{{ facts.identity.email }}">Let’s talk ↗</a></li>
       </ul>
     </details>
   </div>

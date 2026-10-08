@@ -1,4 +1,4 @@
-/* Fifth edition: warm paper, dark ink, and a cobalt accent. */
+/* Paper, graphite, and a small flash of lime. */
 
 /* ---------- fonts (latin subsets, self-hosted) ---------- */
 @font-face {
@@ -40,49 +40,51 @@
 /* ---------- the palette ---------- */
 :root {
   color-scheme: light dark;
-  --bg: #f9f8f4;
-  --bg-2: #eef0f2;
+  --bg: #f5f6f0;
+  --bg-2: #e9ede3;
   --surface: #ffffff;
-  --text: #18252e;
-  --text-2: #46555f;
-  --text-3: #56646e;
-  --line: #d6dbdc;
-  --line-strong: #7c8993;
-  --accent: #284dcc;
-  --accent-hover: #19369b;
+  --text: #20251f;
+  --text-2: #4c5548;
+  --text-3: #5c6656;
+  --line: #d3d9cc;
+  --line-strong: #87927e;
+  --accent: #355b22;
+  --accent-hover: #203d13;
   --on-accent: #ffffff;
-  --accent-tint: #edf1fb;
+  --accent-tint: #e7efda;
+  --accent-bright: #ddf79a;
+  --on-accent-bright: #202b15;
   --warn: #9a4a22;
-  --code-bg: #19212b;
-  --code-text: #e6eaf0;
-  --code-muted: #a6b2c2;
-  --code-kw: #afc2ff;
+  --code-bg: #20271f;
+  --code-text: #edf1e8;
+  --code-muted: #b4c0aa;
+  --code-kw: #c7eea7;
   --code-line: rgba(230, 234, 240, 0.14);
   --font-display: 'Fraunces', 'Fraunces Fallback', Georgia, serif;
   --font-sans: 'Inter', 'Inter Fallback', -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
-  --radius: 6px;
-  --radius-sm: 4px;
-  --maxw: 1120px;
-  --maxw-narrow: 760px;
+  --radius: 16px;
+  --radius-sm: 8px;
+  --maxw: 1160px;
+  --maxw-narrow: 800px;
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #14181c;
-    --bg-2: #20272d;
-    --surface: #1c232a;
-    --text: #f0f0e9;
-    --text-2: #c4cdd3;
-    --text-3: #b0bcc4;
-    --line: #39434a;
-    --line-strong: #74848f;
-    --accent: #a7baff;
-    --accent-hover: #c7d3ff;
-    --on-accent: #14181c;
-    --accent-tint: #252f45;
+    --bg: #171c17;
+    --bg-2: #283124;
+    --surface: #20271f;
+    --text: #f0f4eb;
+    --text-2: #c3cebb;
+    --text-3: #adbaa4;
+    --line: #3b4637;
+    --line-strong: #74846a;
+    --accent: #c7eea7;
+    --accent-hover: #ddf79a;
+    --on-accent: #1a2315;
+    --accent-tint: #303f27;
     --warn: #edaa86;
-    --code-bg: #0e141b;
+    --code-bg: #10170e;
   }
 }
 ::selection { background: var(--accent); color: var(--on-accent); }

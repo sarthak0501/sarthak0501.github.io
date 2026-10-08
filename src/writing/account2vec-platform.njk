@@ -97,7 +97,7 @@ lede: "A lot of ML work inside big orgs stays trapped in one team's notebook. Th
   being correct, you'll know before anyone else does."</strong> What we wired from
   day zero:
 </p>
-<pre><code># per-feature, per-embedding-dim, nightly
+<pre tabindex="0" role="region" aria-label="Nightly embedding quality checks"><code># per-feature, per-embedding-dim, nightly
 checks = [
     "coverage",         # % of accounts with non-null values
     "staleness",        # lag between event time & feature-matrix write
@@ -124,7 +124,7 @@ for check in checks:
   attention-weighted pool, so a noisy subscription with one very anomalous
   account doesn't drown the signal:
 </p>
-<pre><code>def pool_to_subscription(account_embeds, weights):
+<pre tabindex="0" role="region" aria-label="Subscription pooling example"><code>def pool_to_subscription(account_embeds, weights):
     # weights = softmax over account importance
     # (capacity-weighted, not row-count-weighted)
     return (account_embeds * weights).sum(dim=0)</code></pre>

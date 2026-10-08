@@ -9,7 +9,8 @@ ogImageAlt: "Work — case studies from Microsoft Azure Storage, with architectu
 <section class="page wrap">
   <nav class="crumb" aria-label="Breadcrumb"><a href="/">‹ Home</a></nav>
   <header class="list-head">
-    <h1 class="page-title">Work, in detail.</h1>
+    <p class="eyebrow">Selected systems · Microsoft Azure Storage</p>
+    <h1 class="page-title">Behind the work.</h1>
     <p class="standfirst">Six systems I’ve worked on at Microsoft Azure Storage. Each case study covers what I owned, the architecture, the decisions, and the results. Production status is listed for each project.</p>
   </header>
   <ul class="cards">
@@ -20,7 +21,7 @@ ogImageAlt: "Work — case studies from Microsoft Azure Storage, with architectu
     {%- for s in facts.systems %}{% if s.link == c.slug and not proof %}{% set proof = s.proof %}{% endif %}{% endfor %}
     <li>
       <a class="card" href="{{ c.slug }}">
-        <span class="card-cat">{{ c.tag }}</span>
+        <span class="card-top"><span class="card-cat">{{ c.tag }}</span><span class="card-number" aria-hidden="true">0{{ loop.index }}</span></span>
         <span class="card-status">{{ projectStatus }}</span>
         <span class="card-title">{{ c.title }}</span>
         <span class="card-text">{{ c.tease }}</span>

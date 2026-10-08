@@ -7,9 +7,10 @@
 
   const MAX_TURNS = 8;
   const REQUEST_TIMEOUT = 35000;
-  const UNAVAILABLE = 'AI answers are currently unavailable. Explore the case studies or contact Sarthak.';
+  const UNAVAILABLE = 'Live AI is currently unavailable. Explore the public brief or browse the work below.';
   const elements = {
     form: root.querySelector('#assistant-form'),
+    live: root.querySelector('#assistant-live'),
     question: root.querySelector('#assistant-question'),
     job: root.querySelector('#assistant-job'),
     questionField: root.querySelector('#assistant-question-field'),
@@ -320,6 +321,8 @@
     } finally {
       window.clearTimeout(timeout);
       checking = false;
+      root.dataset.availability = available ? 'ready' : 'unavailable';
+      elements.live.hidden = !available;
       readyStatus();
       refreshControls();
     }

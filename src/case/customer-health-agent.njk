@@ -99,7 +99,7 @@ removed: "the system prompt is reduced to representative structure; customer nam
   </div>
   <div class="code-panel">
     <div class="cp-head"><span>system-prompt.v7</span><span class="g">redacted · representative</span></div>
-    <pre><code><span class="cm"># role</span>
+    <pre tabindex="0" role="region" aria-label="Representative customer-health system prompt, scroll to read all code"><code><span class="cm"># role</span>
 You are a customer-health analyst for Azure Storage. You answer
 questions by calling tools against live data. <span class="hl">You do not guess.</span>
 
@@ -143,7 +143,7 @@ confidence (low|med|high), refusal (bool, reason).</code></pre>
   </div>
   <div class="code-panel">
     <div class="cp-head"><span>agent-generated KQL</span><span class="g">after grounding &amp; validation</span></div>
-    <pre><code><span class="cm">resolved from: "APAC customers >10TB w/ availability-loss regressions this Q"</span>
+    <pre tabindex="0" role="region" aria-label="Agent-generated KQL example, scroll to read all code"><code><span class="cm">resolved from: "APAC customers >10TB w/ availability-loss regressions this Q"</span>
 <span class="cm">agent call: exec_kql(cluster="[analytics-cluster]", db="…")</span>
 StorageAccountMetrics
 | <span class="kw">where</span> TimeGenerated <span class="kw">between</span> (startofquarter(now()) .. now())
@@ -181,7 +181,7 @@ StorageAccountMetrics
   </div>
   <div class="table-panel">
     <div class="cp-head"><span>eval run — prompt v6 → v7</span><span class="g">180 cases · abridged</span></div>
-    <div class="table-scroll">
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Customer-health prompt evaluation table, scroll to see all columns">
       <table class="data-table">
         <thead><tr><th>Dimension</th><th>v6</th><th>v7</th><th>Delta</th></tr></thead>
         <tbody>

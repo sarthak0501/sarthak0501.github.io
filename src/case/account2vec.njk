@@ -102,7 +102,7 @@ removed: "model code reduced to representative structure; exact fleet counts sta
   </div>
   <div class="table-panel">
     <div class="cp-head"><span>AccountFeatureMatrix — column groups</span><span class="g">versioned · governed</span></div>
-    <div class="table-scroll">
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Account feature matrix table, scroll to see all columns">
       <table class="data-table">
         <thead><tr><th>Feature group</th><th>Examples</th><th># cols</th></tr></thead>
         <tbody>
@@ -133,7 +133,7 @@ removed: "model code reduced to representative structure; exact fleet counts sta
   </div>
   <div class="code-panel">
     <div class="cp-head"><span>a2v/model.py</span><span class="g">representative · abridged</span></div>
-    <pre><code><span class="kw">class</span> <span class="hl">AccountEncoder</span>(nn.Module):
+    <pre tabindex="0" role="region" aria-label="Representative account encoder model, scroll to read all code"><code><span class="kw">class</span> <span class="hl">AccountEncoder</span>(nn.Module):
     <span class="kw">def</span> __init__(self, n_features=52, d=32):
         super().__init__()
         self.enc = nn.Sequential(
@@ -183,7 +183,7 @@ removed: "model code reduced to representative structure; exact fleet counts sta
   </div>
   <div class="code-panel">
     <div class="cp-head"><span>downstream: similarity search</span><span class="g">cosine over 32-d embeddings</span></div>
-    <pre><code><span class="cm"># seed: a newly-escalated account</span>
+    <pre tabindex="0" role="region" aria-label="Account similarity search example, scroll to read all code"><code><span class="cm"># seed: a newly-escalated account</span>
 seed = a2v.get(account_id="stacc-7f1a…")        <span class="cm"># (32,)</span>
 
 <span class="cm"># k-NN over the fleet index — millions of accounts</span>

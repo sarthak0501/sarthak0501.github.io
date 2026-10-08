@@ -17,10 +17,10 @@ const help = `Usage: node scripts/eval-assistant-live.mjs [HTTPS_ENDPOINT] [opti
   --endpoint URL       Deployed /api/assistant endpoint; or ASSISTANT_ENDPOINT.
   --output PATH        Save responses and human checklist under artifacts/ only.
   --delay-ms NUMBER    15000–60000ms between calls; or ASSISTANT_EVAL_DELAY_MS.
-  --check-fixtures     Validate the eight public fixtures/corpus without AI calls.
+  --check-fixtures     Validate the nine public fixtures/corpus without AI calls.
   --help               Show this help without AI calls.
 
-Live run: eight real endpoint calls, at least 15 seconds apart. Provider usage may
+Live run: nine real endpoint calls, at least 15 seconds apart. Provider usage may
 be billed to the server's configured account. No provider key belongs in this CLI.
 The endpoint must already be deployed and activated by the owner.
 
@@ -95,7 +95,7 @@ function corpusMap(knowledge) {
 }
 
 function validateFixtures(scenarios, sources) {
-  if (!Array.isArray(scenarios) || scenarios.length !== 8 || new Set(scenarios.map((s) => s.id)).size !== 8) throw new Error("FIXTURES_INVALID");
+  if (!Array.isArray(scenarios) || scenarios.length !== 9 || new Set(scenarios.map((s) => s.id)).size !== 9) throw new Error("FIXTURES_INVALID");
   for (const scenario of scenarios) {
     if (!/^[a-z0-9-]+$/.test(scenario.id) || !["question", "match"].includes(scenario.request?.mode) || !scenario.humanReview) throw new Error("FIXTURES_INVALID");
     if (!Array.isArray(scenario.request.context) || scenario.request.context.length > 2 || !scenario.request.context.every((x) => typeof x === "string")) throw new Error("FIXTURES_INVALID");

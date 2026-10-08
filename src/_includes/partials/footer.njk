@@ -1,12 +1,12 @@
 <footer class="footer">
   <div class="wrap foot-inner">
-    <div class="foot-meta">© {{ build.year }} {{ facts.identity.name }} · Updated {{ build.updated }}</div>
+    <div class="foot-meta"><span class="foot-name">{{ facts.identity.name }}</span><span>© {{ build.year }} · Updated {{ build.updated }}</span></div>
     <div class="foot-links">
       <a href="mailto:{{ facts.identity.email }}">Email</a>
       <a href="{{ facts.identity.linkedin }}">LinkedIn</a>
       <a href="{{ facts.identity.github }}">GitHub</a>
       <a href="{{ facts.resume.file }}">Résumé (PDF)</a>
-      <a href="/colophon/">How this site is built</a>
+      <a href="/colophon/">About this site</a>
     </div>
   </div>
 </footer>

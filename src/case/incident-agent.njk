@@ -104,7 +104,7 @@ removed: "customer and account identifiers, cluster and incident IDs; absolute t
     </div>
   </div>
 
-  <div class="trace" id="traceViewer" tabindex="0" aria-label="Run trace, step by step">
+  <div class="trace" id="traceViewer" tabindex="0" role="region" aria-label="Run trace, step by step">
     <div class="cp-head">
       <span>{{ trace_incident.meta.label }}</span>
       <span class="trace-controls">
@@ -141,7 +141,7 @@ removed: "customer and account identifiers, cluster and incident IDs; absolute t
   </div>
   <div class="table-panel">
     <div class="cp-head"><span>confidence rubric — enforced on every finding</span></div>
-    <div class="table-scroll">
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Confidence rubric table, scroll to see all columns">
       <table class="data-table">
         <thead><tr><th>Score</th><th>Evidence bar</th><th>What the agent may claim</th></tr></thead>
         <tbody>
@@ -182,7 +182,7 @@ removed: "customer and account identifiers, cluster and incident IDs; absolute t
   </div>
   <div class="table-panel">
     <div class="cp-head"><span>eval dimensions — replayed-incident golden set</span><span class="g">gates every change</span></div>
-    <div class="table-scroll">
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Incident evaluation dimensions table, scroll to see all columns">
       <table class="data-table">
         <thead><tr><th>Dimension</th><th>Question it answers</th><th>Failure it exists to catch</th></tr></thead>
         <tbody>

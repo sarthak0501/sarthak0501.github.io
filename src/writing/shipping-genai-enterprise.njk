@@ -82,7 +82,7 @@ lede: "Five lessons from building a production LLM agent on Azure OpenAI — the
   signal is rarely the most important one. You need an objective thing to point
   at. The harness was straightforward:
 </p>
-<pre><code># golden set: ~180 questions drawn from historical exec queries
+<pre tabindex="0" role="region" aria-label="Golden-set evaluation example"><code># golden set: ~180 questions drawn from historical exec queries
 # each labeled with the grounded answer + expected citations
 for case in golden_set:
     answer = agent.run(case.question)
