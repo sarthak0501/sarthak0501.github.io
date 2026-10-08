@@ -114,6 +114,48 @@ test('public job matching shows relevant evidence, gaps and unknowns', async ({ 
 });
 
 for (const width of [390, 1440]) {
+  test(`waiting indicator ${width}px: pending feedback, motion preference and success cleanup`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    let pendingRoute;
+    await enabled(page, route => { pendingRoute = route; });
+    const thinking = page.locator('#assistant-thinking');
+    await expect(thinking).toBeHidden();
+
+    for (const mode of ['question', 'match']) {
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+      if (mode === 'match') await page.getByRole('button', { name: /Compare a role/ }).click();
+      await page.locator(mode === 'match' ? '#assistant-job' : '#assistant-question').fill(
+        mode === 'match' ? 'Public role requiring AI product leadership.' : 'What is the strongest case for Sarthak?'
+      );
+      pendingRoute = undefined;
+      await page.locator('#assistant-send').click();
+      await expect.poll(() => Boolean(pendingRoute)).toBe(true);
+      await expect(thinking).toBeVisible();
+      await expect(thinking).toHaveAttribute('aria-hidden', 'true');
+      await expect(thinking).toContainText(mode === 'match' ? 'Comparing the role' : 'Thinking');
+      await expect(thinking.locator('.assistant-thinking-dot')).toHaveCount(3);
+      expect(await thinking.locator('.assistant-thinking-dot').evaluateAll(dots =>
+        dots.every(dot => getComputedStyle(dot).animationName !== 'none'
+          && dot.getAnimations().some(animation => animation.playState === 'running'))
+      )).toBe(true);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      const a11y = await new AxeBuilder({ page }).include('#assistant').withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+      expect(a11y.violations).toEqual([]);
+      await page.screenshot({ path: `artifacts/assistant-waiting-${mode}-${width}.png`, fullPage: true });
+
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await expect(thinking).toBeVisible();
+      expect(await thinking.locator('.assistant-thinking-dot').evaluateAll(dots =>
+        dots.every(dot => getComputedStyle(dot).animationName === 'none')
+      )).toBe(true);
+      await pendingRoute.fulfill(response(answer));
+      await expect(page.locator('#assistant-status')).toContainText('Answer ready');
+      await expect(thinking).toBeHidden();
+    }
+  });
+}
+
+for (const width of [390, 1440]) {
   test(`long role replies ${width}px: each new answer opens at its heading`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     let replies = 0;
@@ -188,11 +230,13 @@ for (const status of [429, 502, 503, 504]) {
     await page.locator('#assistant-question').fill('A public question');
     await page.locator('#assistant-send').click();
     await expect(page.locator('.assistant-message--error')).toBeVisible();
+    await expect(page.locator('#assistant-thinking')).toBeHidden();
     await expect(page.locator('.assistant-fallback a').first()).toHaveAttribute('href', '/case/');
     await expect(page.locator('#assistant-conversation')).not.toContainText('SENSITIVE_UPSTREAM_DETAILS');
     await expect(page.locator('#assistant-send')).toBeEnabled();
     await page.locator('#assistant-send').click();
     await expect(page.locator('#assistant-status')).toContainText('Answer ready');
+    await expect(page.locator('#assistant-thinking')).toBeHidden();
   });
 }
 
@@ -205,17 +249,26 @@ test('unsafe source URLs fail closed', async ({ page }) => {
 });
 
 test('cancel and clear do not render a stale delayed answer', async ({ page }) => {
-  await enabled(page, async route => {
-    await new Promise(resolve => setTimeout(resolve, 400));
-    await route.fulfill(response(answer)).catch(() => {});
-  });
-  await page.locator('#assistant-question').fill('Delayed question');
-  await page.locator('#assistant-send').click();
-  await page.locator('#assistant-cancel').click();
-  await expect(page.locator('#assistant-status')).toContainText('Request stopped');
-  await page.locator('#assistant-clear').click();
-  await expect(page.locator('#assistant-welcome')).toBeVisible();
-  await expect(page.locator('.assistant-message--assistant')).toHaveCount(0);
+  let pendingRoute;
+  await enabled(page, route => { pendingRoute = route; });
+  for (const action of ['cancel', 'clear']) {
+    pendingRoute = undefined;
+    await page.locator('#assistant-question').fill('Delayed question');
+    await page.locator('#assistant-send').click();
+    await expect.poll(() => Boolean(pendingRoute)).toBe(true);
+    await expect(page.locator('#assistant-thinking')).toBeVisible();
+    await page.locator(`#assistant-${action}`).click();
+    if (action === 'cancel') {
+      await expect(page.locator('#assistant-status')).toContainText('Request stopped');
+      await expect(page.locator('#assistant-thinking')).toBeHidden();
+      await page.locator('#assistant-clear').click();
+    }
+    await expect(page.locator('#assistant-thinking')).toBeHidden();
+    await pendingRoute.fulfill(response(answer)).catch(() => {});
+    await expect(page.locator('#assistant-welcome')).toBeVisible();
+    await expect(page.locator('.assistant-message--assistant')).toHaveCount(0);
+    await expect(page.locator('#assistant-thinking')).toBeHidden();
+  }
 });
 
 test('request timeout recovers controls', async ({ page }) => {
@@ -223,8 +276,10 @@ test('request timeout recovers controls', async ({ page }) => {
   await enabled(page, () => {});
   await page.locator('#assistant-question').fill('Timeout question');
   await page.locator('#assistant-send').click();
+  await expect(page.locator('#assistant-thinking')).toBeVisible();
   await page.clock.fastForward(36000);
   await expect(page.locator('#assistant-status')).toContainText('took too long');
+  await expect(page.locator('#assistant-thinking')).toBeHidden();
   await expect(page.locator('#assistant-send')).toBeEnabled();
 });
 

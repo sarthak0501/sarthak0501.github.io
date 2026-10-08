@@ -25,6 +25,8 @@
     clear: root.querySelector('#assistant-clear'),
     welcome: root.querySelector('#assistant-welcome'),
     conversation: root.querySelector('#assistant-conversation'),
+    thinking: root.querySelector('#assistant-thinking'),
+    thinkingLabel: root.querySelector('#assistant-thinking-label'),
   };
   const modeButtons = [...root.querySelectorAll('[data-assistant-mode]')];
   const guideButtons = [...root.querySelectorAll('[data-guide]')];
@@ -65,6 +67,8 @@
     elements.counter.textContent = `${input.value.length.toLocaleString('en-US')} / ${limit.toLocaleString('en-US')}`;
     elements.send.disabled = checking || !available || busy || turns >= MAX_TURNS || !input.value.trim();
     elements.cancel.hidden = !busy;
+    elements.thinking.hidden = !busy;
+    elements.thinkingLabel.textContent = mode === 'match' ? 'Comparing the role…' : 'Thinking…';
     elements.clear.disabled = turns === 0 && !elements.conversation.childElementCount && !elements.question.value && !elements.job.value;
     elements.question.disabled = busy || mode !== 'question';
     elements.job.disabled = busy || mode !== 'match';
