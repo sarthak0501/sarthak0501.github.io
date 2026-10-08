@@ -204,7 +204,9 @@
       message.append(unknowns);
     }
     appendSources(message, sources);
-    scrollToLatest();
+    // Start each reply at its opening, even when a role comparison is longer
+    // than the conversation. Leave page position and keyboard focus alone.
+    elements.conversation.scrollTop += message.getBoundingClientRect().top - elements.conversation.getBoundingClientRect().top;
   }
 
   function renderFailure(message) {

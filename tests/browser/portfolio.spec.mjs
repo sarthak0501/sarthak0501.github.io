@@ -113,6 +113,52 @@ test('public job matching shows relevant evidence, gaps and unknowns', async ({ 
   await page.screenshot({ path: 'artifacts/assistant-role-comparison.png', fullPage: true });
 });
 
+for (const width of [390, 1440]) {
+  test(`long role replies ${width}px: each new answer opens at its heading`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    let replies = 0;
+    await enabled(page, route => route.fulfill(response({
+      ...answer,
+      answer: `Comparison ${++replies}. Here is the documented public experience. [profile]`,
+      matches: Array.from({ length: 8 }, (_, index) => ({
+        requirement: `Public role requirement ${index + 1}`,
+        evidence: 'Documented work supports part of this requirement. The public sources describe the experience and its scope. [profile]',
+        gap: 'The public record does not establish every responsibility in this role. Confirm the remaining scope in a conversation.',
+        sourceIds: ['profile'],
+      })),
+    })));
+    await page.getByRole('button', { name: /Compare a role/ }).click();
+
+    for (let turn = 1; turn <= 2; turn++) {
+      await page.locator('#assistant-job').fill(`Public AI leadership role ${turn}.`);
+      await page.locator('#assistant-send').click();
+      await expect(page.locator('.assistant-message--assistant')).toHaveCount(turn);
+      await expect(page.locator('#assistant-status')).toContainText('Answer ready');
+      const latest = page.locator('.assistant-message--assistant').last();
+      await expect(latest.locator('.assistant-message-body')).toContainText(`Comparison ${turn}.`);
+
+      // toBeVisible alone does not detect content clipped by the conversation scroller.
+      const position = await latest.evaluate(message => {
+        const conversation = message.closest('#assistant-conversation');
+        const viewport = conversation.getBoundingClientRect();
+        const heading = message.querySelector('.assistant-message-label').getBoundingClientRect();
+        const opening = message.querySelector('.assistant-message-body').getBoundingClientRect();
+        return {
+          viewportTop: viewport.top,
+          viewportBottom: viewport.bottom,
+          viewportHeight: conversation.clientHeight,
+          messageHeight: message.getBoundingClientRect().height,
+          headingTop: heading.top,
+          openingBottom: opening.bottom,
+        };
+      });
+      expect(position.messageHeight).toBeGreaterThan(position.viewportHeight * 2);
+      expect(position.headingTop).toBeGreaterThanOrEqual(position.viewportTop - 1);
+      expect(position.openingBottom).toBeLessThanOrEqual(position.viewportBottom + 1);
+    }
+  });
+}
+
 test('only two previous questions are sent; eight requests cap and reset work', async ({ page }) => {
   const requests = [];
   await enabled(page, route => {
