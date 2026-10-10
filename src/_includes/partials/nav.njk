@@ -3,7 +3,7 @@
     <a href="/" class="brand" aria-label="{{ facts.identity.name }} — home"><span class="brand-name">{{ facts.identity.name }}</span><span class="brand-short" aria-hidden="true">Sarthak</span></a>
     <ul class="nav-links">
       <li><a href="{{ '/#work' if page.url == '/' else '/case/' }}"{% if page.url == '/case/' %} aria-current="page"{% endif %}>Work</a></li>
-      <li><a href="/resume/"{% if page.url == '/resume/' %} aria-current="page"{% endif %}>Résumé</a></li>
+      <li><a href="/resume/"{% if page.url == '/resume/' %} aria-current="page"{% endif %}>Experience</a></li>
     </ul>
     <a href="mailto:{{ facts.identity.email }}" class="nav-contact" data-goatcounter-click="nav-email">Contact</a>
     <a href="{{ facts.resume.file }}" class="nav-resume" aria-label="Résumé (PDF)" data-goatcounter-click="nav-resume-pdf">Résumé</a>
@@ -14,7 +14,7 @@
       <ul>
         <li><a href="/case/"{% if page.url == '/case/' %} aria-current="page"{% endif %}>Work</a></li>
         <li><a href="/writing/"{% if page.url == '/writing/' %} aria-current="page"{% endif %}>Notes</a></li>
-        <li><a href="/resume/"{% if page.url == '/resume/' %} aria-current="page"{% endif %}>Résumé</a></li>
+        <li><a href="/resume/"{% if page.url == '/resume/' %} aria-current="page"{% endif %}>Experience</a></li>
         <li><a href="{{ facts.identity.linkedin }}">LinkedIn</a></li>
         <li><a href="mailto:{{ facts.identity.email }}">Contact</a></li>
       </ul>

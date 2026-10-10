@@ -3,6 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { mkdir } from 'node:fs/promises';
 
 const endpoint = 'https://portfolio-assistant.test.workers.dev/api/assistant';
+const resumePath = '/resumes/SarthakBichhawa_Resume_2026.pdf';
 const source = { id: 'profile', title: 'Public résumé', url: 'https://sarthak0501.github.io/resume/' };
 const answer = { answer: 'Documented public experience. [profile]', evidence: [source], matches: [], unknowns: [] };
 const response = (json, status = 200) => ({ status, contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify(json) });
@@ -56,10 +57,24 @@ for (const width of [320, 390, 768, 1440]) {
   });
 }
 
-test('dark theme and reduced motion remain accessible', async ({ page }) => {
+test('the site stays light under a dark OS preference and respects reduced motion', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
+  const palette = () => page.evaluate(() => ({
+    scheme: getComputedStyle(document.documentElement).colorScheme,
+    background: getComputedStyle(document.body).backgroundColor,
+    text: getComputedStyle(document.body).color,
+  }));
+  const darkPreference = await palette();
+  expect(darkPreference.scheme).toBe('light');
+  // Check the rendered canvas, so removing the media query without providing a
+  // light page background cannot silently regress to a browser-default dark UI.
+  expect(darkPreference.background).toMatch(/^rgb\(/);
+  expect(darkPreference.background.match(/\d+/g).map(Number).every(channel => channel >= 235)).toBe(true);
+  await page.emulateMedia({ colorScheme: 'light', reducedMotion: 'reduce' });
+  expect(await palette()).toEqual(darkPreference);
+  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
   const a11y = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
   expect(a11y.violations).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
@@ -74,7 +89,7 @@ test('sending is explicit; model and visitor HTML stay text; citations link publ
   });
   await expect(page.locator('#assistant-input-note')).toBeVisible();
   await expect(page.locator('#assistant-input-note')).toContainText('Sent to OpenAI when you send.');
-  await page.getByRole('button', { name: /AI work/ }).click();
+  await page.locator('[data-guide="ai"]').click();
   expect(requests).toBe(0);
   await page.locator('#assistant-question').fill('<script>window.secret=true</script>');
   await page.locator('#assistant-send').click();
@@ -285,7 +300,7 @@ test('request timeout recovers controls', async ({ page }) => {
 
 test('keyboard entry and JavaScript-free public content remain usable', async ({ page, browser }) => {
   await enabled(page);
-  await page.getByRole('button', { name: /AI work/ }).focus();
+  await page.locator('[data-guide="ai"]').focus();
   await page.keyboard.press('Enter');
   await expect(page.locator('#guide-ai')).toBeVisible();
   await page.locator('#assistant-question').fill('Give me the strongest case for Sarthak.');
@@ -297,6 +312,7 @@ test('keyboard entry and JavaScript-free public content remain usable', async ({
   await expect(plain.locator('.assistant-no-script')).toContainText('needs JavaScript');
   await expect(plain.locator('.hero-copy a[href$=".pdf"]')).toBeVisible();
   await expect(plain.locator('#work')).toContainText('Selected work');
+  await expect(plain.locator('.work-diagram-scene[role="img"]:visible')).toHaveCount(3);
   await context.close();
 });
 
@@ -311,9 +327,16 @@ for (const width of [390, 1440]) {
   test(`public pages ${width}px: readable layout, working navigation, accessibility`, async ({ page }) => {
     test.setTimeout(120000);
     await page.setViewportSize({ width, height: 900 });
-    for (const path of publicRoutes) {
+    const resumeLinks = new Set();
+    for (const path of ['/', ...publicRoutes]) {
       await page.goto(path);
       await expect(page.locator('h1')).toHaveCount(1);
+      const pdfLinks = await page.locator('a[href]').evaluateAll(links => links
+        .map(link => new URL(link.href))
+        .filter(url => url.origin === location.origin && url.pathname.endsWith('.pdf'))
+        .map(url => url.pathname));
+      expect(pdfLinks.length, `${path} offers the shared résumé`).toBeGreaterThan(0);
+      for (const pdfPath of pdfLinks) resumeLinks.add(pdfPath);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), path).toBe(true);
       const a11y = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
       expect.soft(a11y.violations.map(v => ({ id: v.id, nodes: v.nodes.map(n => ({ target: n.target, reason: n.failureSummary })) })), path).toEqual([]);
@@ -321,6 +344,10 @@ for (const width of [390, 1440]) {
         await page.screenshot({ path: `artifacts/page-${path.replaceAll('/', '-').replace(/^-|-$/g, '')}-${width}.png`, fullPage: true });
       }
     }
+    expect([...resumeLinks]).toEqual([resumePath]);
+    const resume = await page.request.get(resumePath);
+    expect(resume.ok()).toBe(true);
+    expect((await resume.body()).subarray(0, 5).toString()).toBe('%PDF-');
   });
 }
 
@@ -340,7 +367,7 @@ test('mobile navigation and curated evidence links resolve', async ({ page }) =>
   await expect(page).toHaveURL(/\/case\/$/);
 });
 
-test('mobile live advocate and dark role results remain accessible', async ({ page }) => {
+test('mobile live answers remain accessible under a dark OS preference', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
   await enabled(page, route => route.fulfill(response({ ...answer,
@@ -396,13 +423,22 @@ for (const width of [320, 390, 1440]) {
     await page.screenshot({ path: `artifacts/guide-open-${width}.png`, fullPage: true });
     const tabs = page.locator('[data-work-tab]');
     await expect(tabs).toHaveCount(3);
+    const diagramNames = ['Investigate, then conclude.', 'One question. A connected picture.', 'Recover. Attribute. Reconcile.'];
+    const diagramDescriptions = [/incident.*hypotheses/i, /customer.*13 metric domains/i, /revenue.*reconciliation.*Finance/i];
     for (let i = 0; i < 3; i++) {
       await tabs.nth(i).click();
       await expect(tabs.nth(i)).toHaveAttribute('aria-selected', 'true');
       await expect(page.locator('[data-work-panel]:visible')).toHaveCount(1);
+      const panel = page.locator('[data-work-panel]:visible');
+      const diagram = panel.locator('.work-diagram-scene');
+      await expect(diagram).toHaveAttribute('role', 'img');
+      await expect(diagram).toHaveAccessibleName(diagramNames[i]);
+      await expect(diagram).toHaveAccessibleDescription(diagramDescriptions[i]);
+      await expect(panel.locator('figcaption')).toContainText('Illustrative system diagram');
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       const a11y = await new AxeBuilder({ page }).include('#work').withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
       expect(a11y.violations).toEqual([]);
+      await panel.screenshot({ path: `artifacts/project-${await tabs.nth(i).getAttribute('data-work-tab')}-${width}.png` });
     }
     await tabs.first().focus();
     await page.keyboard.press('ArrowRight');

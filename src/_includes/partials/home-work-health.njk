@@ -1,0 +1,22 @@
+<figure class="work-diagram work-diagram--health">
+  <div class="work-diagram-scene" role="img" aria-labelledby="work-health-diagram-title" aria-describedby="work-health-diagram-desc">
+    <svg class="work-diagram-wires" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <ellipse class="diagram-orbit" cx="50" cy="45" rx="37" ry="25"/>
+      <ellipse class="diagram-orbit diagram-orbit--inner" cx="50" cy="45" rx="27" ry="18"/>
+      <path class="diagram-wire diagram-wire--teal" d="M50 15V29M50 61V82"/>
+      <path class="diagram-wire" d="M17 30 40 39M83 30 60 39M14 59 40 50M86 59 60 50"/>
+      <circle class="diagram-junction" cx="50" cy="22" r="1.1"/>
+      <circle class="diagram-pulse" cx="50" cy="76" r="1.1"/>
+    </svg>
+    <div class="health-question diagram-surface" aria-hidden="true"><span class="question-mark">?</span><span>What changed for this customer?</span></div>
+    <div class="health-domain health-domain--availability diagram-surface" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m3 13 4-4 4 7 4-11 3 8h3"/></svg><span>Availability</span></div>
+    <div class="health-domain health-domain--capacity diagram-surface" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 4 16 4 16 0V6M4 12c0 4 16 4 16 0"/></svg><span>Capacity</span></div>
+    <div class="health-domain health-domain--incidents diagram-surface" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m12 3 10 18H2L12 3ZM12 9v5M12 17v1"/></svg><span>Incidents</span></div>
+    <div class="health-domain health-domain--support diagram-surface" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 19V5M3 19h18M7 15l4-5 4 2 5-7"/></svg><span>Support</span></div>
+    <div class="health-hub" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M7 5h18v22H7V5ZM12 11h8M12 16h8M12 21h4"/></svg><strong>Governed<br />queries</strong><span>13 metric domains</span></div>
+    <span class="health-more-domains" aria-hidden="true">Curated definitions</span>
+    <div class="health-brief diagram-surface" aria-hidden="true"><div class="health-brief-heading"><span class="diagram-document-icon"><svg viewBox="0 0 24 30" fill="none"><path d="M3 2h12l6 6v20H3V2Z M15 2v7h6M7 15h10M7 20h7"/></svg></span><strong>Customer-health brief</strong></div><span class="health-brief-detail">Findings <i></i> Sources <i></i> Review-ready</span></div>
+  </div>
+  <figcaption><strong id="work-health-diagram-title">One question. A connected picture.</strong><span class="work-illustration-label">Illustrative system diagram</span></figcaption>
+  <p class="sr-only" id="work-health-diagram-desc">A plain-English customer question connects to governed queries grounded in a curated catalog of 13 metric domains. Availability, capacity, incidents, and support illustrate the connected data. Governed live queries ground a customer-health brief with findings and sources. The constellation is a simplified illustration, not the full private metric taxonomy or live customer data.</p>
+</figure>

@@ -2,7 +2,7 @@
 layout: layouts/base.njk
 permalink: /colophon/
 title: How this site is built — Sarthak Bichhawa
-desc: "Eleventy, one source-of-truth file, a build check that refuses unsourced claims, self-hosted type, and a PDF printed from the same record."
+desc: "Eleventy, shared public facts, checks for claim consistency, self-hosted type, and one authored résumé PDF."
 ogImage: /og/colophon.png
 ogImageAlt: "How this site is built"
 ---
@@ -18,10 +18,11 @@ ogImageAlt: "How this site is built"
       <h2>One source of truth</h2>
       <div class="prose">
         <p>
-          Every number, date, title, and link on this site renders from a single file —
-          <code>src/_data/facts.yaml</code> — synced to the résumé dated <strong>{{ facts.meta.resume_rev }}</strong>.
-          Pages are <a href="https://www.11ty.dev/">Eleventy 3</a> + Nunjucks templates that interpolate
-          from it; if a claim isn't in the file, it doesn't ship.
+          The shared public record lives in <code>src/_data/facts.yaml</code>.
+          I reconciled it with my résumé on <strong>{{ facts.meta.resume_rev }}</strong>;
+          this is the website sync date, not an authored date printed on the PDF.
+          <a href="https://www.11ty.dev/">Eleventy 3</a> + Nunjucks templates use those facts,
+          while case studies expand on previously documented project details.
         </p>
       </div>
     </section>
@@ -33,9 +34,10 @@ ogImageAlt: "How this site is built"
           <code>scripts/receipts-lint.mjs</code> runs in CI on every push. It scans the built HTML for four
           kinds of problems: required claims that went missing, superseded figures from older résumé
           revisions that crept back in, internal jargon an outside reader couldn't evaluate, and internal
-          links that point at pages the build never emitted. A contradiction between this site and the
-          résumé is a broken build, not an embarrassment somebody eventually notices. The sources and
-          every correction made along the way are listed on <a href="/receipts/">sources and corrections</a>.
+          links that point at pages the build never emitted. It also checks that the résumé PDF exists.
+          The PDF-to-site reconciliation is a separate editorial review; the automated checks cover
+          known claims and links. The sources and corrections are listed on
+          <a href="/receipts/">sources and corrections</a>.
         </p>
       </div>
     </section>
@@ -56,9 +58,10 @@ ogImageAlt: "How this site is built"
       <h2>One résumé</h2>
       <div class="prose">
         <p>
-          There is exactly one résumé. The PDF is the canonical authored document, hosted at the same
-          revision this site renders from, and the <a href="/resume/">/resume/</a> page is the same record
-          with a print stylesheet, so what you print and what you download can't disagree.
+          There is one résumé PDF. Every résumé download points to that document.
+          The <a href="/resume/">experience page</a> offers an accessible view with additional
+          public project detail. The website and assistant use the shared facts record;
+          they are reconciled with the PDF when it changes.
         </p>
       </div>
     </section>

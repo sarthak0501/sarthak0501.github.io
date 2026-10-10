@@ -12,9 +12,9 @@ ogImageAlt: "Sources and corrections"
   <header class="list-head">
     <h1 class="page-title">Sources and corrections</h1>
     <p class="standfirst">
-      Every number on this site renders from one source file, synced to the résumé dated
-      <strong>{{ facts.meta.resume_rev }}</strong>. A build check refuses any page that contradicts it.
-      Below: the sources, and the corrections made along the way.
+      The shared public record was reconciled with my résumé on
+      <strong>{{ facts.meta.resume_rev }}</strong>. Case studies provide additional project detail.
+      Below are the sources and corrections; build checks catch known inconsistencies and broken links.
     </p>
   </header>
 
@@ -87,10 +87,10 @@ ogImageAlt: "Sources and corrections"
       <h2>How this works</h2>
       <div class="prose">
         <p>
-          Every number, date, and link renders from <code>facts.yaml</code>, and
+          The shared public facts live in <code>facts.yaml</code>, and
           <code>scripts/receipts-lint.mjs</code> scans the built HTML on every deploy: required claims must
           appear, superseded claims must not, internal jargon fails the build, and every internal link must
-          resolve. The mechanics are on the <a href="/colophon/">colophon</a>; the check itself is
+          resolve. PDF-to-site agreement is reviewed separately. The mechanics are on the <a href="/colophon/">colophon</a>; the check itself is
           <a href="{{ facts.identity.github }}/sarthak0501.github.io">in the repository</a>.
         </p>
       </div>

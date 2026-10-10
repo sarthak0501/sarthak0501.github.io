@@ -6,7 +6,7 @@ desc: "A self-service data-quality platform whose first named catch was an 88% s
 ogImage: /og/case-data-trust.png
 ogImageAlt: "The data-trust platform — 400+ datasets profiled hourly, an 88% row loss caught"
 lede: "Every dashboard in an org is a claim about data somebody else owns. This is the write-up on making that claim checkable: automated freshness, volume, and schema checks with gates that can fail a run, hourly profiling across <strong>400+ production datasets</strong>, and the org-wide portal it grew into — including an <strong>LLM-powered lineage engine that reads pipeline code</strong> to map where production data actually comes from."
-role: Designer & owner — platform, portal, and core services
+role: Portal co-developer; LLM lineage engine developer
 stack: Python · FastAPI · Azure Container Apps · Azure Data Explorer · Azure OpenAI
 status: In production · launched org-wide
 outcomes:
@@ -16,7 +16,7 @@ outcomes:
   - { v: "4", d: "core backing services behind the org-wide portal" }
 quick:
   - "<strong>Problem:</strong> nobody could answer \"can I rely on this data right now?\" — data quality was a report nobody opened."
-  - "<strong>Built:</strong> freshness, volume, and schema checks with gates that fail a run, hourly profiling of 400+ datasets, and the org-wide discovery portal it grew into — with an LLM lineage engine that reads pipeline code."
+  - "<strong>My contribution:</strong> co-developed the governance portal and its quality controls across 400+ datasets; developed the LLM lineage engine that reads pipeline code."
   - "<strong>Result:</strong> the first named catch was an 88% silent row loss headed for financial reports; the same discipline pointed at customers eliminated 99% of throttling incidents."
 toc:
   - { id: premise, label: The question }
@@ -125,7 +125,8 @@ removed: "internal product names, cluster and dataset identifiers, and the speci
         finding a person.
       </p>
       <p>
-        I designed its <strong>four core backing services</strong>:
+        I co-developed the portal and developed its <strong>LLM lineage engine</strong>.
+        The shared platform brings together four core backing services:
       </p>
     </div>
   </div>
@@ -157,7 +158,7 @@ removed: "internal product names, cluster and dataset identifiers, and the speci
         difference is exactly where incidents hide.
       </p>
       <p>
-        So the lineage engine <strong>reads the pipeline code with an LLM</strong> and
+        I developed a lineage engine that <strong>reads the pipeline code with an LLM</strong> and
         maps the production data flow from what the code actually does — the
         joins, the writes, the derived tables — rather than from what the
         scheduler was told. This is the piece I'd most want to talk through in an

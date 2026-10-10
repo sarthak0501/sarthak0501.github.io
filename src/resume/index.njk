@@ -2,22 +2,21 @@
 layout: layouts/base.njk
 permalink: /resume/
 title: Résumé — Sarthak Bichhawa
-desc: "Résumé of Sarthak Bichhawa, Sr. Data & Applied Scientist at Microsoft Azure Storage — rendered from the same source as the site, with the PDF attached."
+desc: "Sarthak Bichhawa, Senior Data Scientist at Microsoft Azure Storage — product analytics, measurement, and applied AI. Download the résumé or explore the public experience record."
 ogImage: /og/resume.png
-ogImageAlt: "Résumé — Sarthak Bichhawa, Sr. Data & Applied Scientist"
+ogImageAlt: "Résumé — Sarthak Bichhawa, Senior Data Scientist"
 ---
 <section class="page wrap">
   <nav class="crumb" aria-label="Breadcrumb"><a href="/">‹ Home</a></nav>
   <header>
-    <h1 class="page-title">Résumé</h1>
-    <p class="standfirst">The same record as the rest of this site, in one page. Updated {{ facts.meta.resume_rev | humanDate }}.</p>
+    <h1 class="page-title">Experience</h1>
+    <p class="standfirst">Download my résumé, or explore my experience below with additional project detail. Site record synced {{ facts.meta.resume_rev | humanDate }}.</p>
   </header>
   <div class="actions resume-actions">
     <a href="{{ facts.resume.file }}" class="btn btn-primary" data-goatcounter-click="resume-page-pdf">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       Download the PDF
     </a>
-    <button class="btn btn-secondary print-btn" type="button" onclick="window.print()">Print this page</button>
   </div>
   {% include "partials/resume-doc.njk" %}
 </section>

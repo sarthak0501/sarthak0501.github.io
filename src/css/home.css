@@ -1,24 +1,30 @@
 /* A focused introduction followed by the work, the person, and a next step. */
-.home-opening { position: relative; background: var(--bg); padding-bottom: 28px; }
+.home-opening { position: relative; background: radial-gradient(ellipse at 50% 8%, #fff 0%, var(--bg) 65%); padding-bottom: 28px; }
 .home-hero { padding-top: 48px; text-align: center; }
 .hero-copy { max-width: 800px; margin: 0 auto; }
-.hero-identity { display: inline-flex; align-items: center; gap: 11px; text-align: left; }
-.hero-identity img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; object-position: center 32%; }
+.hero-identity { display: inline-flex; align-items: center; gap: 15px; text-align: left; }
+.hero-identity img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; object-position: center 32%; border: 3px solid var(--surface); box-shadow: 0 4px 16px rgba(37, 42, 50, .1); }
 .hero-identity strong { display: block; font-size: .9375rem; font-weight: 600; letter-spacing: -.02em; }
-.hero-identity p > span { display: block; font-size: .75rem; color: var(--text-3); margin-top: 2px; }
-.hero-title { font-family: var(--font-sans); font-size: clamp(3.5rem, 2rem + 3.8vw, 5.5rem); line-height: 1.035; letter-spacing: -.075em; font-weight: 600; margin-top: 28px; }
-.hero-title > span:not(.sr-only) { color: var(--text-3); }
-.hero-intro { font-size: 1.125rem; line-height: 1.6; color: var(--text-2); max-width: 55ch; margin: 24px auto 0; text-wrap: pretty; }
+.hero-identity p > span { display: block; font-size: .8125rem; color: var(--text-3); margin-top: 4px; }
+.hero-title { font-family: var(--font-sans); font-size: clamp(3.25rem, 2rem + 3.5vw, 4.75rem); line-height: 1.1; letter-spacing: -.06em; font-weight: 500; margin-top: 22px; }
+.hero-title > span:not(.sr-only) { color: var(--accent); font-family: var(--font-display); font-weight: 540; letter-spacing: -.055em; }
+.hero-intro { font-size: 1.0625rem; line-height: 1.7; color: var(--text-2); max-width: 62ch; margin: 20px auto 0; text-wrap: pretty; }
 .hero-links { display: flex; justify-content: center; align-items: center; gap: 30px; margin-top: 14px; }
 .hero-links a { display: inline-flex; align-items: center; gap: 7px; padding: 9px 0; font-size: .8125rem; text-decoration: none; }
 .hero-links a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.hero-evidence { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); list-style: none; padding: 20px 0 0; margin: 20px auto 0; border-top: 1px solid var(--line); max-width: 740px; }
+.hero-evidence li + li { border-left: 1px solid var(--line); }
+.hero-evidence a { display: flex; flex-direction: column; gap: 5px; padding: 0 12px 4px; color: var(--text); text-decoration: none; }
+.hero-evidence strong { font-weight: 550; font-size: 1.25rem; line-height: 1.4; letter-spacing: -.035em; }
+.hero-evidence span { font-size: .6875rem; line-height: 1.5; color: var(--text-3); }
+.hero-evidence a:hover strong { color: var(--accent); }
 .explore-work { display: flex; justify-content: center; align-items: center; gap: 14px; width: fit-content; margin: 30px auto 0; font-size: .75rem; color: var(--text-3); text-decoration: none; padding: 10px; }
 .explore-work > span { font-size: 1rem; }
 .section-label { font-size: .75rem; font-weight: 500; color: var(--text-3); margin-bottom: 16px; }
 .text-link { display: inline-flex; gap: 10px; align-items: center; padding: 10px 0; text-decoration: none; font-size: .875rem; }
 .text-link:hover { text-decoration: underline; text-underline-offset: 4px; }
 .home-experience { display: grid; grid-template-columns: 1.1fr 1fr; gap: 100px; padding-top: 112px; padding-bottom: 112px; align-items: center; }
-.experience-intro h2 { font-size: clamp(2rem, 1.4rem + 1.6vw, 3rem); font-weight: 600; line-height: 1.14; letter-spacing: -.055em; }
+.experience-intro h2 { font-size: clamp(2rem, 1.4rem + 1.6vw, 3rem); font-weight: 500; line-height: 1.16; letter-spacing: -.045em; }
 .experience-intro h2 > span { display: block; }
 .experience-intro > p:not(.section-label) { max-width: 44ch; color: var(--text-2); font-size: 1rem; margin-top: 22px; line-height: 1.75; }
 .experience-intro .text-link { margin-top: 18px; }
@@ -40,8 +46,8 @@
 .note-read { margin-top: auto; display: flex; gap: 10px; align-items: center; color: var(--accent); font-size: .8125rem; }
 .home-notes a:hover .note-read { text-decoration: underline; text-underline-offset: 4px; }
 .home-contact { text-align: center; padding: 84px 0 64px; background: var(--bg-2); }
-.home-contact h2 { font-size: clamp(2.25rem, 1.5rem + 2.5vw, 4rem); font-weight: 600; line-height: 1.08; letter-spacing: -.065em; }
-.home-contact h2 + p { margin-top: 22px; color: var(--text-2); font-size: 1rem; }
+.home-contact h2 { font-size: clamp(2.25rem, 1.5rem + 2.5vw, 4rem); font-weight: 500; line-height: 1.12; letter-spacing: -.055em; }
+.home-contact h2 + p { margin: 22px auto 0; max-width: 54ch; color: var(--text-2); font-size: 1rem; }
 .contact-primary { display: inline-flex; justify-content: center; align-items: center; gap: 22px; margin-top: 28px; border-radius: 99px; min-height: 50px; padding: 0 24px; font-size: .875rem; background: var(--accent); color: var(--on-accent); text-decoration: none; }
 .contact-primary:hover { background: var(--accent-hover); color: var(--on-accent); }
 .contact-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 24px; margin-top: 20px; font-size: .75rem; }
@@ -54,9 +60,13 @@
 .contact-summary button { margin-top: 16px; }
 @media (max-width: 760px) {
  .home-hero { padding-top: 32px; }
- .hero-title { font-size: clamp(2.75rem, 8.8vw, 4.5rem); margin-top: 24px; }
+ .hero-title { font-size: clamp(2.5rem, 8.2vw, 4rem); margin-top: 22px; }
  .hero-intro { font-size: 1rem; max-width: 43ch; margin-top: 20px; }
  .hero-links { margin-top: 10px; }
+ .hero-evidence { margin-top: 18px; padding-top: 16px; }
+ .hero-evidence a { padding: 0 7px; gap: 4px; }
+ .hero-evidence strong { font-size: 1rem; }
+ .hero-evidence span { font-size: .625rem; }
  .home-opening { padding-bottom: 20px; }
  .home-experience { grid-template-columns: 1fr; gap: 36px; padding-top: 64px; padding-bottom: 64px; }
  .experience-intro h2 { font-size: 2.125rem; }
@@ -75,4 +85,5 @@
  .home-contact h2 { max-width: 15ch; margin: 0 auto; }
  .home-contact h2 + p { font-size: .9375rem; max-width: 33ch; margin: 20px auto 0; }
 }
-@media (max-width: 360px) { .hero-title { font-size: 2.625rem; } .hero-intro { font-size: .9375rem; } .hero-identity img { width: 36px; height: 36px; } .hero-identity p > span { font-size: .6875rem; } .career-list a { grid-template-areas: 'company arrow' 'date arrow'; grid-template-columns: 1fr 18px; } }
+@media (max-width: 480px) { .hero-identity { gap: 11px; } .hero-identity img { width: 54px; height: 54px; } .hero-identity strong { font-size: .8125rem; } .hero-identity p > span { font-size: .75rem; } .hero-links { gap: 23px; } }
+@media (max-width: 360px) { .hero-title { font-size: 2.375rem; } .hero-intro { font-size: .9375rem; } .hero-identity img { width: 48px; height: 48px; } .hero-identity strong { font-size: .6875rem; } .hero-identity p > span { font-size: .6875rem; } .hero-evidence strong { font-size: .9375rem; } .hero-links { gap: 20px; } .career-list a { grid-template-areas: 'company arrow' 'date arrow'; grid-template-columns: 1fr 18px; } }

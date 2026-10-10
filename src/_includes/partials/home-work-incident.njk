@@ -1,0 +1,24 @@
+<figure class="work-diagram work-diagram--incident">
+  <div class="work-diagram-scene" role="img" aria-labelledby="work-incident-diagram-title" aria-describedby="work-incident-diagram-desc">
+    <svg class="work-diagram-wires" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <path class="diagram-wire" d="M50 19V23C50 28 15 24 15 32M50 23V32M50 23C50 28 85 24 85 32"/>
+      <path class="diagram-wire diagram-wire--quiet" d="M15 47V51C15 58 50 52 50 61M85 47V51C85 58 50 52 50 61"/>
+      <path class="diagram-wire diagram-wire--blue" d="M50 19V61"/>
+      <path class="diagram-wire diagram-wire--teal" d="M50 70V79"/>
+      <circle class="diagram-junction" cx="50" cy="25" r="1.1"/>
+      <circle class="diagram-pulse" cx="50" cy="55" r="1.1"/>
+    </svg>
+    <div class="incident-signal diagram-surface" aria-hidden="true">
+      <svg viewBox="0 0 34 28" fill="none"><path d="M2 15h6l4-10 7 20 5-13h8"/></svg>
+      <span>Incident telemetry</span>
+    </div>
+    <span class="incident-stage diagram-stage" aria-hidden="true">Competing hypotheses</span>
+    <div class="incident-hypothesis incident-hypothesis--one diagram-surface" aria-hidden="true"><span class="hypothesis-key">H₁</span><strong>Deployment</strong><small>Timeline check</small></div>
+    <div class="incident-hypothesis incident-hypothesis--two diagram-surface" aria-hidden="true"><span class="hypothesis-key">H₂</span><strong>Traffic</strong><small>History check</small></div>
+    <div class="incident-hypothesis incident-hypothesis--three diagram-surface" aria-hidden="true"><span class="hypothesis-key">H₃</span><strong>Dependency</strong><small>Fault check</small></div>
+    <div class="incident-evidence" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="m4 10 4 4 8-8"/></svg><span>Test &amp; narrow with evidence</span></div>
+    <div class="incident-brief diagram-surface" aria-hidden="true"><span class="diagram-document-icon"><svg viewBox="0 0 24 30" fill="none"><path d="M3 2h12l6 6v20H3V2Z M15 2v7h6M7 15h10M7 20h7"/></svg></span><div><strong>Cited conclusion</strong><span class="diagram-tags"><span>Query references</span><span>Confidence</span></span></div></div>
+  </div>
+  <figcaption><strong id="work-incident-diagram-title">Investigate, then conclude.</strong><span class="work-illustration-label">Illustrative system diagram</span></figcaption>
+  <p class="sr-only" id="work-incident-diagram-desc">Incident telemetry branches into competing deployment, traffic, and dependency hypotheses. Timeline, history, and fault checks narrow the hypotheses using evidence, leading to a conclusion with query references and a confidence assessment. The branches are a simplified illustration of the investigation process, not a live incident or the complete system architecture.</p>
+</figure>

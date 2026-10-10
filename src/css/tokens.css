@@ -1,4 +1,4 @@
-/* Clear white, charcoal, and a restrained blue accent. */
+/* Warm paper, charcoal, and a restrained blue accent. */
 
 /* ---------- fonts (latin subsets, self-hosted) ---------- */
 @font-face {
@@ -39,14 +39,14 @@
 
 /* ---------- the palette ---------- */
 :root {
-  color-scheme: light dark;
-  --bg: #ffffff;
-  --bg-2: #f5f5f7;
+  color-scheme: light;
+  --bg: #faf9f6;
+  --bg-2: #f0f1f3;
   --surface: #ffffff;
-  --text: #1d1d1f;
-  --text-2: #51515b;
-  --text-3: #656570;
-  --line: #e2e2e8;
+  --text: #252a32;
+  --text-2: #505966;
+  --text-3: #606a77;
+  --line: #dde1e5;
   --line-strong: #93939d;
   --accent: #3156c8;
   --accent-hover: #234099;
@@ -68,25 +68,5 @@
   --maxw: 1160px;
   --maxw-narrow: 800px;
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #111114;
-    --bg-2: #24242c;
-    --surface: #1b1b21;
-    --text: #f5f5f7;
-    --text-2: #c8c8d2;
-    --text-3: #aaaaba;
-    --line: #383840;
-    --line-strong: #747480;
-    --accent: #b1c4ff;
-    --accent-hover: #d2ddff;
-    --on-accent: #10192f;
-    --accent-tint: #252e46;
-    --accent-bright: #c4d2ff;
-    --on-accent-bright: #17255a;
-    --warn: #edaa86;
-    --code-bg: #101016;
-  }
 }
 ::selection { background: var(--accent); color: var(--on-accent); }

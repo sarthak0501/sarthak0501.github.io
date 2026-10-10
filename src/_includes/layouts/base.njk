@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="color-scheme" content="light dark" />
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#111114" media="(prefers-color-scheme: dark)" />
+  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#faf9f6" />
   {%- set pageTitle = title if title else facts.identity.name + " — " + facts.identity.title + ", " + facts.identity.org %}
   {%- set pageDesc = desc if desc else facts.summary.hero %}
   {%- set shareTitle = ogTitle if ogTitle else pageTitle %}
@@ -46,7 +45,7 @@
     "name": "{{ facts.identity.name }}",
     "url": "{{ facts.meta.site_url }}/",
     "image": "{{ facts.meta.site_url }}/assets/sarthak.jpg",
-    "jobTitle": "Senior Data & Applied Scientist",
+    "jobTitle": "{{ facts.identity.title }}",
     "worksFor": { "@type": "Organization", "name": "{{ facts.identity.org }}" },
     "email": "mailto:{{ facts.identity.email }}",
     "address": { "@type": "PostalAddress", "addressLocality": "Redmond", "addressRegion": "WA", "addressCountry": "US" },

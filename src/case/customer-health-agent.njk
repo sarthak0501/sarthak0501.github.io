@@ -5,7 +5,7 @@ title: The customer-health agent — Sarthak Bichhawa
 desc: "A grounded, tool-using LLM agent on Azure OpenAI that turns plain-English questions into governed live Azure Data Explorer queries — cutting customer-health time-to-insight from days to under two minutes."
 ogImage: /og/case-customer-health-agent.png
 ogImageAlt: "The customer-health agent — days to under two minutes"
-lede: "A grounded, tool-using agent on Azure OpenAI that turns plain-English questions about the most critical customers into <strong>governed live Azure Data Explorer queries</strong> with review-ready narratives — grounded on a curated catalog of 13 metric domains. Time-to-insight went from days to <strong>under two minutes</strong>, and it shipped with the eval harness, guardrails, and PII-aware prompts it needed to survive real enterprise load."
+lede: "A grounded, tool-using agent on Azure OpenAI that turns plain-English questions about the most critical customers into <strong>governed live Azure Data Explorer queries</strong> with review-ready narratives. It connects more than 15 live-telemetry signal types, with metric definitions grounded in a curated catalog of 13 metric domains. Time-to-insight went from days to <strong>under two minutes</strong>, and it shipped with the eval harness, guardrails, and PII-aware prompts it needed to survive real enterprise load."
 role: Technical lead, design & implementation
 stack: Azure OpenAI · Azure Data Explorer · Python
 status: In production
@@ -62,6 +62,12 @@ removed: "the system prompt is reduced to representative structure; customer nam
         records; a tool registry that executes live KQL against Azure Data
         Explorer; and an evaluation-and-guardrails layer that runs on every
         response before it ships.
+      </p>
+      <p>
+        The agent connects <strong>more than 15 live-telemetry signal types</strong>.
+        Its governed catalog covers <strong>13 metric domains</strong>; signal types
+        describe the inputs, while metric domains organize the definitions used
+        to interpret those inputs.
       </p>
     </div>
   </div>

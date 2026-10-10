@@ -40,7 +40,7 @@ const productionizingCount = facts.systems.filter((item) => item.status === 'Pro
 // A missing fact fails generation instead of retaining an outdated claim.
 const PAGES = [
   {
-    slug: 'home', kicker: 'Applied AI & data platforms', title: 'AI that works. Where it matters.', sub: role,
+    slug: 'home', kicker: 'Product measurement · Data platforms · Applied AI', title: 'Hi, I’m Sarthak.', sub: role,
     stats: [
       { value: receipt('revenue').value, label: receipt('revenue').label },
       { value: receipt('incident').value, label: 'On-call incident diagnosis' },
@@ -128,7 +128,7 @@ function html(page) {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><style>
 @font-face{font-family:Inter;src:url(data:font/woff2;base64,${inter}) format('woff2');font-weight:400 700}
 @font-face{font-family:Fraunces;src:url(data:font/woff2;base64,${fraunces}) format('woff2');font-weight:440 760}
-*{box-sizing:border-box}html,body{margin:0;width:1200px;height:630px;background:#ffffff;color:#1d1d1f;font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}html,body{margin:0;width:1200px;height:630px;background:#faf9f6;color:#252a32;font-family:Inter,sans-serif;-webkit-font-smoothing:antialiased}
 .card{position:relative;width:1200px;height:630px;padding:44px 64px 38px;display:flex;flex-direction:column;overflow:hidden}
 .top{display:flex;align-items:center;justify-content:space-between;min-height:40px}
 .brand{font-size:23px;font-weight:650;letter-spacing:-.04em}.brand-dot{color:#3156c8}
