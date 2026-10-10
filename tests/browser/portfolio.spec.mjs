@@ -19,7 +19,13 @@ async function enabled(page, handler = route => route.fulfill(response(answer)))
   await page.route('**/assistant-config.json', route => route.fulfill(response({ enabled: true, endpoint })));
   await page.route(endpoint, handler);
   await page.goto('/');
+  await openAssistant(page);
   await expect(page.locator('#assistant-status')).toContainText('Ready when you are');
+}
+
+async function openAssistant(page) {
+  await page.locator('#assistant-launcher').click();
+  await expect(page.locator('#assistant-dialog')).toBeVisible();
 }
 
 async function ask(page, text) {
@@ -29,10 +35,30 @@ async function ask(page, text) {
 }
 
 for (const width of [320, 390, 768, 1440]) {
-  test(`homepage ${width}px: central assistant, public access, no overflow, accessibility`, async ({ page }) => {
+  test(`homepage ${width}px: central AI launcher, public access, no overflow, accessibility`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/');
     await expect(page.locator('h1')).toContainText('Sarthak Bichhawa');
+    await expect(page.locator('#assistant-launcher')).toBeVisible();
+    await expect(page.locator('#assistant-launcher')).toHaveAttribute('aria-haspopup', 'dialog');
+    await expect(page.locator('#assistant-launcher')).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('#assistant-dialog')).toBeHidden();
+    await expect(page.locator('#assistant-question')).toBeHidden();
+    const launcher = await page.locator('#assistant-launcher').boundingBox();
+    expect(launcher.x).toBeGreaterThanOrEqual(0);
+    expect(launcher.x + launcher.width).toBeLessThanOrEqual(width);
+    expect(launcher.y + launcher.height).toBeLessThanOrEqual(900);
+    expect(launcher.y).toBeLessThan(await page.locator('#work').evaluate(el => el.getBoundingClientRect().top));
+    await expect(page.locator('.hero-copy a[href$=".pdf"]')).toBeVisible();
+    await expect(page.locator('.hero-copy a[href^="mailto:"]')).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    const closedA11y = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+    expect(closedA11y.violations).toEqual([]);
+    await mkdir('artifacts', { recursive: true });
+    await page.screenshot({ path: `artifacts/home-${width}.png`, fullPage: true });
+
+    await openAssistant(page);
+    await expect(page.locator('#assistant-launcher')).toHaveAttribute('aria-expanded', 'true');
     await expect(page.locator('#assistant-status')).toContainText('currently unavailable');
     await expect(page.locator('#assistant-send')).toBeDisabled();
     await expect(page.locator('#assistant-live')).toBeVisible();
@@ -41,19 +67,12 @@ for (const width of [320, 390, 768, 1440]) {
     expect(await page.locator('#assistant-question').evaluate(el => el.getBoundingClientRect().top)).toBeLessThan(900);
     await expect(page.locator('[data-guide]')).toHaveCount(3);
     await expect(page.locator('#guide-answer')).toBeHidden();
-    const positions = await page.evaluate(() => ({
-      assistant: document.querySelector('#assistant').getBoundingClientRect().top,
-      work: document.querySelector('#work').getBoundingClientRect().top,
-      overflow: document.documentElement.scrollWidth > window.innerWidth
-    }));
-    expect(positions.overflow).toBe(false);
-    expect(positions.assistant).toBeLessThan(positions.work);
-    await expect(page.locator('.hero-copy a[href$=".pdf"]')).toBeVisible();
-    await expect(page.locator('.hero-copy a[href^="mailto:"]')).toBeVisible();
+    await expect(page.locator('#assistant-close')).toBeInViewport();
+    expect(await page.locator('#assistant-dialog').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     const a11y = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
     expect(a11y.violations).toEqual([]);
-    await mkdir('artifacts', { recursive: true });
-    await page.screenshot({ path: `artifacts/home-${width}.png`, fullPage: true });
+    await page.screenshot({ path: `artifacts/assistant-panel-${width}.png`, fullPage: true });
   });
 }
 
@@ -61,6 +80,11 @@ test('the site stays light under a dark OS preference and respects reduced motio
   await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
+  expect(await page.locator('#assistant-launcher').evaluate(el =>
+    [el, ...el.querySelectorAll('*')].every(node =>
+      [null, '::before', '::after'].every(pseudo => getComputedStyle(node, pseudo).animationName === 'none')
+    )
+  )).toBe(true);
   const palette = () => page.evaluate(() => ({
     scheme: getComputedStyle(document.documentElement).colorScheme,
     background: getComputedStyle(document.body).backgroundColor,
@@ -79,6 +103,124 @@ test('the site stays light under a dark OS preference and respects reduced motio
   expect(a11y.violations).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: 'artifacts/home-dark-mobile.png', fullPage: true });
+});
+
+test('the arrival pulse is brief and disabled when reduced motion is requested', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/');
+  const pulse = await page.locator('#assistant-launcher').evaluate(el => {
+    const style = getComputedStyle(el, '::after');
+    return { name: style.animationName, duration: parseFloat(style.animationDuration), iterations: Number(style.animationIterationCount) };
+  });
+  expect(pulse.name).not.toBe('none');
+  expect(pulse.iterations).toBeGreaterThan(0);
+  expect(pulse.iterations * pulse.duration).toBeLessThanOrEqual(5);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  expect(await page.locator('#assistant-launcher').evaluate(el => getComputedStyle(el, '::after').animationName)).toBe('none');
+});
+
+for (const width of [390, 1440]) {
+  test(`assistant dialog ${width}px: focus, Escape, drafts and history survive reopening`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await enabled(page);
+    const dialog = page.locator('#assistant-dialog');
+    const close = page.locator('#assistant-close');
+    await expect(dialog).toHaveAttribute('open', '');
+    await expect(dialog).toHaveAccessibleName(/Sarthak|AI|work/i);
+    await expect(close).toBeFocused();
+    // A native modal blocks background controls. Reverse-Tab may visit browser
+    // chrome, but returning to the page must resume inside the dialog.
+    await page.locator('.hero-copy a').first().evaluate(el => el.focus());
+    await expect(close).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await page.keyboard.press('Tab');
+    await expect(close).toBeFocused();
+
+    await ask(page, 'What is Sarthak’s relevant experience?');
+    await page.locator('#assistant-question').fill('Keep this unsent follow-up.');
+    await close.click();
+    await expect(dialog).toBeHidden();
+    await expect(page.locator('#assistant-launcher')).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('#assistant-launcher')).toBeFocused();
+
+    await openAssistant(page);
+    await expect(page.locator('.assistant-message--assistant')).toHaveCount(1);
+    await expect(page.locator('#assistant-question')).toHaveValue('Keep this unsent follow-up.');
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+    await expect(page.locator('#assistant-launcher')).toBeFocused();
+  });
+}
+
+test('assistant deep links open the dialog on arrival and later hash navigation', async ({ page }) => {
+  await page.goto('/#assistant');
+  await expect(page.locator('#assistant-dialog')).toBeVisible();
+  await expect(page.locator('#assistant-close')).toBeFocused();
+  await page.locator('#assistant-close').click();
+  await expect(page.locator('#assistant-dialog')).toBeHidden();
+  await page.evaluate(() => { location.hash = '#contact'; });
+  await expect(page.locator('#assistant-dialog')).toBeHidden();
+  await page.evaluate(() => { location.hash = '#assistant'; });
+  await expect(page.locator('#assistant-dialog')).toBeVisible();
+});
+
+test('a reply arriving after the dialog closes preserves page position and focus', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 667 });
+  let pendingReply;
+  let requests = 0;
+  const longAnswer = { ...answer, matches: Array.from({ length: 8 }, (_, index) => ({
+    requirement: `Public requirement ${index + 1}`,
+    evidence: 'Public work supports part of this requirement. The sources describe the experience and its scope.',
+    gap: 'The remaining responsibilities and exact team scope should be confirmed in a conversation.',
+    sourceIds: ['profile'],
+  })) };
+  await enabled(page, route => {
+    if (requests++ === 0) return route.fulfill(response(longAnswer));
+    pendingReply = route;
+  });
+  await ask(page, 'A first long comparison.');
+  await page.locator('#assistant-question').fill('A reply that may arrive later.');
+  await page.locator('#assistant-send').click();
+  await expect.poll(() => Boolean(pendingReply)).toBe(true);
+  await page.locator('#assistant-close').click();
+  await expect(page.locator('#assistant-dialog')).toBeHidden();
+  await page.locator('#work').scrollIntoViewIfNeeded();
+  await page.locator('#work-tab-health').evaluate(el => el.focus({ preventScroll: true }));
+  const position = () => page.evaluate(() => ({
+    scrollY, focus: document.activeElement.id, dialogScroll: document.querySelector('#assistant-dialog').scrollTop,
+  }));
+  const beforeReply = await position();
+  await pendingReply.fulfill(response(longAnswer));
+  await expect(page.locator('#assistant-status')).toContainText('Answer ready');
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(resolve)));
+  expect(await position()).toEqual(beforeReply);
+  await expect(page.locator('#assistant-dialog')).toBeHidden();
+  await openAssistant(page);
+  await expect(page.locator('.assistant-message--assistant')).toHaveCount(2);
+  await expect.poll(() => page.locator('.assistant-message--assistant').last().evaluate(message => {
+    const heading = message.querySelector('.assistant-message-label').getBoundingClientRect();
+    const opening = message.querySelector('.assistant-message-body').getBoundingClientRect();
+    const conversation = message.closest('#assistant-conversation').getBoundingClientRect();
+    const toolbar = document.querySelector('.assistant-dialog-toolbar').getBoundingClientRect();
+    return heading.top >= Math.max(conversation.top, toolbar.bottom) - 1
+      && opening.bottom <= Math.min(conversation.bottom, innerHeight) + 1;
+  })).toBe(true);
+});
+
+test('backdrop closes the dialog and fallback Contact reveals the page destination', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await enabled(page, route => route.fulfill(response({ error: {} }, 503)));
+  await page.mouse.click(10, 10);
+  await expect(page.locator('#assistant-dialog')).toBeHidden();
+  await expect(page.locator('#assistant-launcher')).toBeFocused();
+  await openAssistant(page);
+  await page.locator('#assistant-question').fill('Show me the contact fallback.');
+  await page.locator('#assistant-send').click();
+  await expect(page.locator('.assistant-message--error')).toBeVisible();
+  await page.locator('.assistant-fallback a[href="/#contact"]').click();
+  await expect(page.locator('#assistant-dialog')).toBeHidden();
+  await expect(page).toHaveURL(/\/#contact$/);
+  await expect(page.locator('#contact')).toBeInViewport();
 });
 
 test('sending is explicit; model and visitor HTML stay text; citations link public sources', async ({ page }) => {
@@ -170,48 +312,69 @@ for (const width of [390, 1440]) {
   });
 }
 
-for (const width of [390, 1440]) {
-  test(`long role replies ${width}px: each new answer opens at its heading`, async ({ page }) => {
-    await page.setViewportSize({ width, height: 900 });
-    let replies = 0;
-    await enabled(page, route => route.fulfill(response({
-      ...answer,
-      answer: `Comparison ${++replies}. Here is the documented public experience. [profile]`,
-      matches: Array.from({ length: 8 }, (_, index) => ({
-        requirement: `Public role requirement ${index + 1}`,
-        evidence: 'Documented work supports part of this requirement. The public sources describe the experience and its scope. [profile]',
-        gap: 'The public record does not establish every responsibility in this role. Confirm the remaining scope in a conversation.',
-        sourceIds: ['profile'],
-      })),
-    })));
+for (const [width, height] of [[390, 667], [390, 900], [1440, 900]]) {
+  test(`long role replies ${width}×${height}px: each new answer opens at its heading`, async ({ page }) => {
+    await page.setViewportSize({ width, height });
+    let pendingReply;
+    await enabled(page, route => { pendingReply = route; });
     await page.getByRole('button', { name: /Compare a role/ }).click();
 
     for (let turn = 1; turn <= 2; turn++) {
       await page.locator('#assistant-job').fill(`Public AI leadership role ${turn}.`);
+      await page.locator('#assistant-dialog').evaluate(el => { el.scrollTop = el.scrollHeight; });
+      pendingReply = null;
       await page.locator('#assistant-send').click();
+      await expect.poll(() => Boolean(pendingReply)).toBe(true);
+      // The send button becomes disabled while waiting; use an enabled control
+      // to distinguish reply scrolling from the browser's disabled-button blur.
+      await page.locator('#assistant-close').evaluate(el => el.focus({ preventScroll: true }));
+      const beforeReply = await page.evaluate(() => ({ scrollY, focus: document.activeElement.id }));
+      await pendingReply.fulfill(response({
+        ...answer,
+        answer: `Comparison ${turn}. Here is the documented public experience. [profile]`,
+        matches: Array.from({ length: 8 }, (_, index) => ({
+          requirement: `Public role requirement ${index + 1}`,
+          evidence: 'Documented work supports part of this requirement. The public sources describe the experience and its scope. [profile]',
+          gap: 'The public record does not establish every responsibility in this role. Confirm the remaining scope in a conversation.',
+          sourceIds: ['profile'],
+        })),
+      }));
       await expect(page.locator('.assistant-message--assistant')).toHaveCount(turn);
       await expect(page.locator('#assistant-status')).toContainText('Answer ready');
       const latest = page.locator('.assistant-message--assistant').last();
       await expect(latest.locator('.assistant-message-body')).toContainText(`Comparison ${turn}.`);
 
-      // toBeVisible alone does not detect content clipped by the conversation scroller.
-      const position = await latest.evaluate(message => {
+      // Both nested scroll areas can clip a reply, including behind the sticky toolbar.
+      const readPosition = () => latest.evaluate(message => {
         const conversation = message.closest('#assistant-conversation');
         const viewport = conversation.getBoundingClientRect();
+        const dialog = message.closest('dialog').getBoundingClientRect();
+        const toolbar = document.querySelector('.assistant-dialog-toolbar').getBoundingClientRect();
         const heading = message.querySelector('.assistant-message-label').getBoundingClientRect();
         const opening = message.querySelector('.assistant-message-body').getBoundingClientRect();
         return {
           viewportTop: viewport.top,
           viewportBottom: viewport.bottom,
           viewportHeight: conversation.clientHeight,
+          visibleTop: Math.max(viewport.top, dialog.top, toolbar.bottom),
+          visibleBottom: Math.min(viewport.bottom, dialog.bottom, innerHeight),
           messageHeight: message.getBoundingClientRect().height,
           headingTop: heading.top,
           openingBottom: opening.bottom,
         };
       });
+      await expect.poll(async () => {
+        const position = await readPosition();
+        return position.headingTop >= position.visibleTop - 1
+          && position.openingBottom <= position.visibleBottom + 1;
+      }).toBe(true);
+      const position = await readPosition();
       expect(position.messageHeight).toBeGreaterThan(position.viewportHeight * 2);
       expect(position.headingTop).toBeGreaterThanOrEqual(position.viewportTop - 1);
       expect(position.openingBottom).toBeLessThanOrEqual(position.viewportBottom + 1);
+      expect(position.headingTop).toBeGreaterThanOrEqual(position.visibleTop - 1);
+      expect(position.openingBottom).toBeLessThanOrEqual(position.visibleBottom + 1);
+      expect(await page.evaluate(() => ({ scrollY, focus: document.activeElement.id }))).toEqual(beforeReply);
     }
   });
 }
@@ -309,6 +472,8 @@ test('keyboard entry and JavaScript-free public content remain usable', async ({
   const context = await browser.newContext({ javaScriptEnabled: false });
   const plain = await context.newPage();
   await plain.goto('http://127.0.0.1:8081/');
+  await expect(plain.locator('#assistant-launcher')).toBeHidden();
+  await expect(plain.locator('#assistant')).toBeVisible();
   await expect(plain.locator('.assistant-no-script')).toContainText('needs JavaScript');
   await expect(plain.locator('.hero-copy a[href$=".pdf"]')).toBeVisible();
   await expect(plain.locator('#work')).toContainText('Selected work');
@@ -389,6 +554,7 @@ test('typing remains available offline; guided answers preserve drafts and never
   let modelCalls = 0;
   await page.route(endpoint, route => { modelCalls++; return route.fulfill(response(answer)); });
   await page.goto('/');
+  await openAssistant(page);
   await expect(page.locator('#assistant-status')).toContainText('currently unavailable');
   await page.locator('#assistant-question').fill('How would his experience help my team?');
   await expect(page.locator('#assistant-send')).toBeDisabled();
@@ -414,6 +580,7 @@ for (const width of [320, 390, 1440]) {
   test(`guided answers and project showcase ${width}px: progressive disclosure and keyboard navigation`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/');
+    await openAssistant(page);
     for (const id of ['why', 'ai', 'leadership']) {
       await page.locator(`[data-guide="${id}"]`).click();
       const a11y = await new AxeBuilder({ page }).include('#assistant').withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
@@ -421,6 +588,8 @@ for (const width of [320, 390, 1440]) {
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     }
     await page.screenshot({ path: `artifacts/guide-open-${width}.png`, fullPage: true });
+    await page.locator('#assistant-close').click();
+    await expect(page.locator('#assistant-dialog')).toBeHidden();
     const tabs = page.locator('[data-work-tab]');
     await expect(tabs).toHaveCount(3);
     const diagramNames = ['Investigate, then conclude.', 'One question. A connected picture.', 'Recover. Attribute. Reconcile.'];

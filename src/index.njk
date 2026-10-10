@@ -12,6 +12,13 @@ desc: "Sarthak Bichhawa — data scientist at Microsoft Azure Storage. Explore m
       </div>
       <h1 class="hero-title">Hi, I’m <span>Sarthak<span class="sr-only"> Bichhawa</span>.</span></h1>
       <p class="hero-intro">I work on product measurement, data platforms, and applied AI at Microsoft Azure Storage. I help teams understand customer health, investigate incidents, and trust their data.</p>
+      <div class="hero-assistant-invite" hidden>
+        <button type="button" class="assistant-launcher" id="assistant-launcher" aria-haspopup="dialog" aria-controls="assistant-dialog" aria-expanded="false">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18 3 21V6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3H7Z"/><path d="M8 8h8M8 12h5"/></svg>
+          <span>Ask my AI assistant</span><span class="assistant-launcher-arrow" aria-hidden="true">↗</span>
+        </button>
+        <p>Ask about my work, or compare a role.</p>
+      </div>
       <div class="hero-links"><a href="{{ facts.resume.file }}" data-goatcounter-click="hero-resume-pdf">View résumé <span aria-hidden="true">↗</span></a><a href="mailto:{{ facts.identity.email }}" data-goatcounter-click="hero-email">Get in touch <span aria-hidden="true">↗</span></a><a href="{{ facts.identity.linkedin }}">LinkedIn <span aria-hidden="true">↗</span></a></div>
       <ul class="hero-evidence" aria-label="Selected outcomes">
         <li><a href="{{ facts.receipts[0].anchor }}"><strong>{{ facts.receipts[0].value }}</strong><span>Partner attribution recovered</span></a></li>
@@ -24,7 +31,11 @@ desc: "Sarthak Bichhawa — data scientist at Microsoft Azure Storage. Explore m
   <section class="home-assistant wrap" id="assistant" aria-labelledby="assistant-heading" data-portfolio-assistant data-site-url="{{ facts.meta.site_url }}" data-availability="checking">
     <div class="assistant-stage">
       <div class="assistant-stage-head">
-        <h2 id="assistant-heading"><svg class="assistant-symbol" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18 3 21V6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3H7Z"/><path d="M8 8h8M8 12h5"/></svg> Ask about my work <span class="assistant-ai-label">AI assistant</span></h2>
+        <div class="assistant-heading-copy">
+          <span class="assistant-ai-label"><svg class="assistant-symbol" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18 3 21V6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3H7Z"/><path d="M8 8h8M8 12h5"/></svg> AI portfolio assistant</span>
+          <h2 id="assistant-heading">Ask about my work.</h2>
+          <p>Explore a project, dig into a technical decision, or compare a role.</p>
+        </div>
         <button class="assistant-clear" type="button" id="assistant-clear" disabled>Clear</button>
       </div>
       <div class="assistant-conversation" id="assistant-conversation" role="region" aria-label="Conversation with the AI portfolio assistant" tabindex="0" hidden></div>
@@ -110,6 +121,10 @@ desc: "Sarthak Bichhawa — data scientist at Microsoft Azure Storage. Explore m
     {% endfor %}
   </ol>
 </section>
+
+<dialog class="assistant-dialog" id="assistant-dialog" aria-labelledby="assistant-heading">
+  <div class="assistant-dialog-toolbar"><span>A conversation about my work</span><button type="button" id="assistant-close" aria-label="Close AI assistant">Close <span aria-hidden="true">×</span></button></div>
+</dialog>
 
 <section class="home-writing wrap" id="writing" aria-labelledby="writing-heading">
   <div class="home-section-head"><h2 id="writing-heading">Notes from the work.</h2><a class="text-link" href="/writing/">All writing <span aria-hidden="true">↗</span></a></div>

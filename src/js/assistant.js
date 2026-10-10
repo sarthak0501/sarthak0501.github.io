@@ -43,6 +43,7 @@
   let questions = [];
   let pending = null;
   let sequence = 0;
+  let deferredReply = null;
 
   function make(tag, className, value) {
     const node = document.createElement(tag);
@@ -161,6 +162,28 @@
     elements.conversation.scrollTop = elements.conversation.scrollHeight;
   }
 
+  function revealReply(message) {
+    const dialog = root.closest('dialog');
+    if (dialog && !dialog.open) {
+      deferredReply = message;
+      return;
+    }
+    // Start each reply at its opening, even when it exceeds the conversation.
+    elements.conversation.scrollTop += message.getBoundingClientRect().top - elements.conversation.getBoundingClientRect().top;
+    if (dialog) requestAnimationFrame(() => {
+      // The composer can leave the conversation above the dialog's viewport.
+      // Wait for the pending controls to settle, then move only this open panel.
+      if (!dialog.open || !message.isConnected) return;
+      const frame = dialog.getBoundingClientRect();
+      const toolbar = dialog.querySelector('.assistant-dialog-toolbar')?.getBoundingClientRect();
+      const top = Math.max(frame.top, toolbar?.bottom ?? frame.top) + 12;
+      const bottom = Math.min(frame.bottom, window.innerHeight) - 12;
+      const heading = message.querySelector('.assistant-message-label').getBoundingClientRect();
+      const opening = message.querySelector('.assistant-message-body').getBoundingClientRect();
+      if (heading.top < top || opening.bottom > bottom) dialog.scrollTop += heading.top - top;
+    });
+  }
+
   function renderResponse(data) {
     if (!data || typeof data.answer !== 'string' || !data.answer.trim() || data.answer.length > 14000
       || !Array.isArray(data.evidence) || data.evidence.length > 24
@@ -208,9 +231,7 @@
       message.append(unknowns);
     }
     appendSources(message, sources);
-    // Start each reply at its opening, even when a role comparison is longer
-    // than the conversation. Leave page position and keyboard focus alone.
-    elements.conversation.scrollTop += message.getBoundingClientRect().top - elements.conversation.getBoundingClientRect().top;
+    revealReply(message);
   }
 
   function renderFailure(message) {
@@ -338,6 +359,11 @@
   }
 
   modeButtons.forEach((button) => button.addEventListener('click', () => setMode(button.dataset.assistantMode)));
+  root.addEventListener('assistant:open', () => {
+    const message = deferredReply;
+    deferredReply = null;
+    if (message?.isConnected) revealReply(message);
+  });
   function selectGuide(id) {
     currentGuide = id;
     guideAnswer.hidden = !id;
