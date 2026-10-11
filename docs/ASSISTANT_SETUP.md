@@ -91,6 +91,8 @@ The dashboard is a separate Worker at <https://sarthak-assistant-dashboard.sarth
 
 Dashboard filters use inclusive dates in **America/Los_Angeles**, including daylight-saving changes. It opens on Today, supports question/answer search and shows 50 records per page. **Export loaded** exports only loaded rows; it is a convenience download and never marks records safely backed up. The sync command is the archival path.
 
+The live dashboard is <https://sarthak-assistant-dashboard.sarthak0501-github-io.workers.dev/>. Sign in as `sarthaksgsits@gmail.com` using the email code or the existing Cloudflare account. Cloudflare Access protects all traffic to this Worker with the exact-email Allow policy; the Worker also verifies the application audience and owner identity before serving any page, asset or data. Keep the Access application audience in the admin config synchronized if the application is ever recreated. The public assistant is outside this Access application.
+
 ### Local archival sync
 
 ```sh

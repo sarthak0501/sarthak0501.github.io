@@ -15,7 +15,7 @@
   "vars": {
     "OWNER_EMAIL": "sarthaksgsits@gmail.com",
     "ADMIN_ORIGIN": "https://sarthak-assistant-dashboard.sarthak0501-github-io.workers.dev",
-    "ACCESS_AUD": "not-configured",
+    "ACCESS_AUD": "fd990451b8d483202bf4f01002cfdf33d771b49cf7fb16bc370ae3325af4458b",
     "LOGGING_ENABLED": "true"
   }
 }
