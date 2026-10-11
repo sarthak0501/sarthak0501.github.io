@@ -1,7 +1,15 @@
 import yaml from "js-yaml";
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
 
 export default function (eleventyConfig) {
   eleventyConfig.addDataExtension("yaml", (contents) => yaml.load(contents));
+  // A fresh document must also load its matching styles and privacy-aware client.
+  eleventyConfig.addFilter("assetVersion", (path) => {
+    if (!/^\/(css|js)\/[a-z0-9-]+\.(css|js)$/.test(path)) throw new Error("Invalid asset path");
+    const revision = createHash("sha256").update(readFileSync(`src${path}`)).digest("hex").slice(0, 12);
+    return `${path}?v=${revision}`;
+  });
 
   eleventyConfig.addPassthroughCopy({
     "src/css": "css",

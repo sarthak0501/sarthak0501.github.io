@@ -95,7 +95,7 @@
     elements.question.required = !matching;
     elements.job.required = matching;
     elements.sendLabel.textContent = matching ? 'Compare public experience' : 'Ask the assistant';
-    elements.note.textContent = matching ? 'Public descriptions only. Sent to OpenAI when you send.' : 'Public questions only. Sent to OpenAI when you send.';
+    elements.note.textContent = matching ? 'Public descriptions only. Sent to OpenAI; saved for Sarthak’s private review.' : 'Public questions only. Sent to OpenAI; saved for Sarthak’s private review.';
     modeButtons.forEach((button) => {
       button.setAttribute('aria-pressed', String(button.dataset.assistantMode === mode));
     });
@@ -248,6 +248,7 @@
   }
 
   function failureText(status) {
+    if (status === 409) return 'The assistant privacy notice has changed. Refresh this page before sending your question.';
     if (status === 429) return 'The assistant has reached its request limit. Please try again later, or explore the sources directly.';
     if (status === 504) return 'The assistant took too long to reply. Please try again with a shorter question.';
     if ([400, 413].includes(status)) return 'That request could not be processed. Use a question under 1,200 characters or a public job description under 6,000 characters.';
@@ -295,6 +296,7 @@
           question: requestMode === 'question' ? value : '',
           jobDescription: requestMode === 'match' ? value : '',
           context: questions.slice(-2),
+          privacyRevision: root.dataset.privacyRevision || '',
         }),
         signal: controller.signal,
       });

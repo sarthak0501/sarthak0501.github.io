@@ -6,12 +6,20 @@
   "workers_dev": true,
   "send_metrics": false,
   "observability": { "enabled": false },
+  "d1_databases": [{
+    "binding": "ASSISTANT_LOG_DB",
+    "database_name": "portfolio-assistant-logs",
+    "database_id": "b3af3013-cad3-4b8f-9b66-19cad8aefbba",
+    "migrations_dir": "migrations"
+  }],
+  "triggers": { "crons": ["15 10 * * *"] },
   "durable_objects": {
     "bindings": [{ "name": "BUDGET_GUARD", "class_name": "BudgetGuard" }]
   },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["BudgetGuard"] }],
   "vars": {
     "ASSISTANT_ENABLED": "true",
+    "LOGGING_ENABLED": "true",
     "IP_MINUTE_LIMIT": "5",
     "IP_DAILY_LIMIT": "50",
     "GLOBAL_DAILY_LIMIT": "100",

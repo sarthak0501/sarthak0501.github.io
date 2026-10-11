@@ -1,0 +1,21 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "sarthak-assistant-dashboard",
+  "main": "admin-worker.mjs",
+  "compatibility_date": "2026-10-07",
+  "workers_dev": true,
+  "preview_urls": false,
+  "send_metrics": false,
+  "observability": { "enabled": false },
+  "d1_databases": [{
+    "binding": "ASSISTANT_LOG_DB",
+    "database_name": "portfolio-assistant-logs",
+    "database_id": "b3af3013-cad3-4b8f-9b66-19cad8aefbba"
+  }],
+  "vars": {
+    "OWNER_EMAIL": "sarthaksgsits@gmail.com",
+    "ADMIN_ORIGIN": "https://sarthak-assistant-dashboard.sarthak0501-github-io.workers.dev",
+    "ACCESS_AUD": "not-configured",
+    "LOGGING_ENABLED": "true"
+  }
+}

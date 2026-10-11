@@ -13,6 +13,9 @@
     "assistant:check": "npm run assistant:build && wrangler deploy --dry-run --config assistant/wrangler.jsonc",
     "assistant:deploy": "npm run assistant:build && wrangler deploy --config assistant/wrangler.jsonc",
     "assistant:configure": "node scripts/configure-assistant.mjs",
+    "assistant:admin:check": "wrangler deploy --dry-run --config assistant/admin.wrangler.jsonc",
+    "assistant:admin:deploy": "wrangler deploy --config assistant/admin.wrangler.jsonc",
+    "assistant:logs:sync": "node scripts/sync-assistant-logs.mjs",
     "assistant:eval": "node scripts/eval-assistant-live.mjs"
   },
   "devDependencies": {

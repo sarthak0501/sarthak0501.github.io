@@ -1,8 +1,10 @@
 // Request, grounding, and budget logic, separate from runtime exports.
 import knowledge from './knowledge.generated.mjs';
+import { logInteraction, pruneBackedUp } from './logging.mjs';
 
 export const ORIGIN = 'https://sarthak0501.github.io';
 export const MODEL = 'gpt-6.1-sol';
+export const PRIVACY_REVISION = '2026-10-10-logging-v1';
 export const LIMITS = Object.freeze({ question: 1200, jobDescription: 6000, context: 2, bodyBytes: 32000, inputTokens: 64000, outputTokens: 3000, providerBytes: 32000 });
 const encoder = new TextEncoder();
 const SOURCES = new Map(knowledge.sources.map(source => [source.id, source]));
@@ -105,7 +107,8 @@ function textInput(value, max, required = false) {
   return typeof value === 'string' && value.length <= max && (!required || value.trim().length > 0) && !/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(value);
 }
 export function validateInput(value) {
-  if (!exactKeys(value, ['mode', 'question', 'jobDescription', 'context']) || !['question', 'match'].includes(value.mode) ||
+  if (!exactKeys(value, ['mode', 'question', 'jobDescription', 'context', 'privacyRevision']) || !['question', 'match'].includes(value.mode) ||
+      (value.privacyRevision !== undefined && !textInput(value.privacyRevision, 80)) ||
       !textInput(value.question, LIMITS.question, value.mode === 'question') || !textInput(value.jobDescription ?? '', LIMITS.jobDescription) ||
       !Array.isArray(value.context ?? []) || (value.context ?? []).length > LIMITS.context ||
       !(value.context ?? []).every(text => textInput(text, LIMITS.question, true)) ||
@@ -221,7 +224,7 @@ async function guard(env, path, body) {
 
 export function createHandler({ fetchImpl = (...args) => fetch(...args), now = () => Date.now(), timeoutMs = 25000 } = {}) {
   return {
-    async fetch(request, env) {
+    async fetch(request, env, ctx) {
       const allowed = request.headers.get('Origin') === ORIGIN;
       if (!allowed) return json({ error: { code: 'forbidden_origin', message: 'This assistant is available from the portfolio website.' } }, 403, {}, false);
       try {
@@ -246,6 +249,11 @@ export function createHandler({ fetchImpl = (...args) => fetch(...args), now = (
         let decoded;
         try { decoded = JSON.parse(body); } catch { fail(400, 'invalid_input', 'Send a valid question or public job description.'); }
         const input = validateInput(decoded);
+        // Old tabs promised no transcript storage. Require the notice carried
+        // by the current HTML before saving any visitor content.
+        if (env.LOGGING_ENABLED === 'true' && decoded.privacyRevision !== PRIVACY_REVISION) {
+          fail(409, 'notice_changed', 'The assistant privacy notice has changed. Refresh the website before sending.');
+        }
         const payload = buildProviderRequest(input);
         const reservation = reservationFor(payload);
         const ip = request.headers.get('CF-Connecting-IP');
@@ -257,34 +265,50 @@ export function createHandler({ fetchImpl = (...args) => fetch(...args), now = (
         const key = await pseudonymousKey(ip, env.RATE_LIMIT_SALT, day);
         const budget = await guard(env, 'reserve', { key, ...reservation });
         if (!budget.allowed) fail(429, budget.code, budget.code === 'rate_limited' ? 'The assistant has reached its request limit. Please try again later.' : 'The assistant has reached its usage budget. Please use the résumé and case studies.', budget.retryAfter);
-        const controller = new AbortController();
-        let timer;
-        try {
-          const timedOut = new Promise((_, reject) => {
-            timer = setTimeout(() => { controller.abort(); reject(new AssistantError(504, 'timeout', 'The assistant took too long to respond. Please try again later.')); }, timeoutMs);
-          });
-          const providerTask = (async () => {
-            const response = await fetchImpl('https://api.openai.com/v1/responses', { method: 'POST', headers: { Authorization: `Bearer ${env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: controller.signal });
-            if (!response.ok) fail(503, 'unavailable', 'The AI assistant is currently unavailable. Please use the résumé and case studies.');
-            const raw = await readBounded(response, LIMITS.providerBytes, 502);
-            let result;
-            try { result = JSON.parse(raw); } catch { invalidOutput(); }
-            if (result.status !== 'completed' || result.error || !Array.isArray(result.output)) invalidOutput();
-            const messages = result.output.filter(item => item.type === 'message');
-            if (messages.length !== 1 || !Array.isArray(messages[0].content) || messages[0].content.length !== 1 || messages[0].content[0].type !== 'output_text') invalidOutput();
-            let answer;
-            try { answer = JSON.parse(messages[0].content[0].text); } catch { invalidOutput(); }
-            return validateProviderOutput(answer, input.mode);
-          })();
-          const result = await Promise.race([providerTask, timedOut]);
+        const completion = (async () => {
+          const controller = new AbortController();
+          const record = { requestId: crypto.randomUUID(), createdAt: new Date(timestamp).toISOString(), mode: input.mode,
+            question: input.mode === 'match' ? input.jobDescription : input.question, corpusRevision: knowledge.revision };
+          let timer;
+          let result;
+          try {
+            const timedOut = new Promise((_, reject) => {
+              timer = setTimeout(() => { controller.abort(); reject(new AssistantError(504, 'timeout', 'The assistant took too long to respond. Please try again later.')); }, timeoutMs);
+            });
+            const providerTask = (async () => {
+              const response = await fetchImpl('https://api.openai.com/v1/responses', { method: 'POST', headers: { Authorization: `Bearer ${env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: controller.signal });
+              if (!response.ok) fail(503, 'unavailable', 'The AI assistant is currently unavailable. Please use the résumé and case studies.');
+              const raw = await readBounded(response, LIMITS.providerBytes, 502);
+              let result;
+              try { result = JSON.parse(raw); } catch { invalidOutput(); }
+              if (result.status !== 'completed' || result.error || !Array.isArray(result.output)) invalidOutput();
+              const messages = result.output.filter(item => item.type === 'message');
+              if (messages.length !== 1 || !Array.isArray(messages[0].content) || messages[0].content.length !== 1 || messages[0].content[0].type !== 'output_text') invalidOutput();
+              let answer;
+              try { answer = JSON.parse(messages[0].content[0].text); } catch { invalidOutput(); }
+              return validateProviderOutput(answer, input.mode);
+            })();
+            result = await Promise.race([providerTask, timedOut]);
+          } catch (error) {
+            await logInteraction(env, { ...record, answer: null, status: 'failed',
+              errorCode: error instanceof AssistantError ? error.code : 'unavailable', latencyMs: Math.max(0, now() - timestamp) });
+            throw error;
+          } finally { clearTimeout(timer); }
+          // Complete the durable write before confirming success to the visitor.
+          await logInteraction(env, { ...record, answer: result, status: 'answered', errorCode: null, latencyMs: Math.max(0, now() - timestamp) });
           return json(result);
-        } finally { clearTimeout(timer); }
+        })();
+        // Keep the bounded model call and final write alive if the visitor
+        // closes the tab or presses Stop. Still await storage before success.
+        ctx?.waitUntil?.(completion.then(() => {}, () => {}));
+        return await completion;
       } catch (error) {
-        // No content, raw IP, model errors, or secrets are logged or returned.
+        // Operational logs and error responses never expose content or secrets.
         const known = error instanceof AssistantError;
         return json({ error: { code: known ? error.code : 'unavailable', message: known ? error.message : 'The AI assistant is currently unavailable. Please use the résumé and case studies.' } }, known ? error.status : 503, error.retryAfter ? { 'Retry-After': String(error.retryAfter) } : {});
       }
-    }
+    },
+    async scheduled(_event, env) { await pruneBackedUp(env, now()); }
   };
 }
 

@@ -28,7 +28,7 @@ desc: "Sarthak Bichhawa — data scientist at Microsoft Azure Storage. Explore m
     </div>
   </header>
 
-  <section class="home-assistant wrap" id="assistant" aria-labelledby="assistant-heading" data-portfolio-assistant data-site-url="{{ facts.meta.site_url }}" data-availability="checking">
+  <section class="home-assistant wrap" id="assistant" aria-labelledby="assistant-heading" data-portfolio-assistant data-site-url="{{ facts.meta.site_url }}" data-availability="checking" data-privacy-revision="2026-10-10-logging-v1">
     <div class="assistant-stage">
       <div class="assistant-stage-head">
         <div class="assistant-heading-copy">
@@ -59,14 +59,14 @@ desc: "Sarthak Bichhawa — data scientist at Microsoft Azure Storage. Explore m
               <textarea id="assistant-job" name="jobDescription" rows="4" maxlength="6000" disabled placeholder="Paste a public job description. See relevant experience and honest gaps." aria-describedby="assistant-status assistant-input-note assistant-privacy assistant-counter"></textarea>
             </div>
             <div class="assistant-composer-bottom">
-              <p class="assistant-input-note" id="assistant-input-note">Public questions only. Sent to OpenAI when you send.</p>
+              <p class="assistant-input-note" id="assistant-input-note">Public questions only. Sent to OpenAI; saved for Sarthak’s private review.</p>
               <span class="assistant-counter" id="assistant-counter">0 / 1,200</span>
               <button class="assistant-cancel" id="assistant-cancel" type="button" hidden>Stop</button>
               <button class="assistant-send" id="assistant-send" type="submit" disabled aria-describedby="assistant-status"><span class="sr-only" id="assistant-send-label">Ask the assistant</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg></button>
             </div>
           </div>
           <p id="assistant-status" class="assistant-status" role="status" aria-live="polite" aria-atomic="true">Checking live AI availability…</p>
-          <p class="sr-only" id="assistant-privacy">Use public information only. Your text and up to two previous questions are sent to OpenAI when you send. Do not include personal or confidential information.</p>
+          <p class="sr-only" id="assistant-privacy">Use public information only. Your text and up to two previous questions are sent to OpenAI when you send. Submitted questions or job descriptions and replies are saved for Sarthak’s private review and local archive. Do not include personal or confidential information.</p>
         </form>
       </div>
       <div id="assistant-welcome" class="assistant-welcome">
@@ -97,7 +97,7 @@ desc: "Sarthak Bichhawa — data scientist at Microsoft Azure Storage. Explore m
       </div>
       <details class="assistant-about">
         <summary>Answers grounded in my public work <span>How it works</span></summary>
-        <div><p>The guided answers are curated website content. Live replies come from an AI portfolio assistant that makes the strongest case supported by Sarthak’s public work, with evidence links and honest gaps. It is not Sarthak speaking or a firsthand reference.</p><p>Use only public questions or public job descriptions. Sending transmits your text and up to two earlier questions to OpenAI. Nothing is sent when you type or explore a guided answer. Conversation history stays in this tab and clears on reload or “Clear.” Source revision: {{ facts.meta.resume_rev }}. Replies may contain errors; check the sources. <a href="/colophon/#assistant-privacy">Privacy and processing details</a>.</p></div>
+        <div><p>The guided answers are curated website content. Live replies come from an AI portfolio assistant that makes the strongest case supported by Sarthak’s public work, with evidence links and honest gaps. It is not Sarthak speaking or a firsthand reference.</p><p>Use only public questions or public job descriptions. Sending transmits your text and up to two earlier questions to OpenAI. Submitted questions, job descriptions, and replies are saved for Sarthak’s private review: at least 31 days in the cloud, then eligible for removal only after a verified local backup. Local archives are retained until deleted by Sarthak. Nothing is sent when you type or explore a guided answer. “Clear” or reload clears this tab’s display, not saved records. Source revision: {{ facts.meta.resume_rev }}. Replies may contain errors; check the sources. <a href="/colophon/#assistant-privacy">Privacy and processing details</a>.</p></div>
       </details>
       <noscript><p class="assistant-no-script">Live AI needs JavaScript. Explore the <a href="/case/">case studies</a> or <a href="/resume/">résumé</a>.</p></noscript>
     </div>

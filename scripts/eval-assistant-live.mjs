@@ -5,6 +5,7 @@ import { readFile, mkdir, writeFile, realpath, lstat } from "node:fs/promises";
 import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { setTimeout as delay } from "node:timers/promises";
+import { PRIVACY_REVISION } from "../assistant/core.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const canonicalOrigin = "https://sarthak0501.github.io";
@@ -135,7 +136,7 @@ function evaluate(response, scenario, sources) {
 async function endpointResponse(url, body) {
   const response = await fetch(url, {
     method: "POST", headers: { "Content-Type": "application/json", Origin: canonicalOrigin },
-    body: JSON.stringify(body), redirect: "error", signal: AbortSignal.timeout(45_000),
+    body: JSON.stringify({ ...body, privacyRevision: PRIVACY_REVISION }), redirect: "error", signal: AbortSignal.timeout(45_000),
   });
   if (!response.ok) return { status: response.status, failure: `HTTP_${response.status}` };
   if (!response.headers.get("content-type")?.toLowerCase().includes("application/json")) return { status: response.status, failure: "RESPONSE_NOT_JSON" };

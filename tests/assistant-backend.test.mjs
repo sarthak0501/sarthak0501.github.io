@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { BudgetGuard, createHandler, validateInput, validateOutput, validateProviderOutput, buildProviderRequest, reservationFor, pseudonymousKey, ORIGIN, MODEL, LIMITS, INSTRUCTIONS } from '../assistant/core.mjs';
+import { BudgetGuard, createHandler, validateInput, validateOutput, validateProviderOutput, buildProviderRequest, reservationFor, pseudonymousKey, ORIGIN, MODEL, LIMITS, INSTRUCTIONS, PRIVACY_REVISION } from '../assistant/core.mjs';
 import knowledge from '../assistant/knowledge.generated.mjs';
 import { fileURLToPath } from 'node:url';
+import { readFile } from 'node:fs/promises';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
 
 // Provider transport is mocked. These are security/contract tests, not live
@@ -51,6 +52,172 @@ function provider(value = providerAnswer(), overrides = {}) {
 const transport = async () => provider();
 const reserveInput = key => ({ key, ...reservationFor(buildProviderRequest(question)) });
 const reserve = (object, input) => object.fetch(new Request('https://budget.internal/reserve', { method: 'POST', body: JSON.stringify(input) })).then(r => r.json());
+
+async function privateLogDatabase(t) {
+  const runtime = new Miniflare(convertV4MiniflareOptions({
+    script: 'export default { fetch() { return new Response("local test"); } };', modules: true,
+    compatibilityDate: '2026-10-07', cf: false, d1Databases: ['ASSISTANT_LOG_DB'],
+  }));
+  t.after(() => runtime.dispose());
+  const db = await runtime.getD1Database('ASSISTANT_LOG_DB');
+  const schema = await readFile(new URL('../assistant/migrations/0001_interactions.sql', import.meta.url), 'utf8');
+  await db.batch(schema.replace(/^--.*$/gm, '').trim().split(/;\s*(?=CREATE\b)/).map(sql => db.prepare(sql)));
+  return db;
+}
+
+test('enabled logging saves the current question or JD and exact public answer, excluding context and provider metadata', async t => {
+  const db = await privateLogDatabase(t);
+  let payload;
+  const { env } = environment({ LOGGING_ENABLED: 'true', ASSISTANT_LOG_DB: db });
+  const handler = createHandler({ fetchImpl: async (_url, init) => {
+    payload = JSON.parse(init.body);
+    return provider(providerAnswer(), { id: 'PRIVATE_PROVIDER_METADATA' });
+  } });
+  for (const mode of ['question', 'match']) {
+    const body = { mode, question: mode === 'question' ? 'Current public question' : 'UNSAVED_OPTIONAL_MATCH_QUESTION',
+      jobDescription: mode === 'match' ? 'Current public job description' : '', context: ['UNSAVED_PRIOR_CONTEXT'], privacyRevision: PRIVACY_REVISION };
+    const response = await handler.fetch(request(body), env);
+    assert.equal(response.status, 200);
+    const result = await response.json();
+    const saved = await db.prepare('SELECT * FROM interactions WHERE mode = ?').bind(mode).first();
+    assert.equal(saved.question, mode === 'question' ? body.question : body.jobDescription);
+    assert.equal(saved.status, 'answered'); assert.equal(saved.error_code, null);
+    assert.equal(saved.corpus_revision, knowledge.revision);
+    assert.equal(saved.backed_up_at, null);
+    assert.deepEqual(JSON.parse(saved.answer_json), result);
+    const text = JSON.stringify(saved);
+    for (const privateValue of ['UNSAVED_PRIOR_CONTEXT', 'UNSAVED_OPTIONAL_MATCH_QUESTION', 'PRIVATE_PROVIDER_METADATA', '203.0.113.10', env.OPENAI_API_KEY, env.RATE_LIMIT_SALT]) assert.equal(text.includes(privateValue), false);
+    const input = JSON.parse(payload.input[0].content[0].text).UNTRUSTED_DATA;
+    assert.deepEqual(input.context, ['UNSAVED_PRIOR_CONTEXT']);
+    assert.equal('privacyRevision' in input, false, 'the notice marker is not sent to the model');
+  }
+  assert.equal((await db.prepare('SELECT COUNT(*) AS count FROM interactions').first()).count, 2);
+});
+
+test('provider failures and timeout save sanitized final failed records without raw error data', async t => {
+  const db = await privateLogDatabase(t);
+  for (const [fetchImpl, expectedStatus, code] of [
+    [async () => { throw new Error('PRIVATE_PROVIDER_ERROR'); }, 503, 'unavailable'],
+    [async () => new Response('PRIVATE_PROVIDER_ERROR', { status: 500 }), 503, 'unavailable'],
+    [async () => provider({ paragraphs: 'PRIVATE_PROVIDER_ERROR' }), 502, 'invalid_response'],
+    [() => new Promise(() => {}), 504, 'timeout'],
+  ]) {
+    const { env } = environment({ LOGGING_ENABLED: 'true', ASSISTANT_LOG_DB: db });
+    const response = await createHandler({ fetchImpl, timeoutMs: 5 }).fetch(request({ ...question, privacyRevision: PRIVACY_REVISION }), env);
+    assert.equal(response.status, expectedStatus);
+    assert.equal((await response.text()).includes('PRIVATE_PROVIDER_ERROR'), false);
+    const saved = await db.prepare('SELECT * FROM interactions ORDER BY id DESC LIMIT 1').first();
+    assert.equal(saved.status, 'failed'); assert.equal(saved.answer_json, null);
+    assert.equal(saved.error_code, code);
+    assert.equal(JSON.stringify(saved).includes('PRIVATE_PROVIDER_ERROR'), false);
+  }
+  assert.equal((await db.prepare('SELECT COUNT(*) AS count FROM interactions').first()).count, 4);
+});
+
+test('success waits for the durable write and logging failure returns a safe 503', async () => {
+  let finishWrite;
+  let writeStarted;
+  const started = new Promise(resolve => { writeStarted = resolve; });
+  const { env } = environment({ LOGGING_ENABLED: 'true', ASSISTANT_LOG_DB: {
+    prepare() { return { bind() { return { run() { writeStarted(); return new Promise(resolve => { finishWrite = resolve; }); } }; } }; },
+  } });
+  let settled = false;
+  const pending = createHandler({ fetchImpl: transport }).fetch(request({ ...question, privacyRevision: PRIVACY_REVISION }), env).then(value => { settled = true; return value; });
+  await started;
+  assert.equal(settled, false);
+  finishWrite({ success: true, meta: { changes: 1 } });
+  assert.equal((await pending).status, 200);
+  env.ASSISTANT_LOG_DB = { prepare() { throw new Error('PRIVATE_STORAGE_ERROR'); } };
+  const response = await createHandler({ fetchImpl: transport }).fetch(request({ ...question, privacyRevision: PRIVACY_REVISION }), env);
+  assert.equal(response.status, 503);
+  const body = await response.json();
+  assert.equal(body.error.code, 'unavailable');
+  assert.equal('answer' in body, false);
+  assert.equal(JSON.stringify(body).includes('PRIVATE_STORAGE_ERROR'), false);
+});
+
+test('client cancellation keeps provider completion and the final write alive through waitUntil', async () => {
+  const deferred = () => {
+    let resolve, reject;
+    const promise = new Promise((yes, no) => { resolve = yes; reject = no; });
+    return { promise, resolve, reject };
+  };
+  for (const providerFails of [false, true]) for (const storageFails of [false, true]) {
+    const providerPending = deferred();
+    const providerStarted = deferred();
+    const writePending = deferred();
+    const writeStarted = deferred();
+    const registered = deferred();
+    let values;
+    const { env } = environment({ LOGGING_ENABLED: 'true', ASSISTANT_LOG_DB: {
+      prepare() { return { bind(...bound) { values = bound; return { run() { writeStarted.resolve(); return writePending.promise; } }; } }; },
+    } });
+    const visitor = new AbortController();
+    const incoming = new Request(request({ ...question, privacyRevision: PRIVACY_REVISION }), { signal: visitor.signal });
+    let background, backgroundSettled = false, responseSettled = false, registrations = 0;
+    const handler = createHandler({ fetchImpl: (_url, init) => {
+      providerStarted.resolve(init.signal);
+      return providerPending.promise;
+    } });
+    const responsePending = handler.fetch(incoming, env, { waitUntil(promise) {
+      registrations++;
+      background = promise;
+      promise.then(() => { backgroundSettled = true; }, () => { backgroundSettled = true; });
+      registered.resolve();
+    } }).then(response => { responseSettled = true; return response; });
+    const providerSignal = await providerStarted.promise;
+    await registered.promise;
+    assert.equal(registrations, 1, 'lifetime extension is registered while generation is pending');
+    assert.equal(backgroundSettled, false);
+    visitor.abort(new Error('PRIVATE_VISITOR_ABORT'));
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(incoming.signal.aborted, true);
+    assert.equal(providerSignal.aborted, false, 'Stop or tab closure must not abort the bounded provider call');
+    assert.equal(responseSettled, false);
+    assert.equal(backgroundSettled, false);
+
+    if (providerFails) providerPending.reject(new Error('PRIVATE_PROVIDER_ERROR'));
+    else providerPending.resolve(provider());
+    await writeStarted.promise;
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(responseSettled, false, 'the response must wait for the final durable write');
+    assert.equal(backgroundSettled, false, 'waitUntil must include persistence after either provider outcome');
+    assert.equal(JSON.stringify(values).includes('PRIVATE_'), false, 'raw provider and cancellation details are never saved');
+    assert.equal(values[5], providerFails ? 'failed' : 'answered');
+    if (storageFails) writePending.reject(new Error('PRIVATE_STORAGE_ERROR'));
+    else writePending.resolve({ success: true, meta: { changes: 1 } });
+    const response = await responsePending;
+    await assert.doesNotReject(background, 'the background lifetime promise must consume rejection safely');
+    assert.equal(backgroundSettled, true);
+    assert.equal(response.status, providerFails || storageFails ? 503 : 200);
+    const body = await response.json();
+    assert.equal(JSON.stringify(body).includes('PRIVATE_'), false);
+    if (providerFails || storageFails) {
+      assert.equal(body.error.code, 'unavailable');
+      assert.equal('answer' in body, false);
+    } else assert.match(body.answer, /Sarthak/);
+  }
+});
+
+test('old notices are rejected before charging or saving; invalid and rate-limited inputs are not logged', async t => {
+  const db = await privateLogDatabase(t);
+  const { env, storage, names } = environment({ LOGGING_ENABLED: 'true', ASSISTANT_LOG_DB: db, IP_DAILY_LIMIT: '1' });
+  let calls = 0;
+  const handler = createHandler({ fetchImpl: async () => { calls++; return provider(); } });
+  for (const privacyRevision of [undefined, 'old-notice']) {
+    const response = await handler.fetch(request({ ...question, privacyRevision }), env);
+    assert.equal(response.status, 409);
+    assert.equal((await response.json()).error.code, 'notice_changed');
+  }
+  assert.equal(calls, 0); assert.equal(await storage.get('global'), undefined); assert.deepEqual(names, []);
+  assert.equal((await db.prepare('SELECT COUNT(*) AS count FROM interactions').first()).count, 0);
+  assert.equal((await handler.fetch(request({ ...question, question: '', privacyRevision: PRIVACY_REVISION }), env)).status, 400);
+  assert.equal((await db.prepare('SELECT COUNT(*) AS count FROM interactions').first()).count, 0);
+  assert.equal((await handler.fetch(request({ ...question, privacyRevision: PRIVACY_REVISION }), env)).status, 200);
+  assert.equal((await handler.fetch(request({ ...question, privacyRevision: PRIVACY_REVISION }), env)).status, 429);
+  assert.equal(calls, 1);
+  assert.equal((await db.prepare('SELECT COUNT(*) AS count FROM interactions').first()).count, 1);
+});
 
 test('mock provider: canonical citations are reconstructed server-side', async () => {
   const { env, storage, names } = environment(); let sent;
@@ -416,7 +583,7 @@ test('failed durable storage fails closed before the provider', async () => {
 test('actual workerd SQLite Durable Object enforces atomic caps and the health contract (mock provider)', { timeout: 30000 }, async () => {
   let calls = 0;
   const options = {
-    modules: ['worker.mjs', 'core.mjs', 'knowledge.generated.mjs'].map(name => ({ type: 'ESModule', path: fileURLToPath(new URL(`../assistant/${name}`, import.meta.url)) })),
+    modules: ['worker.mjs', 'core.mjs', 'knowledge.generated.mjs', 'logging.mjs'].map(name => ({ type: 'ESModule', path: fileURLToPath(new URL(`../assistant/${name}`, import.meta.url)) })),
     compatibilityDate: '2026-10-07', cf: false,
     durableObjects: { BUDGET_GUARD: { className: 'BudgetGuard', useSQLite: true } },
     bindings: { ASSISTANT_ENABLED: 'true', OPENAI_API_KEY: 'test-only-provider-key', RATE_LIMIT_SALT: 'test-only-salt-at-least-32-characters-long', GLOBAL_DAILY_LIMIT: '3' },

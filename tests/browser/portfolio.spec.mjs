@@ -4,6 +4,7 @@ import { mkdir } from 'node:fs/promises';
 
 const endpoint = 'https://portfolio-assistant.test.workers.dev/api/assistant';
 const resumePath = '/resumes/SarthakBichhawa_Resume_2026.pdf';
+const privacyRevision = '2026-10-10-logging-v1';
 const source = { id: 'profile', title: 'Public résumé', url: 'https://sarthak0501.github.io/resume/' };
 const answer = { answer: 'Documented public experience. [profile]', evidence: [source], matches: [], unknowns: [] };
 const response = (json, status = 200) => ({ status, contentType: 'application/json', headers: { 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify(json) });
@@ -230,7 +231,8 @@ test('sending is explicit; model and visitor HTML stay text; citations link publ
     return route.fulfill(response({ ...answer, answer: '<img src=x onerror=alert(1)> [profile]' }));
   });
   await expect(page.locator('#assistant-input-note')).toBeVisible();
-  await expect(page.locator('#assistant-input-note')).toContainText('Sent to OpenAI when you send.');
+  await expect(page.locator('#assistant-input-note')).toContainText('Sent to OpenAI; saved for Sarthak’s private review.');
+  await expect(page.locator('#assistant')).toHaveAttribute('data-privacy-revision', privacyRevision);
   await page.locator('[data-guide="ai"]').click();
   expect(requests).toBe(0);
   await page.locator('#assistant-question').fill('<script>window.secret=true</script>');
@@ -256,12 +258,12 @@ test('public job matching shows relevant evidence, gaps and unknowns', async ({ 
   });
   await page.getByRole('button', { name: /Compare a role/ }).click();
   await expect(page.locator('#assistant-input-note')).toBeVisible();
-  await expect(page.locator('#assistant-input-note')).toContainText('Sent to OpenAI when you send.');
+  await expect(page.locator('#assistant-input-note')).toContainText('Sent to OpenAI; saved for Sarthak’s private review.');
   await expect(page.locator('#assistant-question')).toBeHidden();
   await page.locator('#assistant-job').fill('Public role: LLM agents, PhD, Kubernetes.');
   await page.locator('#assistant-send').click();
   await expect(page.locator('#assistant-status')).toContainText('Answer ready');
-  expect(request).toMatchObject({ mode: 'match', question: '', jobDescription: 'Public role: LLM agents, PhD, Kubernetes.', context: [] });
+  expect(request).toMatchObject({ mode: 'match', question: '', jobDescription: 'Public role: LLM agents, PhD, Kubernetes.', context: [], privacyRevision });
   await expect(page.locator('.assistant-match')).toHaveCount(2);
   await expect(page.locator('.assistant-match-list')).toContainText('PhD is not established');
   await expect(page.locator('.assistant-unknowns')).toContainText('Kubernetes');
@@ -417,6 +419,24 @@ for (const status of [429, 502, 503, 504]) {
     await expect(page.locator('#assistant-thinking')).toBeHidden();
   });
 }
+
+test('an outdated privacy notice asks the visitor to refresh without losing the draft', async ({ page }) => {
+  let calls = 0;
+  await enabled(page, route => {
+    calls++;
+    return route.fulfill(response({ error: { code: 'notice_changed', message: 'PRIVATE_SERVER_DETAIL' } }, 409));
+  });
+  await expect(page.locator('#assistant-input-note')).toBeVisible();
+  await expect(page.locator('#assistant-input-note')).toContainText('saved for Sarthak’s private review');
+  await page.locator('#assistant-question').fill('Keep this question until I refresh.');
+  await page.locator('#assistant-send').click();
+  await expect(page.locator('#assistant-status')).toContainText('privacy notice has changed');
+  await expect(page.locator('#assistant-status')).toContainText('Refresh this page');
+  await expect(page.locator('#assistant-question')).toHaveValue('Keep this question until I refresh.');
+  await expect(page.locator('#assistant-thinking')).toBeHidden();
+  await expect(page.locator('#assistant-conversation')).not.toContainText('PRIVATE_SERVER_DETAIL');
+  expect(calls).toBe(1);
+});
 
 test('unsafe source URLs fail closed', async ({ page }) => {
   await enabled(page, route => route.fulfill(response({ ...answer, evidence: [{ ...source, url: 'javascript:alert(1)' }] })));

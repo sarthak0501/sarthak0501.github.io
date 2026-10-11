@@ -27,14 +27,16 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - name: Install browser for private dashboard, responsive and accessibility checks
+        run: npx playwright install --with-deps chromium
       - name: Assistant grounding and security contracts
         run: npm run test:assistant
       - name: Verify Worker bundle without credentials
         run: npm run assistant:check
+      - name: Verify private dashboard bundle without credentials
+        run: npm run assistant:admin:check
       - name: Receipts linter — claims must match facts.yaml
         run: npm run lint:receipts
-      - name: Install browser for responsive and accessibility checks
-        run: npx playwright install --with-deps chromium
       - name: Homepage, accessibility and assistant interactions
         run: npm run test:browser
       - uses: actions/upload-pages-artifact@v3
